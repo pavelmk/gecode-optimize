@@ -1,0 +1,52 @@
+{
+  "density": 0.3,
+  "edges": [
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      3,
+      6
+    ]
+  ],
+  "family": "vertex_cover",
+  "generator_version": 1,
+  "id": "tiny_vertex_cover_120006",
+  "label": "tiny-exact",
+  "n": 7,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "certificate": "exhaustive enumeration",
+    "objective": 12,
+    "states_examined": 128,
+    "status": "optimal"
+  },
+  "seed": 120006,
+  "split": "tiny",
+  "weights": [
+    7,
+    8,
+    7,
+    15,
+    3,
+    4,
+    5
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "instances": [
+    {
+      "id": "dev_native_rcpsp_small_9401000",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "dev",
+      "seed": 9401000,
+      "label": "native_rcpsp small seed 9401000",
+      "kind": "native",
+      "json": "rcpsp-instances/dev_native_rcpsp_small_9401000.json",
+      "txt": "rcpsp-instances/dev_native_rcpsp_small_9401000.txt"
+    },
+    {
+      "id": "dev_native_rcpsp_small_9401001",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "dev",
+      "seed": 9401001,
+      "label": "native_rcpsp small seed 9401001",
+      "kind": "native",
+      "json": "rcpsp-instances/dev_native_rcpsp_small_9401001.json",
+      "txt": "rcpsp-instances/dev_native_rcpsp_small_9401001.txt"
+    },
+    {
+      "id": "dev_native_rcpsp_small_9401002",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "dev",
+      "seed": 9401002,
+      "label": "native_rcpsp small seed 9401002",
+      "kind": "native",
+      "json": "rcpsp-instances/dev_native_rcpsp_small_9401002.json",
+      "txt": "rcpsp-instances/dev_native_rcpsp_small_9401002.txt"
+    },
+    {
+      "id": "test_native_rcpsp_small_9402000",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "test",
+      "seed": 9402000,
+      "label": "native_rcpsp small seed 9402000",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_small_9402000.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_small_9402000.txt"
+    },
+    {
+      "id": "test_native_rcpsp_small_9402001",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "test",
+      "seed": 9402001,
+      "label": "native_rcpsp small seed 9402001",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_small_9402001.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_small_9402001.txt"
+    },
+    {
+      "id": "test_native_rcpsp_small_9402002",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "test",
+      "seed": 9402002,
+      "label": "native_rcpsp small seed 9402002",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_small_9402002.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_small_9402002.txt"
+    },
+    {
+      "id": "test_native_rcpsp_small_9402003",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "test",
+      "seed": 9402003,
+      "label": "native_rcpsp small seed 9402003",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_small_9402003.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_small_9402003.txt"
+    },
+    {
+      "id": "test_native_rcpsp_small_9402004",
+      "family": "native_rcpsp",
+      "tier": "small",
+      "split": "test",
+      "seed": 9402004,
+      "label": "native_rcpsp small seed 9402004",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_small_9402004.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_small_9402004.txt"
+    },
+    {
+      "id": "dev_native_rcpsp_large_9411000",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "dev",
+      "seed": 9411000,
+      "label": "native_rcpsp large seed 9411000",
+      "kind": "native",
+      "json": "rcpsp-instances/dev_native_rcpsp_large_9411000.json",
+      "txt": "rcpsp-instances/dev_native_rcpsp_large_9411000.txt"
+    },
+    {
+      "id": "dev_native_rcpsp_large_9411001",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "dev",
+      "seed": 9411001,
+      "label": "native_rcpsp large seed 9411001",
+      "kind": "native",
+      "json": "rcpsp-instances/dev_native_rcpsp_large_9411001.json",
+      "txt": "rcpsp-instances/dev_native_rcpsp_large_9411001.txt"
+    },
+    {
+      "id": "dev_native_rcpsp_large_9411002",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "dev",
+      "seed": 9411002,
+      "label": "native_rcpsp large seed 9411002",
+      "kind": "native",
+      "json": "rcpsp-instances/dev_native_rcpsp_large_9411002.json",
+      "txt": "rcpsp-instances/dev_native_rcpsp_large_9411002.txt"
+    },
+    {
+      "id": "test_native_rcpsp_large_9412000",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "test",
+      "seed": 9412000,
+      "label": "native_rcpsp large seed 9412000",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_large_9412000.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_large_9412000.txt"
+    },
+    {
+      "id": "test_native_rcpsp_large_9412001",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "test",
+      "seed": 9412001,
+      "label": "native_rcpsp large seed 9412001",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_large_9412001.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_large_9412001.txt"
+    },
+    {
+      "id": "test_native_rcpsp_large_9412002",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "test",
+      "seed": 9412002,
+      "label": "native_rcpsp large seed 9412002",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_large_9412002.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_large_9412002.txt"
+    },
+    {
+      "id": "test_native_rcpsp_large_9412003",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "test",
+      "seed": 9412003,
+      "label": "native_rcpsp large seed 9412003",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_large_9412003.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_large_9412003.txt"
+    },
+    {
+      "id": "test_native_rcpsp_large_9412004",
+      "family": "native_rcpsp",
+      "tier": "large",
+      "split": "test",
+      "seed": 9412004,
+      "label": "native_rcpsp large seed 9412004",
+      "kind": "native",
+      "json": "rcpsp-instances/test_native_rcpsp_large_9412004.json",
+      "txt": "rcpsp-instances/test_native_rcpsp_large_9412004.txt"
+    }
+  ]
+}

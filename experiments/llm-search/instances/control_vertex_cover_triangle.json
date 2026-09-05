@@ -1,0 +1,39 @@
+{
+  "edges": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      2
+    ]
+  ],
+  "family": "vertex_cover",
+  "generator_version": 1,
+  "id": "control_vertex_cover_triangle",
+  "label": "weighted-triangle",
+  "n": 3,
+  "reference": {
+    "assignment": [
+      1,
+      1,
+      0
+    ],
+    "certificate": "exhaustive enumeration",
+    "objective": 5,
+    "states_examined": 8,
+    "status": "optimal"
+  },
+  "seed": null,
+  "split": "control",
+  "weights": [
+    2,
+    3,
+    8
+  ]
+}

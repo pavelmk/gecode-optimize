@@ -1,0 +1,55 @@
+{
+  "colors": 2,
+  "density": 0.3,
+  "edges": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "family": "coloring",
+  "generator_version": 1,
+  "id": "tiny_coloring_100004",
+  "label": "planted-overlapping-cliques",
+  "n": 6,
+  "reference": {
+    "assignment": [
+      0,
+      1,
+      1,
+      1,
+      0,
+      0
+    ],
+    "certificate": "feasible satisfaction witness",
+    "objective": 0,
+    "states_examined": 29,
+    "status": "optimal"
+  },
+  "seed": 100004,
+  "split": "tiny"
+}

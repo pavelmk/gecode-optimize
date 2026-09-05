@@ -1,0 +1,165 @@
+{
+  "c": [
+    -18,
+    -2,
+    -5,
+    -1,
+    -13,
+    -13,
+    -2,
+    -19,
+    -9,
+    -5,
+    -1
+  ],
+  "construction": {
+    "capacities": [
+      12,
+      13
+    ],
+    "capacity_ratio": 0.25
+  },
+  "family": "knapsack",
+  "generator_version": 1,
+  "id": "tiny_knapsack_510003",
+  "incumbent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "profit/normalized-resource greedy",
+  "incumbent_objective": -41,
+  "label": "tiny-exact",
+  "n": 11,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    "input_sha256": "6dc5f134b44e80cb0a6c86bbc65954365c3f42015a2daa9f6cd53551ffd23cb7",
+    "method": "exact two-capacity zero-one knapsack dynamic program",
+    "objective": -41,
+    "states_evaluated": 843,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          -8
+        ],
+        [
+          1,
+          -6
+        ],
+        [
+          2,
+          -4
+        ],
+        [
+          3,
+          -2
+        ],
+        [
+          4,
+          -5
+        ],
+        [
+          5,
+          -3
+        ],
+        [
+          6,
+          -8
+        ],
+        [
+          7,
+          -3
+        ],
+        [
+          8,
+          -5
+        ],
+        [
+          9,
+          -2
+        ],
+        [
+          10,
+          -4
+        ]
+      ],
+      "b": -12
+    },
+    {
+      "a": [
+        [
+          0,
+          -3
+        ],
+        [
+          1,
+          -7
+        ],
+        [
+          2,
+          -5
+        ],
+        [
+          3,
+          -8
+        ],
+        [
+          4,
+          -7
+        ],
+        [
+          5,
+          -3
+        ],
+        [
+          6,
+          -3
+        ],
+        [
+          7,
+          -7
+        ],
+        [
+          8,
+          -2
+        ],
+        [
+          9,
+          -6
+        ],
+        [
+          10,
+          -1
+        ]
+      ],
+      "b": -13
+    }
+  ],
+  "seed": 510003,
+  "split": "tiny"
+}

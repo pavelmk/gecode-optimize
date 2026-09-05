@@ -1,0 +1,1 @@
+The LP backend uses HiGHS v1.15.1, commit 04024d701f79feb8e2f18bc3df0dffc04ef05088, from https://github.com/ERGO-Code/HiGHS. HiGHS is distributed under the MIT license; see HIGHS_LICENSE.txt. Gecode retains its upstream license. This experiment links only the continuous LP API; HiGHS mixed-integer search is not invoked.

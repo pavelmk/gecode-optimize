@@ -1,0 +1,125 @@
+{
+  "c": [
+    8,
+    7,
+    12,
+    12,
+    7,
+    2,
+    14,
+    4
+  ],
+  "construction": {
+    "demand": 1,
+    "density": 0.24,
+    "elements": 5
+  },
+  "family": "set_cover",
+  "generator_version": 1,
+  "id": "tiny_set_cover_500000",
+  "incumbent": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+  ],
+  "incumbent_matches_optimum": false,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 23,
+  "label": "tiny-exact",
+  "n": 8,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    "input_sha256": "b8263c36819313fc6ab6647a87bfe2378dcab4bcb8720fe3261effcb8276f2b0",
+    "method": "exact DP over remaining covered-element subsets",
+    "objective": 21,
+    "states_evaluated": 7,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          3,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 500000,
+  "split": "tiny"
+}

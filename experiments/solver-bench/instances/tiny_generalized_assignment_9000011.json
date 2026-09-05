@@ -1,0 +1,252 @@
+{
+  "c": [
+    27,
+    48,
+    23,
+    1,
+    35,
+    18,
+    11,
+    13
+  ],
+  "family": "generalized_assignment",
+  "generation_timing": {
+    "construction_seconds": 3.629177808761597e-05,
+    "incumbent_seconds": 7.5837597250938416e-06,
+    "reference_seconds": 0.00041958317160606384,
+    "total_seconds": 0.0005377503111958504
+  },
+  "generator_version": 1,
+  "id": "tiny_generalized_assignment_9000011",
+  "incumbent": [
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1
+  ],
+  "incumbent_method": "planted feasible allocation plus one greedy reassignment pass",
+  "incumbent_objective": 76,
+  "label": "generalized_assignment:tiny",
+  "n": 8,
+  "parameters": {
+    "capacities": [
+      10,
+      8
+    ],
+    "costs": [
+      [
+        27,
+        48
+      ],
+      [
+        23,
+        1
+      ],
+      [
+        35,
+        18
+      ],
+      [
+        11,
+        13
+      ]
+    ],
+    "jobs": 4,
+    "machines": 2,
+    "planted_machines": [
+      0,
+      1,
+      0,
+      1
+    ],
+    "resources": [
+      [
+        1,
+        8
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        7,
+        3
+      ]
+    ]
+  },
+  "reference": {
+    "assignment": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0
+    ],
+    "input_sha256": "86cdd3b752ea2523e856a312bb07d0a0d830099e3195c537ee1c64cec45fdbc5",
+    "method": "exhaustive binary enumeration",
+    "objective": 57,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          -1
+        ],
+        [
+          3,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          4,
+          -1
+        ],
+        [
+          5,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          6,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          6,
+          -1
+        ],
+        [
+          7,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          0,
+          -1
+        ],
+        [
+          2,
+          -1
+        ],
+        [
+          4,
+          -8
+        ],
+        [
+          6,
+          -7
+        ]
+      ],
+      "b": -10
+    },
+    {
+      "a": [
+        [
+          1,
+          -8
+        ],
+        [
+          3,
+          -3
+        ],
+        [
+          5,
+          -5
+        ],
+        [
+          7,
+          -3
+        ]
+      ],
+      "b": -8
+    }
+  ],
+  "seed": 9000011,
+  "split": "tiny",
+  "tier": "tiny"
+}

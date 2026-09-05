@@ -1,0 +1,147 @@
+{
+  "c": [
+    4,
+    13,
+    24,
+    16,
+    1,
+    23,
+    24,
+    21
+  ],
+  "construction": {
+    "density": 0.25,
+    "left_size": 4,
+    "shuffled_variable_ids": true
+  },
+  "family": "bipartite_cover",
+  "generator_version": 1,
+  "id": "tiny_bipartite_cover_520000",
+  "incumbent": [
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 59,
+  "label": "tiny-exact",
+  "n": 8,
+  "reference": {
+    "assignment": [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      1
+    ],
+    "input_sha256": "ddfbb135e658815b9e1882b8bce1219c7bbbdb573dd09c4b787b84027ebfce13",
+    "method": "exact integral-capacity maxflow/mincut for weighted bipartite cover",
+    "objective": 59,
+    "states_evaluated": 7,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          3,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          5,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 520000,
+  "split": "tiny"
+}

@@ -1,0 +1,103 @@
+{
+  "family": "job_shop",
+  "size": 4,
+  "n": 16,
+  "tier": "small",
+  "seed": 9002001,
+  "kind": "native",
+  "machines": 4,
+  "data": [
+    [
+      2,
+      5
+    ],
+    [
+      0,
+      10
+    ],
+    [
+      3,
+      8
+    ],
+    [
+      1,
+      10
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      1,
+      12
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      2,
+      10
+    ],
+    [
+      0,
+      11
+    ],
+    [
+      1,
+      14
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      2,
+      11
+    ],
+    [
+      1,
+      8
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      0,
+      13
+    ]
+  ],
+  "incumbent": [
+    0,
+    5,
+    15,
+    23,
+    33,
+    35,
+    47,
+    51,
+    61,
+    72,
+    86,
+    87,
+    98,
+    106,
+    110,
+    113
+  ],
+  "incumbent_objective": 126,
+  "construction_ms": 0.02437550574541092,
+  "reference": {
+    "status": "unknown",
+    "input_sha256": "b6df061e23ac89d0e5b9f0f1e3048bed2f2a29dcb2d1143bf5576f676770f963",
+    "method": "not independently certified"
+  },
+  "id": "test_job_shop_small_9002001",
+  "split": "test",
+  "label": "job_shop small seed 9002001"
+}

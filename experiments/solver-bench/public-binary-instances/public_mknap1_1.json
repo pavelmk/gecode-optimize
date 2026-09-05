@@ -1,0 +1,424 @@
+{
+  "n": 6,
+  "c": [
+    -100,
+    -600,
+    -1200,
+    -2400,
+    -500,
+    -2000
+  ],
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          -8
+        ],
+        [
+          1,
+          -12
+        ],
+        [
+          2,
+          -13
+        ],
+        [
+          3,
+          -64
+        ],
+        [
+          4,
+          -22
+        ],
+        [
+          5,
+          -41
+        ]
+      ],
+      "b": -80
+    },
+    {
+      "a": [
+        [
+          0,
+          -8
+        ],
+        [
+          1,
+          -12
+        ],
+        [
+          2,
+          -13
+        ],
+        [
+          3,
+          -75
+        ],
+        [
+          4,
+          -22
+        ],
+        [
+          5,
+          -41
+        ]
+      ],
+      "b": -96
+    },
+    {
+      "a": [
+        [
+          0,
+          -3
+        ],
+        [
+          1,
+          -6
+        ],
+        [
+          2,
+          -4
+        ],
+        [
+          3,
+          -18
+        ],
+        [
+          4,
+          -6
+        ],
+        [
+          5,
+          -4
+        ]
+      ],
+      "b": -20
+    },
+    {
+      "a": [
+        [
+          0,
+          -5
+        ],
+        [
+          1,
+          -10
+        ],
+        [
+          2,
+          -8
+        ],
+        [
+          3,
+          -32
+        ],
+        [
+          4,
+          -6
+        ],
+        [
+          5,
+          -12
+        ]
+      ],
+      "b": -36
+    },
+    {
+      "a": [
+        [
+          0,
+          -5
+        ],
+        [
+          1,
+          -13
+        ],
+        [
+          2,
+          -8
+        ],
+        [
+          3,
+          -42
+        ],
+        [
+          4,
+          -6
+        ],
+        [
+          5,
+          -20
+        ]
+      ],
+      "b": -44
+    },
+    {
+      "a": [
+        [
+          0,
+          -5
+        ],
+        [
+          1,
+          -13
+        ],
+        [
+          2,
+          -8
+        ],
+        [
+          3,
+          -48
+        ],
+        [
+          4,
+          -6
+        ],
+        [
+          5,
+          -20
+        ]
+      ],
+      "b": -48
+    },
+    {
+      "a": [
+        [
+          4,
+          -8
+        ]
+      ],
+      "b": -10
+    },
+    {
+      "a": [
+        [
+          0,
+          -3
+        ],
+        [
+          2,
+          -4
+        ],
+        [
+          4,
+          -8
+        ]
+      ],
+      "b": -18
+    },
+    {
+      "a": [
+        [
+          0,
+          -3
+        ],
+        [
+          1,
+          -2
+        ],
+        [
+          2,
+          -4
+        ],
+        [
+          4,
+          -8
+        ],
+        [
+          5,
+          -4
+        ]
+      ],
+      "b": -22
+    },
+    {
+      "a": [
+        [
+          0,
+          -3
+        ],
+        [
+          1,
+          -2
+        ],
+        [
+          2,
+          -4
+        ],
+        [
+          3,
+          -8
+        ],
+        [
+          4,
+          -8
+        ],
+        [
+          5,
+          -4
+        ]
+      ],
+      "b": -24
+    }
+  ],
+  "id": "public_mknap1_1",
+  "family": "multidimensional_knapsack",
+  "kind": "binary",
+  "tier": "public",
+  "split": "public",
+  "seed": null,
+  "label": "OR-Library mknap1 complete instance 1",
+  "incumbent": [
+    0,
+    1,
+    1,
+    0,
+    0,
+    1
+  ],
+  "incumbent_objective": -3800,
+  "incumbent_method": "bounded deterministic coefficient-only greedy construction",
+  "construction_ms": 0.09670760482549667,
+  "reference": {
+    "status": "optimal",
+    "input_sha256": "d5ff7b77a51b6f046a41dcb17cfc99858c539ee63be01b7be0e191ac0153f3fd",
+    "source_url": "https://people.brunel.ac.uk/~mastjjb/jeb/orlib/mknapinfo.html",
+    "method": "official OR-Library optimum in original maximization convention, sign reversed",
+    "used_for_solver_initialization": false,
+    "objective": -3800,
+    "original_maximization_objective": "3800",
+    "objective_scale": 1
+  },
+  "provenance": {
+    "source_url": "https://people.brunel.ac.uk/~mastjjb/jeb/orlib/files/mknap1.txt",
+    "collection": "mknap1",
+    "source_file_sha256": "727c5f90b6acafa0896ce4b5b5559e2995303b735ee083a07e9b724738fac283",
+    "source_instance_sha256": "68d8b55a3118c35a8d80e4bbfd704d90a84cc179c7df0a6b86b2d8735207509a",
+    "source_instance_ordinal": 1,
+    "whole_original_instance": true,
+    "objective_transform": "minimize negative original profit times objective_scale",
+    "objective_scale": 1,
+    "row_transform": "negate <= resource rows; equality becomes two >= rows",
+    "column_mapping": "original item order",
+    "license_url": "https://people.brunel.ac.uk/~mastjjb/jeb/orlib/legal.html",
+    "license_notice": "public-binary-instances/OR-Library-LICENSE.html"
+  },
+  "original_data": {
+    "n": 6,
+    "profits": [
+      100,
+      600,
+      1200,
+      2400,
+      500,
+      2000
+    ],
+    "weights": [
+      [
+        8,
+        12,
+        13,
+        64,
+        22,
+        41
+      ],
+      [
+        8,
+        12,
+        13,
+        75,
+        22,
+        41
+      ],
+      [
+        3,
+        6,
+        4,
+        18,
+        6,
+        4
+      ],
+      [
+        5,
+        10,
+        8,
+        32,
+        6,
+        12
+      ],
+      [
+        5,
+        13,
+        8,
+        42,
+        6,
+        20
+      ],
+      [
+        5,
+        13,
+        8,
+        48,
+        6,
+        20
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        8,
+        0
+      ],
+      [
+        3,
+        0,
+        4,
+        0,
+        8,
+        0
+      ],
+      [
+        3,
+        2,
+        4,
+        0,
+        8,
+        4
+      ],
+      [
+        3,
+        2,
+        4,
+        8,
+        8,
+        4
+      ]
+    ],
+    "capacities": [
+      80,
+      96,
+      20,
+      36,
+      44,
+      48,
+      10,
+      18,
+      22,
+      24
+    ],
+    "objective_scale": 1,
+    "original_profit_values": [
+      "100",
+      "600",
+      "1200",
+      "2400",
+      "500",
+      "2000"
+    ],
+    "ordinal": 1
+  }
+}

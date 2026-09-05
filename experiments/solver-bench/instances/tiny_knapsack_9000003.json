@@ -1,0 +1,138 @@
+{
+  "c": [
+    -52,
+    -55,
+    -87,
+    -5,
+    -49,
+    -75,
+    -12,
+    -20,
+    -1,
+    -86
+  ],
+  "family": "knapsack",
+  "generation_timing": {
+    "construction_seconds": 2.4124979972839355e-05,
+    "incumbent_seconds": 1.5749596059322357e-05,
+    "reference_seconds": 0.0014920420944690704,
+    "total_seconds": 0.001573832705616951
+  },
+  "generator_version": 1,
+  "id": "tiny_knapsack_9000003",
+  "incumbent": [
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0
+  ],
+  "incumbent_method": "profit-per-normalized-resource greedy",
+  "incumbent_objective": -196,
+  "label": "knapsack:tiny",
+  "n": 10,
+  "parameters": {
+    "capacities": [
+      43
+    ],
+    "profits": [
+      52,
+      55,
+      87,
+      5,
+      49,
+      75,
+      12,
+      20,
+      1,
+      86
+    ],
+    "weights": [
+      [
+        1,
+        29,
+        25,
+        15,
+        6,
+        13,
+        15,
+        18,
+        7,
+        27
+      ]
+    ]
+  },
+  "reference": {
+    "assignment": [
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "input_sha256": "addac46420594e913b9ba3fadd93a0637d2afcc795dc9c70f6035a14590cb2f8",
+    "method": "exhaustive binary enumeration",
+    "objective": -214,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          -29
+        ],
+        [
+          2,
+          -25
+        ],
+        [
+          3,
+          -15
+        ],
+        [
+          4,
+          -6
+        ],
+        [
+          5,
+          -13
+        ],
+        [
+          6,
+          -15
+        ],
+        [
+          7,
+          -18
+        ],
+        [
+          8,
+          -7
+        ],
+        [
+          9,
+          -27
+        ]
+      ],
+      "b": -43
+    }
+  ],
+  "seed": 9000003,
+  "split": "tiny",
+  "tier": "tiny"
+}

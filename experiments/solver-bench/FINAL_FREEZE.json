@@ -1,0 +1,46 @@
+{
+  "frozen_utc": "2026-09-05T01:59:19.890588+00:00",
+  "held_out_outcomes_inspected": false,
+  "native_selection": "retain stock AFC; native controllers regressed on development",
+  "binary_selection": "development-only tree, policy.json",
+  "binaries": {
+    "stock-binary": "6ae2a6966f1dd696578fe8aa122f70a98549a8c2cb8a5d7a8a99e7483fde934b",
+    "enhanced-binary": "c77953bd11dba0a8bf205e9f5d0941bc94280c9ffcc9cd5d172674e03d88a28b",
+    "stock-native": "7b5dec2200c0d9da819bea543185057b4695a125b000ba3841d69763af5d5478",
+    "enhanced-native": "f3932f5516e2cf5dfa19e631dcf3f270eab0e8e2c1194e3596d5b5b8eb96e793"
+  },
+  "files": {
+    "driver.cpp": "31a026a8c21eb15971fca2df7c9043f45a59d1b13ebb63492fcc0762f2ca24f7",
+    "native-driver.cpp": "60d384e9b62ebfb79bfbcc1b0915cd5e6357731ec17c4f96583ccc2c15531219",
+    "bench.py": "d15238de155435e7ba0ff6ab6c0bf82bd724fc226163371b6abbde6295f3756e",
+    "policy.hpp": "6433a15098882c40b840666b4992f925ac113b99deddae21108a2d690c39fcff",
+    "policy.json": "d7af75e28afcdb2880d53492a02c292aa99f09691319afd952f7e7b97dffc2f8",
+    "PROTOCOL.md": "97c5517a9cc07627b3654350c56b6fd92f1296be30c8574abe1a1381e89c1c1c",
+    "manifest.json": "81b4ef05705123eccc0d1e031f8244528a9a1306d231842444e3c8b0f5e15bd8",
+    "native-manifest.json": "7ab4d3311e21e97680062bb98c8b0fcea6fd36b42d7da92f3a7561fbf5ee04ae",
+    "rcpsp-manifest.json": "534ade1cddbb12961ec8423c4726cc648d49b4b28af9b7c0ee83693b45f3ebb5",
+    "public-manifest.json": "52cfbb58965928899dbdd5cb039f5645c11aad96b6f81b44220ffa994473d432",
+    "public-binary-manifest.json": "31e1f47f8bccb9c063322fe56199546b70fbd663667e8fcaea95f15deece7ef9",
+    "miplib-manifest.json": "8fe655438a7965df443e0161f5d595ab3917742fe113059e7b6faf734c3becb8",
+    "scale-manifest.json": "cdf569e55b3f33eae6c58d299a29105fec71cc010181a7bcf557779838121709",
+    "fzn-manifest.json": "492c64c193fa2ec57d93cedf5d3f3e68561d1b74d3ba76c3358f32812462069c"
+  },
+  "primary": {
+    "configs": [
+      "stock",
+      "disabled",
+      "lp",
+      "portfolio"
+    ],
+    "split": "test",
+    "limit_ms": 2000,
+    "repeats": 3
+  },
+  "secondary": {
+    "public": "same configurations and2000ms budget",
+    "cold": "stock/portfolio,test,warm0,2000ms,3repeats",
+    "scale": "stock/portfolio,scale,2000ms,3repeats",
+    "flatzinc": "stock/enhanced,1000ms,3repeats"
+  },
+  "long_budget_followup": "Public cases may be rerun up to30seconds with unchanged software and all short-budget results retained."
+}

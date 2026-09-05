@@ -1,0 +1,181 @@
+{
+  "family": "native_rcpsp",
+  "kind": "native",
+  "size": 14,
+  "n": 14,
+  "machines": 2,
+  "tier": "large",
+  "seed": 9411001,
+  "data": {
+    "capacities": [
+      5,
+      6
+    ],
+    "tasks": [
+      [
+        6,
+        1,
+        2
+      ],
+      [
+        2,
+        2,
+        2
+      ],
+      [
+        9,
+        3,
+        5
+      ],
+      [
+        9,
+        1,
+        1
+      ],
+      [
+        2,
+        1,
+        5
+      ],
+      [
+        9,
+        1,
+        1
+      ],
+      [
+        6,
+        2,
+        5
+      ],
+      [
+        2,
+        3,
+        1
+      ],
+      [
+        2,
+        4,
+        5
+      ],
+      [
+        8,
+        1,
+        5
+      ],
+      [
+        9,
+        4,
+        4
+      ],
+      [
+        3,
+        3,
+        5
+      ],
+      [
+        9,
+        2,
+        4
+      ],
+      [
+        5,
+        4,
+        1
+      ]
+    ],
+    "precedences": [
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        9
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        3,
+        8
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        6,
+        9
+      ],
+      [
+        6,
+        10
+      ],
+      [
+        6,
+        11
+      ],
+      [
+        6,
+        13
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        8,
+        11
+      ],
+      [
+        9,
+        10
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        10,
+        13
+      ],
+      [
+        12,
+        13
+      ]
+    ]
+  },
+  "incumbent": [
+    0,
+    6,
+    8,
+    17,
+    26,
+    28,
+    37,
+    43,
+    45,
+    47,
+    55,
+    64,
+    67,
+    76
+  ],
+  "incumbent_objective": 81,
+  "incumbent_method": "serial schedule in deterministic topological order",
+  "reference": {
+    "status": "unknown",
+    "lower_bound": 44,
+    "method": "critical path and renewable resource energy bound; exact only if matched by witness",
+    "input_sha256": "13d04feb111db87bb614c7d6c0efbc822ca7d553a57cea5579194b333c72636a"
+  },
+  "construction_ms": 0.141083262860775,
+  "id": "dev_native_rcpsp_large_9411001",
+  "split": "dev",
+  "label": "native_rcpsp large seed 9411001"
+}

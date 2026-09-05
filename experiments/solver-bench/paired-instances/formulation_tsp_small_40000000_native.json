@@ -1,0 +1,67 @@
+{
+  "family": "native_tsp",
+  "size": 5,
+  "machines": 0,
+  "n": 5,
+  "data": [
+    [
+      0,
+      46,
+      50,
+      23,
+      49
+    ],
+    [
+      46,
+      0,
+      19,
+      24,
+      6
+    ],
+    [
+      50,
+      19,
+      0,
+      28,
+      14
+    ],
+    [
+      23,
+      24,
+      28,
+      0,
+      27
+    ],
+    [
+      49,
+      6,
+      14,
+      27,
+      0
+    ]
+  ],
+  "incumbent": [
+    3,
+    4,
+    0,
+    1,
+    2
+  ],
+  "incumbent_objective": 117,
+  "incumbent_method": "Same semantic incumbent as binary partner; representation conversion only",
+  "id": "formulation_tsp_small_40000000_native",
+  "paired_problem_id": "formulation_tsp_small_40000000",
+  "semantic_problem": "tsp",
+  "kind": "native",
+  "tier": "small",
+  "split": "formulation",
+  "seed": 40000000,
+  "semantic_input_sha256": "c15f02910e45f047e61293db5cd39fd4d95f3093c7e43765b2774e16a3df32b2",
+  "label": "tsp paired native small",
+  "construction_ms": 0.5174586549401283,
+  "reference": {
+    "status": "unknown",
+    "input_sha256": "574c6aa1ff87a6c7e4286968e9372475f3d9609a4ff096e50f503058dbe8cd74",
+    "method": "No optimum oracle run for paired formulation generation"
+  }
+}

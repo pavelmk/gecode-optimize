@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "instances": [
+    {
+      "id": "public_miplib3_p0033",
+      "family": "miplib3_binary",
+      "kind": "binary",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "MIPLIB3.0 classic p0033",
+      "json": "miplib-instances/public_miplib3_p0033.json",
+      "txt": "miplib-instances/public_miplib3_p0033.txt"
+    },
+    {
+      "id": "public_miplib3_p0201",
+      "family": "miplib3_binary",
+      "kind": "binary",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "MIPLIB3.0 classic p0201",
+      "json": "miplib-instances/public_miplib3_p0201.json",
+      "txt": "miplib-instances/public_miplib3_p0201.txt"
+    },
+    {
+      "id": "public_miplib3_p0282",
+      "family": "miplib3_binary",
+      "kind": "binary",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "MIPLIB3.0 classic p0282",
+      "json": "miplib-instances/public_miplib3_p0282.json",
+      "txt": "miplib-instances/public_miplib3_p0282.txt"
+    },
+    {
+      "id": "public_miplib3_p0548",
+      "family": "miplib3_binary",
+      "kind": "binary",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "MIPLIB3.0 classic p0548",
+      "json": "miplib-instances/public_miplib3_p0548.json",
+      "txt": "miplib-instances/public_miplib3_p0548.txt"
+    },
+    {
+      "id": "public_miplib3_lseu",
+      "family": "miplib3_binary",
+      "kind": "binary",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "MIPLIB3.0 classic lseu",
+      "json": "miplib-instances/public_miplib3_lseu.json",
+      "txt": "miplib-instances/public_miplib3_lseu.txt"
+    }
+  ],
+  "selection": "five small pure-binary MIPLIB3.0 classics selected before solver timing; no2017-benchmark-set claim",
+  "warm_start": "No official solution used. Cases without trivial feasible witness run cold even if warm flag requested."
+}

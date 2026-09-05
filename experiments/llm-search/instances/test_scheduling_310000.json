@@ -1,0 +1,33 @@
+{
+  "durations": [
+    21,
+    95,
+    40,
+    78,
+    14,
+    8,
+    36,
+    91,
+    82,
+    71,
+    88,
+    20,
+    57,
+    70,
+    48,
+    37,
+    15,
+    34,
+    35,
+    24
+  ],
+  "family": "scheduling",
+  "generator_version": 1,
+  "id": "test_scheduling_310000",
+  "label": "moderate-random",
+  "lower_bound": 322,
+  "machines": 3,
+  "n": 20,
+  "seed": 310000,
+  "split": "test"
+}

@@ -1,0 +1,640 @@
+{
+  "generator_version": 1,
+  "instances": [
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100000",
+      "json": "instances/tiny_coloring_100000.json",
+      "label": "planted-overlapping-cliques",
+      "n": 5,
+      "seed": 100000,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100000.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100001",
+      "json": "instances/tiny_coloring_100001.json",
+      "label": "tiny-exact",
+      "n": 6,
+      "seed": 100001,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100001.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100002",
+      "json": "instances/tiny_coloring_100002.json",
+      "label": "unsat-clique-control",
+      "n": 7,
+      "seed": 100002,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100002.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100003",
+      "json": "instances/tiny_coloring_100003.json",
+      "label": "planted-overlapping-cliques",
+      "n": 5,
+      "seed": 100003,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100003.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100004",
+      "json": "instances/tiny_coloring_100004.json",
+      "label": "planted-overlapping-cliques",
+      "n": 6,
+      "seed": 100004,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100004.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100005",
+      "json": "instances/tiny_coloring_100005.json",
+      "label": "unsat-clique-control",
+      "n": 7,
+      "seed": 100005,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100005.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100006",
+      "json": "instances/tiny_coloring_100006.json",
+      "label": "planted-overlapping-cliques",
+      "n": 5,
+      "seed": 100006,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100006.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "tiny_coloring_100007",
+      "json": "instances/tiny_coloring_100007.json",
+      "label": "tiny-exact",
+      "n": 6,
+      "seed": 100007,
+      "split": "tiny",
+      "txt": "instances/tiny_coloring_100007.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110000",
+      "json": "instances/tiny_scheduling_110000.json",
+      "label": "tiny-exact",
+      "n": 6,
+      "seed": 110000,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110000.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110001",
+      "json": "instances/tiny_scheduling_110001.json",
+      "label": "tiny-exact",
+      "n": 7,
+      "seed": 110001,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110001.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110002",
+      "json": "instances/tiny_scheduling_110002.json",
+      "label": "tiny-exact",
+      "n": 8,
+      "seed": 110002,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110002.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110003",
+      "json": "instances/tiny_scheduling_110003.json",
+      "label": "tiny-exact",
+      "n": 6,
+      "seed": 110003,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110003.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110004",
+      "json": "instances/tiny_scheduling_110004.json",
+      "label": "tiny-exact",
+      "n": 7,
+      "seed": 110004,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110004.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110005",
+      "json": "instances/tiny_scheduling_110005.json",
+      "label": "tiny-exact",
+      "n": 8,
+      "seed": 110005,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110005.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110006",
+      "json": "instances/tiny_scheduling_110006.json",
+      "label": "tiny-exact",
+      "n": 6,
+      "seed": 110006,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110006.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "tiny_scheduling_110007",
+      "json": "instances/tiny_scheduling_110007.json",
+      "label": "tiny-exact",
+      "n": 7,
+      "seed": 110007,
+      "split": "tiny",
+      "txt": "instances/tiny_scheduling_110007.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120000",
+      "json": "instances/tiny_vertex_cover_120000.json",
+      "label": "tiny-exact",
+      "n": 7,
+      "seed": 120000,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120000.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120001",
+      "json": "instances/tiny_vertex_cover_120001.json",
+      "label": "tiny-exact",
+      "n": 8,
+      "seed": 120001,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120001.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120002",
+      "json": "instances/tiny_vertex_cover_120002.json",
+      "label": "tiny-exact",
+      "n": 9,
+      "seed": 120002,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120002.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120003",
+      "json": "instances/tiny_vertex_cover_120003.json",
+      "label": "tiny-exact",
+      "n": 7,
+      "seed": 120003,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120003.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120004",
+      "json": "instances/tiny_vertex_cover_120004.json",
+      "label": "tiny-exact",
+      "n": 8,
+      "seed": 120004,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120004.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120005",
+      "json": "instances/tiny_vertex_cover_120005.json",
+      "label": "tiny-exact",
+      "n": 9,
+      "seed": 120005,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120005.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120006",
+      "json": "instances/tiny_vertex_cover_120006.json",
+      "label": "tiny-exact",
+      "n": 7,
+      "seed": 120006,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120006.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "tiny_vertex_cover_120007",
+      "json": "instances/tiny_vertex_cover_120007.json",
+      "label": "tiny-exact",
+      "n": 8,
+      "seed": 120007,
+      "split": "tiny",
+      "txt": "instances/tiny_vertex_cover_120007.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "dev_coloring_200000",
+      "json": "instances/dev_coloring_200000.json",
+      "label": "planted-overlapping-cliques",
+      "n": 36,
+      "seed": 200000,
+      "split": "dev",
+      "txt": "instances/dev_coloring_200000.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "dev_coloring_200001",
+      "json": "instances/dev_coloring_200001.json",
+      "label": "moderate-random",
+      "n": 40,
+      "seed": 200001,
+      "split": "dev",
+      "txt": "instances/dev_coloring_200001.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "dev_coloring_200002",
+      "json": "instances/dev_coloring_200002.json",
+      "label": "unsat-clique-control",
+      "n": 44,
+      "seed": 200002,
+      "split": "dev",
+      "txt": "instances/dev_coloring_200002.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "dev_coloring_200003",
+      "json": "instances/dev_coloring_200003.json",
+      "label": "planted-overlapping-cliques",
+      "n": 36,
+      "seed": 200003,
+      "split": "dev",
+      "txt": "instances/dev_coloring_200003.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "dev_coloring_200004",
+      "json": "instances/dev_coloring_200004.json",
+      "label": "planted-overlapping-cliques",
+      "n": 40,
+      "seed": 200004,
+      "split": "dev",
+      "txt": "instances/dev_coloring_200004.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "dev_coloring_200005",
+      "json": "instances/dev_coloring_200005.json",
+      "label": "unsat-odd-wheel",
+      "n": 44,
+      "seed": 200005,
+      "split": "dev",
+      "txt": "instances/dev_coloring_200005.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "dev_scheduling_210000",
+      "json": "instances/dev_scheduling_210000.json",
+      "label": "moderate-random",
+      "n": 20,
+      "seed": 210000,
+      "split": "dev",
+      "txt": "instances/dev_scheduling_210000.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "dev_scheduling_210001",
+      "json": "instances/dev_scheduling_210001.json",
+      "label": "moderate-random",
+      "n": 22,
+      "seed": 210001,
+      "split": "dev",
+      "txt": "instances/dev_scheduling_210001.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "dev_scheduling_210002",
+      "json": "instances/dev_scheduling_210002.json",
+      "label": "moderate-random",
+      "n": 24,
+      "seed": 210002,
+      "split": "dev",
+      "txt": "instances/dev_scheduling_210002.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "dev_scheduling_210003",
+      "json": "instances/dev_scheduling_210003.json",
+      "label": "moderate-random",
+      "n": 20,
+      "seed": 210003,
+      "split": "dev",
+      "txt": "instances/dev_scheduling_210003.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "dev_scheduling_210004",
+      "json": "instances/dev_scheduling_210004.json",
+      "label": "moderate-random",
+      "n": 22,
+      "seed": 210004,
+      "split": "dev",
+      "txt": "instances/dev_scheduling_210004.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "dev_scheduling_210005",
+      "json": "instances/dev_scheduling_210005.json",
+      "label": "moderate-random",
+      "n": 24,
+      "seed": 210005,
+      "split": "dev",
+      "txt": "instances/dev_scheduling_210005.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "dev_vertex_cover_220000",
+      "json": "instances/dev_vertex_cover_220000.json",
+      "label": "moderate-random",
+      "n": 28,
+      "seed": 220000,
+      "split": "dev",
+      "txt": "instances/dev_vertex_cover_220000.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "dev_vertex_cover_220001",
+      "json": "instances/dev_vertex_cover_220001.json",
+      "label": "moderate-random",
+      "n": 31,
+      "seed": 220001,
+      "split": "dev",
+      "txt": "instances/dev_vertex_cover_220001.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "dev_vertex_cover_220002",
+      "json": "instances/dev_vertex_cover_220002.json",
+      "label": "moderate-random",
+      "n": 34,
+      "seed": 220002,
+      "split": "dev",
+      "txt": "instances/dev_vertex_cover_220002.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "dev_vertex_cover_220003",
+      "json": "instances/dev_vertex_cover_220003.json",
+      "label": "moderate-random",
+      "n": 28,
+      "seed": 220003,
+      "split": "dev",
+      "txt": "instances/dev_vertex_cover_220003.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "dev_vertex_cover_220004",
+      "json": "instances/dev_vertex_cover_220004.json",
+      "label": "moderate-random",
+      "n": 31,
+      "seed": 220004,
+      "split": "dev",
+      "txt": "instances/dev_vertex_cover_220004.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "dev_vertex_cover_220005",
+      "json": "instances/dev_vertex_cover_220005.json",
+      "label": "moderate-random",
+      "n": 34,
+      "seed": 220005,
+      "split": "dev",
+      "txt": "instances/dev_vertex_cover_220005.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "test_coloring_300000",
+      "json": "instances/test_coloring_300000.json",
+      "label": "planted-overlapping-cliques",
+      "n": 36,
+      "seed": 300000,
+      "split": "test",
+      "txt": "instances/test_coloring_300000.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "test_coloring_300001",
+      "json": "instances/test_coloring_300001.json",
+      "label": "moderate-random",
+      "n": 40,
+      "seed": 300001,
+      "split": "test",
+      "txt": "instances/test_coloring_300001.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "test_coloring_300002",
+      "json": "instances/test_coloring_300002.json",
+      "label": "unsat-clique-control",
+      "n": 44,
+      "seed": 300002,
+      "split": "test",
+      "txt": "instances/test_coloring_300002.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "test_coloring_300003",
+      "json": "instances/test_coloring_300003.json",
+      "label": "planted-overlapping-cliques",
+      "n": 36,
+      "seed": 300003,
+      "split": "test",
+      "txt": "instances/test_coloring_300003.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "test_coloring_300004",
+      "json": "instances/test_coloring_300004.json",
+      "label": "planted-overlapping-cliques",
+      "n": 40,
+      "seed": 300004,
+      "split": "test",
+      "txt": "instances/test_coloring_300004.txt"
+    },
+    {
+      "family": "coloring",
+      "id": "test_coloring_300005",
+      "json": "instances/test_coloring_300005.json",
+      "label": "unsat-odd-wheel",
+      "n": 44,
+      "seed": 300005,
+      "split": "test",
+      "txt": "instances/test_coloring_300005.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "test_scheduling_310000",
+      "json": "instances/test_scheduling_310000.json",
+      "label": "moderate-random",
+      "n": 20,
+      "seed": 310000,
+      "split": "test",
+      "txt": "instances/test_scheduling_310000.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "test_scheduling_310001",
+      "json": "instances/test_scheduling_310001.json",
+      "label": "moderate-random",
+      "n": 22,
+      "seed": 310001,
+      "split": "test",
+      "txt": "instances/test_scheduling_310001.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "test_scheduling_310002",
+      "json": "instances/test_scheduling_310002.json",
+      "label": "moderate-random",
+      "n": 24,
+      "seed": 310002,
+      "split": "test",
+      "txt": "instances/test_scheduling_310002.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "test_scheduling_310003",
+      "json": "instances/test_scheduling_310003.json",
+      "label": "moderate-random",
+      "n": 20,
+      "seed": 310003,
+      "split": "test",
+      "txt": "instances/test_scheduling_310003.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "test_scheduling_310004",
+      "json": "instances/test_scheduling_310004.json",
+      "label": "moderate-random",
+      "n": 22,
+      "seed": 310004,
+      "split": "test",
+      "txt": "instances/test_scheduling_310004.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "test_scheduling_310005",
+      "json": "instances/test_scheduling_310005.json",
+      "label": "moderate-random",
+      "n": 24,
+      "seed": 310005,
+      "split": "test",
+      "txt": "instances/test_scheduling_310005.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "test_vertex_cover_320000",
+      "json": "instances/test_vertex_cover_320000.json",
+      "label": "moderate-random",
+      "n": 28,
+      "seed": 320000,
+      "split": "test",
+      "txt": "instances/test_vertex_cover_320000.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "test_vertex_cover_320001",
+      "json": "instances/test_vertex_cover_320001.json",
+      "label": "moderate-random",
+      "n": 31,
+      "seed": 320001,
+      "split": "test",
+      "txt": "instances/test_vertex_cover_320001.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "test_vertex_cover_320002",
+      "json": "instances/test_vertex_cover_320002.json",
+      "label": "moderate-random",
+      "n": 34,
+      "seed": 320002,
+      "split": "test",
+      "txt": "instances/test_vertex_cover_320002.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "test_vertex_cover_320003",
+      "json": "instances/test_vertex_cover_320003.json",
+      "label": "moderate-random",
+      "n": 28,
+      "seed": 320003,
+      "split": "test",
+      "txt": "instances/test_vertex_cover_320003.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "test_vertex_cover_320004",
+      "json": "instances/test_vertex_cover_320004.json",
+      "label": "moderate-random",
+      "n": 31,
+      "seed": 320004,
+      "split": "test",
+      "txt": "instances/test_vertex_cover_320004.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "test_vertex_cover_320005",
+      "json": "instances/test_vertex_cover_320005.json",
+      "label": "moderate-random",
+      "n": 34,
+      "seed": 320005,
+      "split": "test",
+      "txt": "instances/test_vertex_cover_320005.txt"
+    },
+    {
+      "family": "scheduling",
+      "id": "control_scheduling_local_minimum",
+      "json": "instances/control_scheduling_local_minimum.json",
+      "label": "coordinated-move-example",
+      "n": 6,
+      "seed": null,
+      "split": "control",
+      "txt": "instances/control_scheduling_local_minimum.txt"
+    },
+    {
+      "family": "vertex_cover",
+      "id": "control_vertex_cover_triangle",
+      "json": "instances/control_vertex_cover_triangle.json",
+      "label": "weighted-triangle",
+      "n": 3,
+      "seed": null,
+      "split": "control",
+      "txt": "instances/control_vertex_cover_triangle.txt"
+    }
+  ],
+  "notes": [
+    "Dev/test seeds are disjoint; freeze policy before test timings.",
+    "Labels describe construction, not measured difficulty or expected speedup.",
+    "JSON references/certificates are for independent validation only; solver consumes TXT.",
+    "Tiny exact oracles and controls are correctness checks, not speed benchmarks.",
+    "Unsat coloring cases have short clique/odd-wheel proofs, not general hard UNSAT instances."
+  ],
+  "parameters": {
+    "coloring_density": 0.24,
+    "cover_density": 0.16,
+    "per_split": 6,
+    "scale": 1.0,
+    "tiny_per_family": 8
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,150 @@
+{
+  "c": [
+    3,
+    18,
+    10,
+    6,
+    15,
+    11,
+    21,
+    22
+  ],
+  "construction": {
+    "demand": 1,
+    "density": 0.24,
+    "elements": 6
+  },
+  "family": "set_cover",
+  "generator_version": 1,
+  "id": "tiny_set_cover_500004",
+  "incumbent": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 20,
+  "label": "tiny-exact",
+  "n": 8,
+  "reference": {
+    "assignment": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    "input_sha256": "af1f95d3bfe51cba71d9149e47427a3fa511950f070d8aec30c61ab0650694a6",
+    "method": "exact DP over remaining covered-element subsets",
+    "objective": 20,
+    "states_evaluated": 8,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          3,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 500004,
+  "split": "tiny"
+}

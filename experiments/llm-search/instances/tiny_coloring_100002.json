@@ -1,0 +1,50 @@
+{
+  "colors": 2,
+  "density": 0.3,
+  "edges": [
+    [
+      0,
+      3
+    ],
+    [
+      0,
+      5
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      3,
+      5
+    ]
+  ],
+  "family": "coloring",
+  "generator_version": 1,
+  "id": "tiny_coloring_100002",
+  "infeasibility_certificate": {
+    "type": "clique",
+    "vertices": [
+      0,
+      3,
+      5
+    ]
+  },
+  "label": "unsat-clique-control",
+  "n": 7,
+  "reference": {
+    "certificate": "exhaustive enumeration",
+    "states_examined": 128,
+    "status": "infeasible"
+  },
+  "seed": 100002,
+  "split": "tiny"
+}

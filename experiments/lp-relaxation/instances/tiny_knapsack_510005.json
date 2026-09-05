@@ -1,0 +1,143 @@
+{
+  "c": [
+    -11,
+    -8,
+    -18,
+    -14,
+    -9,
+    -20,
+    -3,
+    -1,
+    -9
+  ],
+  "construction": {
+    "capacities": [
+      8,
+      10
+    ],
+    "capacity_ratio": 0.25
+  },
+  "family": "knapsack",
+  "generator_version": 1,
+  "id": "tiny_knapsack_510005",
+  "incumbent": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "profit/normalized-resource greedy",
+  "incumbent_objective": -45,
+  "label": "tiny-exact",
+  "n": 9,
+  "reference": {
+    "assignment": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "input_sha256": "04de5e9d9adffcf66528c1bd96554ad7056f2ec8a5bd1ca44dbafd2239642a23",
+    "method": "exact two-capacity zero-one knapsack dynamic program",
+    "objective": -45,
+    "states_evaluated": 330,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          -3
+        ],
+        [
+          1,
+          -2
+        ],
+        [
+          2,
+          -8
+        ],
+        [
+          3,
+          -1
+        ],
+        [
+          4,
+          -4
+        ],
+        [
+          5,
+          -4
+        ],
+        [
+          6,
+          -6
+        ],
+        [
+          7,
+          -2
+        ],
+        [
+          8,
+          -2
+        ]
+      ],
+      "b": -8
+    },
+    {
+      "a": [
+        [
+          0,
+          -2
+        ],
+        [
+          1,
+          -4
+        ],
+        [
+          2,
+          -7
+        ],
+        [
+          3,
+          -5
+        ],
+        [
+          4,
+          -2
+        ],
+        [
+          5,
+          -2
+        ],
+        [
+          6,
+          -6
+        ],
+        [
+          7,
+          -4
+        ],
+        [
+          8,
+          -8
+        ]
+      ],
+      "b": -10
+    }
+  ],
+  "seed": 510005,
+  "split": "tiny"
+}

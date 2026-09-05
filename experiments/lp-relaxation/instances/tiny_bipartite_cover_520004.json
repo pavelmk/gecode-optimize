@@ -1,0 +1,134 @@
+{
+  "c": [
+    14,
+    16,
+    15,
+    6,
+    9,
+    24,
+    3,
+    1
+  ],
+  "construction": {
+    "density": 0.25,
+    "left_size": 4,
+    "shuffled_variable_ids": true
+  },
+  "family": "bipartite_cover",
+  "generator_version": 1,
+  "id": "tiny_bipartite_cover_520004",
+  "incumbent": [
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 19,
+  "label": "tiny-exact",
+  "n": 8,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "input_sha256": "2f0c49722fd1bf693176d86c0c1147b882446641d255f7032122adb970d794cd",
+    "method": "exact integral-capacity maxflow/mincut for weighted bipartite cover",
+    "objective": 19,
+    "states_evaluated": 6,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 520004,
+  "split": "tiny"
+}

@@ -1,0 +1,55 @@
+{
+  "family": "native_coloring",
+  "size": 8,
+  "machines": 0,
+  "n": 8,
+  "data": [
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      7
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      5,
+      7
+    ]
+  ],
+  "incumbent": [
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    2
+  ],
+  "incumbent_objective": 3,
+  "incumbent_method": "Same semantic incumbent as binary partner; representation conversion only",
+  "id": "formulation_coloring_small_40100001_native",
+  "paired_problem_id": "formulation_coloring_small_40100001",
+  "semantic_problem": "coloring",
+  "kind": "native",
+  "tier": "small",
+  "split": "formulation",
+  "seed": 40100001,
+  "semantic_input_sha256": "d90ee7e5f3515c33ebac3533a995d75dbd95cdb6bae71e2e0163d572116aa2d9",
+  "label": "coloring paired native small",
+  "construction_ms": 0.7008332759141922,
+  "reference": {
+    "status": "unknown",
+    "input_sha256": "873f519526c1f78d37bb5fc22ff4f81f137f7ab0510e8d7674f7291fc5e8a9b0",
+    "method": "No optimum oracle run for paired formulation generation"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "colors": 3,
+  "density": 0.3,
+  "edges": [
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ]
+  ],
+  "family": "coloring",
+  "generator_version": 1,
+  "id": "tiny_coloring_100001",
+  "label": "tiny-exact",
+  "n": 6,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
+    "certificate": "feasible satisfaction witness",
+    "objective": 0,
+    "states_examined": 13,
+    "status": "optimal"
+  },
+  "seed": 100001,
+  "split": "tiny"
+}

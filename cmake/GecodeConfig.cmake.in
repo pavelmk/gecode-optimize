@@ -10,6 +10,7 @@ set(_gecode_supported_components
   set
   float
   minimodel
+  lp
   driver
   flatzinc
   gist)
@@ -72,6 +73,8 @@ while(_gecode_dependency_queue)
     set(_gecode_component_dependencies int kernel)
   elseif(_gecode_dependency_component STREQUAL minimodel)
     set(_gecode_component_dependencies int set search float)
+  elseif(_gecode_dependency_component STREQUAL lp)
+    set(_gecode_component_dependencies minimodel)
   elseif(_gecode_dependency_component STREQUAL gist)
     set(_gecode_component_dependencies search int set float)
   elseif(_gecode_dependency_component STREQUAL driver)
@@ -87,6 +90,14 @@ while(_gecode_dependency_queue)
 endwhile()
 
 include(CMakeFindDependencyMacro)
+if(@GECODE_ENABLE_LP_RELAXATION@)
+  find_dependency(highs 1.15 CONFIG)
+  if(NOT TARGET highs::highs)
+    set(Gecode_FOUND FALSE)
+    set(Gecode_NOT_FOUND_MESSAGE "Gecode was built with LP relaxation, but the highs::highs target was not found")
+    return()
+  endif()
+endif()
 if(support IN_LIST _gecode_component_closure AND
    "@GECODE_PACKAGE_NEEDS_THREADS@" STREQUAL "ON")
   find_dependency(Threads)

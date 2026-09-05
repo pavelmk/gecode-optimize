@@ -1,0 +1,33 @@
+{
+  "durations": [
+    100,
+    11,
+    8,
+    21,
+    6,
+    35,
+    98,
+    13,
+    30,
+    69,
+    86,
+    31,
+    68,
+    32,
+    43,
+    89,
+    55,
+    75,
+    62,
+    30
+  ],
+  "family": "scheduling",
+  "generator_version": 1,
+  "id": "dev_scheduling_210003",
+  "label": "moderate-random",
+  "lower_bound": 321,
+  "machines": 3,
+  "n": 20,
+  "seed": 210003,
+  "split": "dev"
+}

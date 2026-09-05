@@ -1,0 +1,50 @@
+{
+  "c": [
+    -1,
+    -2,
+    -3,
+    -4,
+    1,
+    2,
+    3,
+    4
+  ],
+  "family": "binary_linear",
+  "generator_version": 1,
+  "id": "control_negative_free_objective",
+  "incumbent": [
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "objective-sign witness",
+  "incumbent_objective": -10,
+  "label": "signed-objective-control",
+  "n": 8,
+  "reference": {
+    "assignment": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "input_sha256": "01926173894634e96b22caf23ba46e82fbc83f6390cd1e9608641cf5e8ee8e1f",
+    "method": "exhaustive enumeration",
+    "objective": -10,
+    "states_evaluated": 256,
+    "status": "optimal"
+  },
+  "rows": [],
+  "seed": null,
+  "split": "control"
+}

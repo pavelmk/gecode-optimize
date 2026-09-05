@@ -1,0 +1,5 @@
+var 1..10: x :: output_var;
+
+solve
+	:: int_search([x], input_order, indomain_max, complete)
+	minimize x;

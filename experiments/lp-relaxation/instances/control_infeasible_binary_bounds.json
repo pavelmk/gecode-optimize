@@ -1,0 +1,41 @@
+{
+  "c": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "family": "binary_linear",
+  "generator_version": 1,
+  "id": "control_infeasible_binary_bounds",
+  "label": "infeasible-bound-control",
+  "n": 4,
+  "reference": {
+    "input_sha256": "a33c9faeb1b6ab6c36146f5e680015a45516caa33060706d56017f46d5fa8339",
+    "method": "exhaustive enumeration",
+    "states_evaluated": 16,
+    "status": "infeasible"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          -1
+        ]
+      ],
+      "b": 0
+    }
+  ],
+  "seed": null,
+  "split": "control"
+}

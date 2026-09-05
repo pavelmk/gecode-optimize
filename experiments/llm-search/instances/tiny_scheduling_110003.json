@@ -1,0 +1,33 @@
+{
+  "durations": [
+    8,
+    4,
+    6,
+    2,
+    4,
+    9
+  ],
+  "family": "scheduling",
+  "generator_version": 1,
+  "id": "tiny_scheduling_110003",
+  "label": "tiny-exact",
+  "lower_bound": 11,
+  "machines": 3,
+  "n": 6,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      1,
+      1,
+      1,
+      2
+    ],
+    "certificate": "exhaustive enumeration",
+    "objective": 12,
+    "states_examined": 729,
+    "status": "optimal"
+  },
+  "seed": 110003,
+  "split": "tiny"
+}

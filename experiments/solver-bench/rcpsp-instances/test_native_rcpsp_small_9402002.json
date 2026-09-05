@@ -1,0 +1,113 @@
+{
+  "family": "native_rcpsp",
+  "kind": "native",
+  "size": 8,
+  "n": 8,
+  "machines": 2,
+  "tier": "small",
+  "seed": 9402002,
+  "data": {
+    "capacities": [
+      5,
+      6
+    ],
+    "tasks": [
+      [
+        5,
+        1,
+        3
+      ],
+      [
+        7,
+        1,
+        5
+      ],
+      [
+        2,
+        3,
+        1
+      ],
+      [
+        9,
+        1,
+        5
+      ],
+      [
+        2,
+        4,
+        4
+      ],
+      [
+        5,
+        2,
+        5
+      ],
+      [
+        5,
+        3,
+        3
+      ],
+      [
+        8,
+        3,
+        2
+      ]
+    ],
+    "precedences": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        6
+      ]
+    ]
+  },
+  "incumbent": [
+    0,
+    5,
+    12,
+    14,
+    23,
+    25,
+    30,
+    35
+  ],
+  "incumbent_objective": 43,
+  "incumbent_method": "serial schedule in deterministic topological order",
+  "reference": {
+    "status": "unknown",
+    "lower_bound": 27,
+    "method": "critical path and renewable resource energy bound; exact only if matched by witness",
+    "input_sha256": "b5b6bfc66edfaf52122722c8362fa3e53e2922f86799f7d39e0b86bca8513626"
+  },
+  "construction_ms": 0.0860411673784256,
+  "id": "test_native_rcpsp_small_9402002",
+  "split": "test",
+  "label": "native_rcpsp small seed 9402002"
+}

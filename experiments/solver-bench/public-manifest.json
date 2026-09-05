@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "instances": [
+    {
+      "id": "public_job_shop_ft06",
+      "family": "job_shop",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "public job_shop ft06 (6 jobs x 6 machines)",
+      "kind": "native",
+      "json": "public-instances/public_job_shop_ft06.json",
+      "txt": "public-instances/public_job_shop_ft06.txt"
+    },
+    {
+      "id": "public_job_shop_la01",
+      "family": "job_shop",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "public job_shop la01 (10 jobs x 5 machines)",
+      "kind": "native",
+      "json": "public-instances/public_job_shop_la01.json",
+      "txt": "public-instances/public_job_shop_la01.txt"
+    },
+    {
+      "id": "public_job_shop_la02",
+      "family": "job_shop",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "public job_shop la02 (10 jobs x 5 machines)",
+      "kind": "native",
+      "json": "public-instances/public_job_shop_la02.json",
+      "txt": "public-instances/public_job_shop_la02.txt"
+    },
+    {
+      "id": "public_job_shop_la03",
+      "family": "job_shop",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "public job_shop la03 (10 jobs x 5 machines)",
+      "kind": "native",
+      "json": "public-instances/public_job_shop_la03.json",
+      "txt": "public-instances/public_job_shop_la03.txt"
+    },
+    {
+      "id": "public_job_shop_la04",
+      "family": "job_shop",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "public job_shop la04 (10 jobs x 5 machines)",
+      "kind": "native",
+      "json": "public-instances/public_job_shop_la04.json",
+      "txt": "public-instances/public_job_shop_la04.txt"
+    },
+    {
+      "id": "public_job_shop_la05",
+      "family": "job_shop",
+      "tier": "public",
+      "split": "public",
+      "seed": null,
+      "label": "public job_shop la05 (10 jobs x 5 machines)",
+      "kind": "native",
+      "json": "public-instances/public_job_shop_la05.json",
+      "txt": "public-instances/public_job_shop_la05.txt"
+    }
+  ],
+  "note": "Public holdout instances: never development/training input. Optima are validation metadata only.",
+  "license_notice": "public-instances/NOTICE.txt"
+}

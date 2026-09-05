@@ -1,0 +1,122 @@
+{
+  "family": "weighted_queens",
+  "size": 8,
+  "n": 8,
+  "tier": "small",
+  "seed": 9301002,
+  "kind": "native",
+  "data": [
+    [
+      18,
+      6,
+      8,
+      29,
+      20,
+      30,
+      9,
+      12
+    ],
+    [
+      32,
+      19,
+      21,
+      1,
+      23,
+      18,
+      1,
+      24
+    ],
+    [
+      5,
+      14,
+      50,
+      27,
+      12,
+      36,
+      19,
+      30
+    ],
+    [
+      29,
+      5,
+      3,
+      49,
+      48,
+      8,
+      25,
+      44
+    ],
+    [
+      41,
+      16,
+      19,
+      1,
+      7,
+      2,
+      47,
+      32
+    ],
+    [
+      9,
+      2,
+      18,
+      36,
+      28,
+      49,
+      18,
+      13
+    ],
+    [
+      12,
+      6,
+      50,
+      29,
+      2,
+      14,
+      20,
+      41
+    ],
+    [
+      43,
+      31,
+      26,
+      9,
+      29,
+      48,
+      6,
+      40
+    ]
+  ],
+  "incumbent": [
+    0,
+    4,
+    7,
+    5,
+    2,
+    6,
+    1,
+    3
+  ],
+  "incumbent_objective": 131,
+  "construction_ms": 0.4419153556227684,
+  "reference": {
+    "status": "optimal",
+    "input_sha256": "02f515860277a8835ad5a913f8e88778a6ea7a2bba6efebc6faf3253cdc94ef5",
+    "method": "independent exhaustive queen enumeration",
+    "objective": 74,
+    "assignment": [
+      7,
+      3,
+      0,
+      2,
+      5,
+      1,
+      6,
+      4
+    ],
+    "elapsed_ms": 1.496667042374611
+  },
+  "id": "dev_weighted_queens_small_9301002",
+  "split": "dev",
+  "label": "weighted_queens small seed 9301002"
+}

@@ -1,0 +1,158 @@
+{
+  "c": [
+    1,
+    6,
+    9,
+    3,
+    16,
+    8,
+    24,
+    1,
+    3,
+    16,
+    15
+  ],
+  "construction": {
+    "demand": 2,
+    "density": 0.24,
+    "elements": 5
+  },
+  "family": "set_cover",
+  "generator_version": 1,
+  "id": "tiny_set_cover_500003",
+  "incumbent": [
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 31,
+  "label": "tiny-multicover",
+  "n": 11,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    "input_sha256": "39b074cedd4513d8a9b9b5595e51a669d373dbb7cbaa88fb23979b98aff84a7a",
+    "method": "exhaustive enumeration",
+    "objective": 31,
+    "states_evaluated": 2048,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 2
+    },
+    {
+      "a": [
+        [
+          5,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "b": 2
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "b": 2
+    },
+    {
+      "a": [
+        [
+          3,
+          1
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          10,
+          1
+        ]
+      ],
+      "b": 2
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "b": 2
+    }
+  ],
+  "seed": 500003,
+  "split": "tiny"
+}

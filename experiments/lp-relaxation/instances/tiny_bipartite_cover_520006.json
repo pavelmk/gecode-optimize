@@ -1,0 +1,160 @@
+{
+  "c": [
+    3,
+    5,
+    20,
+    11,
+    2,
+    19,
+    1,
+    13
+  ],
+  "construction": {
+    "density": 0.25,
+    "left_size": 4,
+    "shuffled_variable_ids": true
+  },
+  "family": "bipartite_cover",
+  "generator_version": 1,
+  "id": "tiny_bipartite_cover_520006",
+  "incumbent": [
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 17,
+  "label": "tiny-exact",
+  "n": 8,
+  "reference": {
+    "assignment": [
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0
+    ],
+    "input_sha256": "abc879f4bf07760f0d2dc02b0fd6eabeb387a189d096cdf7a06e6a5bd3a9bf85",
+    "method": "exact integral-capacity maxflow/mincut for weighted bipartite cover",
+    "objective": 17,
+    "states_evaluated": 6,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          3,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 520006,
+  "split": "tiny"
+}

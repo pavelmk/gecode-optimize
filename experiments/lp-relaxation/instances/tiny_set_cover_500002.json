@@ -1,0 +1,177 @@
+{
+  "c": [
+    22,
+    11,
+    24,
+    6,
+    3,
+    14,
+    10,
+    25,
+    17,
+    25
+  ],
+  "construction": {
+    "demand": 1,
+    "density": 0.24,
+    "elements": 7
+  },
+  "family": "set_cover",
+  "generator_version": 1,
+  "id": "tiny_set_cover_500002",
+  "incumbent": [
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 36,
+  "label": "tiny-exact",
+  "n": 10,
+  "reference": {
+    "assignment": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "input_sha256": "f0630b1cbc82de13560e9b3e8aa59f9dfda9614bcc02ef817d9b342a46d6e95e",
+    "method": "exact DP over remaining covered-element subsets",
+    "objective": 36,
+    "states_evaluated": 11,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          8,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 500002,
+  "split": "tiny"
+}

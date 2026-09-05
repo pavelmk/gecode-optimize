@@ -1,0 +1,67 @@
+{
+  "colors": 3,
+  "density": 0.3,
+  "edges": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      4
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      1,
+      6
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      4,
+      6
+    ]
+  ],
+  "family": "coloring",
+  "generator_version": 1,
+  "id": "tiny_coloring_100005",
+  "infeasibility_certificate": {
+    "type": "clique",
+    "vertices": [
+      1,
+      2,
+      4,
+      6
+    ]
+  },
+  "label": "unsat-clique-control",
+  "n": 7,
+  "reference": {
+    "certificate": "exhaustive enumeration",
+    "states_examined": 2187,
+    "status": "infeasible"
+  },
+  "seed": 100005,
+  "split": "tiny"
+}

@@ -1,0 +1,293 @@
+{
+  "id": "public_job_shop_la02",
+  "family": "job_shop",
+  "kind": "native",
+  "tier": "public",
+  "split": "public",
+  "seed": null,
+  "label": "public job_shop la02 (10 jobs x 5 machines)",
+  "size": 10,
+  "machines": 5,
+  "n": 50,
+  "data": [
+    [
+      0,
+      20
+    ],
+    [
+      3,
+      87
+    ],
+    [
+      1,
+      31
+    ],
+    [
+      4,
+      76
+    ],
+    [
+      2,
+      17
+    ],
+    [
+      4,
+      25
+    ],
+    [
+      2,
+      32
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      1,
+      18
+    ],
+    [
+      3,
+      81
+    ],
+    [
+      1,
+      72
+    ],
+    [
+      2,
+      23
+    ],
+    [
+      4,
+      28
+    ],
+    [
+      0,
+      58
+    ],
+    [
+      3,
+      99
+    ],
+    [
+      2,
+      86
+    ],
+    [
+      1,
+      76
+    ],
+    [
+      4,
+      97
+    ],
+    [
+      0,
+      45
+    ],
+    [
+      3,
+      90
+    ],
+    [
+      4,
+      27
+    ],
+    [
+      0,
+      42
+    ],
+    [
+      3,
+      48
+    ],
+    [
+      2,
+      17
+    ],
+    [
+      1,
+      46
+    ],
+    [
+      1,
+      67
+    ],
+    [
+      0,
+      98
+    ],
+    [
+      4,
+      48
+    ],
+    [
+      3,
+      27
+    ],
+    [
+      2,
+      62
+    ],
+    [
+      4,
+      28
+    ],
+    [
+      1,
+      12
+    ],
+    [
+      3,
+      19
+    ],
+    [
+      0,
+      80
+    ],
+    [
+      2,
+      50
+    ],
+    [
+      1,
+      63
+    ],
+    [
+      0,
+      94
+    ],
+    [
+      2,
+      98
+    ],
+    [
+      3,
+      50
+    ],
+    [
+      4,
+      80
+    ],
+    [
+      4,
+      14
+    ],
+    [
+      0,
+      75
+    ],
+    [
+      2,
+      50
+    ],
+    [
+      1,
+      41
+    ],
+    [
+      3,
+      55
+    ],
+    [
+      4,
+      72
+    ],
+    [
+      2,
+      18
+    ],
+    [
+      1,
+      37
+    ],
+    [
+      3,
+      79
+    ],
+    [
+      0,
+      61
+    ]
+  ],
+  "incumbent": [
+    0,
+    20,
+    107,
+    138,
+    214,
+    231,
+    256,
+    288,
+    312,
+    330,
+    411,
+    483,
+    506,
+    534,
+    592,
+    691,
+    777,
+    853,
+    950,
+    995,
+    1085,
+    1112,
+    1154,
+    1202,
+    1219,
+    1265,
+    1332,
+    1430,
+    1478,
+    1505,
+    1567,
+    1595,
+    1607,
+    1626,
+    1706,
+    1756,
+    1819,
+    1913,
+    2011,
+    2061,
+    2141,
+    2155,
+    2230,
+    2280,
+    2321,
+    2376,
+    2448,
+    2466,
+    2503,
+    2582
+  ],
+  "incumbent_objective": 2643,
+  "incumbent_method": "serial schedule in original job/operation order; no optimum used",
+  "provenance": {
+    "source": "Gecode 6.4.0 bundled examples/job-shop-instances.hpp",
+    "source_url": "https://github.com/Gecode/gecode/blob/release-6.4.0/examples/job-shop-instances.hpp",
+    "source_array": "la02",
+    "source_file_sha256": "5345a272fe83387529c38b1189d928121e1df1788aea255383561c507862bc78",
+    "source_array_sha256": "09671d640692cc721be90450ce611a49f4fdd17a3ac5e2f8a99823a913505c75",
+    "source_array_hash_format": "SHA256 of compact JSON integer array including dimensions",
+    "source_array_text_sha256": "88c4405ab6766a2f1584d1adf5bcd89d60ecbd50889d540999638a5e1933ed7a",
+    "instance_origin": "Lawrence (1984)",
+    "or_library_url": "https://people.brunel.ac.uk/~mastjjb/jeb/orlib/jobshopinfo.html",
+    "license": "MIT notice in bundled Gecode source",
+    "license_notice_file": "public-instances/NOTICE.txt",
+    "source_arrays_modified": false
+  },
+  "construction_ms": 63.75575065612793,
+  "reference": {
+    "status": "optimal",
+    "objective": 655,
+    "input_sha256": "9c10b39ae1d4bd605b5515e1d49cc59cb064230323fd27641661fd9168d4f373",
+    "method": "published minimum makespan; not recomputed by this importer",
+    "source_url": "https://home.hiroshima-u.ac.jp/mkatsumi/open/HUGE/data/robust.html",
+    "source_checked_date": "2026-09-04",
+    "evidence": "researcher table of minimum makespans and minimum-makespan schedules",
+    "used_for_solver_initialization": false
+  }
+}

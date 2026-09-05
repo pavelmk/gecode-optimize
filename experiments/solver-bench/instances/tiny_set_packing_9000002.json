@@ -1,0 +1,217 @@
+{
+  "c": [
+    -23,
+    -15,
+    -11,
+    -28,
+    -13,
+    -21,
+    -23,
+    -5
+  ],
+  "family": "set_packing",
+  "generation_timing": {
+    "construction_seconds": 4.566553980112076e-05,
+    "incumbent_seconds": 6.624497473239899e-06,
+    "reference_seconds": 0.00042670778930187225,
+    "total_seconds": 0.0005382904782891273
+  },
+  "generator_version": 1,
+  "id": "tiny_set_packing_9000002",
+  "incumbent": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1
+  ],
+  "incumbent_method": "profit-per-bundle-size greedy",
+  "incumbent_objective": -26,
+  "label": "set_packing:tiny",
+  "n": 8,
+  "parameters": {
+    "bundles": [
+      [
+        0,
+        3,
+        4
+      ],
+      [
+        0,
+        1,
+        3
+      ],
+      [
+        0
+      ],
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        0,
+        1,
+        3,
+        4
+      ],
+      [
+        0
+      ],
+      [
+        0,
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ]
+    ],
+    "items": 5,
+    "profits": [
+      23,
+      15,
+      11,
+      28,
+      13,
+      21,
+      23,
+      5
+    ]
+  },
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "input_sha256": "0d3f77677a131070a065737dbddadf7986fb834ea2ef9c5ce6749f9f131ffbf2",
+    "method": "exhaustive binary enumeration",
+    "objective": -28,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          -1
+        ],
+        [
+          2,
+          -1
+        ],
+        [
+          3,
+          -1
+        ],
+        [
+          4,
+          -1
+        ],
+        [
+          5,
+          -1
+        ],
+        [
+          6,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          1,
+          -1
+        ],
+        [
+          3,
+          -1
+        ],
+        [
+          4,
+          -1
+        ],
+        [
+          6,
+          -1
+        ],
+        [
+          7,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          3,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          -1
+        ],
+        [
+          3,
+          -1
+        ],
+        [
+          4,
+          -1
+        ],
+        [
+          6,
+          -1
+        ]
+      ],
+      "b": -1
+    },
+    {
+      "a": [
+        [
+          0,
+          -1
+        ],
+        [
+          4,
+          -1
+        ],
+        [
+          7,
+          -1
+        ]
+      ],
+      "b": -1
+    }
+  ],
+  "seed": 9000002,
+  "split": "tiny",
+  "tier": "tiny"
+}

@@ -1,0 +1,1 @@
+var 3..3: obj :: output_var = 3;solve minimize obj;

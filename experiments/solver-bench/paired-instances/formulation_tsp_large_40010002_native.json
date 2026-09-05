@@ -1,0 +1,115 @@
+{
+  "family": "native_tsp",
+  "size": 8,
+  "machines": 0,
+  "n": 8,
+  "data": [
+    [
+      0,
+      41,
+      55,
+      17,
+      49,
+      34,
+      55,
+      36
+    ],
+    [
+      41,
+      0,
+      31,
+      43,
+      81,
+      18,
+      87,
+      68
+    ],
+    [
+      55,
+      31,
+      0,
+      39,
+      51,
+      22,
+      57,
+      38
+    ],
+    [
+      17,
+      43,
+      39,
+      0,
+      39,
+      26,
+      45,
+      26
+    ],
+    [
+      49,
+      81,
+      51,
+      39,
+      0,
+      64,
+      11,
+      14
+    ],
+    [
+      34,
+      18,
+      22,
+      26,
+      64,
+      0,
+      70,
+      51
+    ],
+    [
+      55,
+      87,
+      57,
+      45,
+      11,
+      70,
+      0,
+      20
+    ],
+    [
+      36,
+      68,
+      38,
+      26,
+      14,
+      51,
+      20,
+      0
+    ]
+  ],
+  "incumbent": [
+    3,
+    2,
+    7,
+    5,
+    6,
+    1,
+    0,
+    4
+  ],
+  "incumbent_objective": 210,
+  "incumbent_method": "Same semantic incumbent as binary partner; representation conversion only",
+  "id": "formulation_tsp_large_40010002_native",
+  "paired_problem_id": "formulation_tsp_large_40010002",
+  "semantic_problem": "tsp",
+  "kind": "native",
+  "tier": "large",
+  "split": "formulation",
+  "seed": 40010002,
+  "semantic_input_sha256": "eee15abb11b5811e0fd8320e9b721b3b0c7c5515df058d7def0a726e462a7ff5",
+  "label": "tsp paired native large",
+  "construction_ms": 1.5745824202895164,
+  "reference": {
+    "status": "unknown",
+    "input_sha256": "21ff50cf84a2b95d6db650cadfb86e672a94577956a20c7000912feb539cb96f",
+    "method": "No optimum oracle run for paired formulation generation"
+  }
+}

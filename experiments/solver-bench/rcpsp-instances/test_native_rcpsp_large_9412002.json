@@ -1,0 +1,173 @@
+{
+  "family": "native_rcpsp",
+  "kind": "native",
+  "size": 14,
+  "n": 14,
+  "machines": 2,
+  "tier": "large",
+  "seed": 9412002,
+  "data": {
+    "capacities": [
+      5,
+      6
+    ],
+    "tasks": [
+      [
+        4,
+        4,
+        2
+      ],
+      [
+        5,
+        2,
+        5
+      ],
+      [
+        4,
+        4,
+        4
+      ],
+      [
+        5,
+        4,
+        5
+      ],
+      [
+        9,
+        1,
+        1
+      ],
+      [
+        4,
+        4,
+        1
+      ],
+      [
+        9,
+        3,
+        3
+      ],
+      [
+        9,
+        4,
+        5
+      ],
+      [
+        4,
+        4,
+        5
+      ],
+      [
+        5,
+        1,
+        2
+      ],
+      [
+        2,
+        4,
+        3
+      ],
+      [
+        4,
+        1,
+        2
+      ],
+      [
+        7,
+        1,
+        2
+      ],
+      [
+        8,
+        1,
+        1
+      ]
+    ],
+    "precedences": [
+      [
+        0,
+        8
+      ],
+      [
+        1,
+        10
+      ],
+      [
+        1,
+        12
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        3,
+        10
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        6,
+        12
+      ],
+      [
+        6,
+        13
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        10
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        10,
+        11
+      ]
+    ]
+  },
+  "incumbent": [
+    0,
+    4,
+    9,
+    13,
+    18,
+    27,
+    31,
+    40,
+    49,
+    53,
+    58,
+    60,
+    64,
+    71
+  ],
+  "incumbent_objective": 79,
+  "incumbent_method": "serial schedule in deterministic topological order",
+  "reference": {
+    "status": "unknown",
+    "lower_bound": 40,
+    "method": "critical path and renewable resource energy bound; exact only if matched by witness",
+    "input_sha256": "027d298441fe070873ba3c9c52fedc33eeaf2cba96cbd70250db3739aec3a77b"
+  },
+  "construction_ms": 0.1332499086856842,
+  "id": "test_native_rcpsp_large_9412002",
+  "split": "test",
+  "label": "native_rcpsp large seed 9412002"
+}

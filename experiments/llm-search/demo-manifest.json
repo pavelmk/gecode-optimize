@@ -1,0 +1,54 @@
+{
+  "instances": [
+    {
+      "id": "demo_pigeonhole_9_into_8",
+      "family": "coloring",
+      "split": "demo",
+      "seed": null,
+      "label": "deliberately-favorable-Hall-contradiction",
+      "n": 9,
+      "json": "demonstrations/demo_pigeonhole_9_into_8.json",
+      "txt": "demonstrations/demo_pigeonhole_9_into_8.txt"
+    },
+    {
+      "id": "demo_pigeonhole_10_into_9",
+      "family": "coloring",
+      "split": "demo",
+      "seed": null,
+      "label": "deliberately-favorable-Hall-contradiction",
+      "n": 10,
+      "json": "demonstrations/demo_pigeonhole_10_into_9.json",
+      "txt": "demonstrations/demo_pigeonhole_10_into_9.txt"
+    },
+    {
+      "id": "demo_pigeonhole_11_into_10",
+      "family": "coloring",
+      "split": "demo",
+      "seed": null,
+      "label": "deliberately-favorable-Hall-contradiction",
+      "n": 11,
+      "json": "demonstrations/demo_pigeonhole_11_into_10.json",
+      "txt": "demonstrations/demo_pigeonhole_11_into_10.txt"
+    },
+    {
+      "id": "demo_pigeonhole_12_into_11",
+      "family": "coloring",
+      "split": "demo",
+      "seed": null,
+      "label": "deliberately-favorable-Hall-contradiction",
+      "n": 12,
+      "json": "demonstrations/demo_pigeonhole_12_into_11.json",
+      "txt": "demonstrations/demo_pigeonhole_12_into_11.txt"
+    },
+    {
+      "id": "demo_sparse_cycle",
+      "family": "coloring",
+      "split": "demo",
+      "seed": null,
+      "label": "unfavorable-no-cliques",
+      "n": 300,
+      "json": "demonstrations/demo_sparse_cycle.json",
+      "txt": "demonstrations/demo_sparse_cycle.txt"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "c": [
+    16,
+    15,
+    6,
+    6,
+    8,
+    2,
+    3,
+    13,
+    11
+  ],
+  "construction": {
+    "demand": 1,
+    "density": 0.24,
+    "elements": 7
+  },
+  "family": "set_cover",
+  "generator_version": 1,
+  "id": "tiny_set_cover_500005",
+  "incumbent": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0
+  ],
+  "incumbent_matches_optimum": true,
+  "incumbent_method": "cost/new coverage greedy with redundant-column removal",
+  "incumbent_objective": 21,
+  "label": "tiny-exact",
+  "n": 9,
+  "reference": {
+    "assignment": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0
+    ],
+    "input_sha256": "c7aeb9e7d6449860fcafe7e666d682f54e73063972e17f7bf14fbb4cfef988ea",
+    "method": "exact DP over remaining covered-element subsets",
+    "objective": 21,
+    "states_evaluated": 14,
+    "status": "optimal"
+  },
+  "rows": [
+    {
+      "a": [
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          3,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          1,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          0,
+          1
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "b": 1
+    },
+    {
+      "a": [
+        [
+          2,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "b": 1
+    }
+  ],
+  "seed": 500005,
+  "split": "tiny"
+}

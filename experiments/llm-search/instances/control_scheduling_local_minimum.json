@@ -1,0 +1,40 @@
+{
+  "durations": [
+    8,
+    7,
+    6,
+    5,
+    4,
+    3
+  ],
+  "family": "scheduling",
+  "generator_version": 1,
+  "id": "control_scheduling_local_minimum",
+  "initial_assignment": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1
+  ],
+  "label": "coordinated-move-example",
+  "machines": 2,
+  "n": 6,
+  "reference": {
+    "assignment": [
+      0,
+      1,
+      0,
+      1,
+      1,
+      0
+    ],
+    "certificate": "exhaustive enumeration",
+    "objective": 17,
+    "states_examined": 64,
+    "status": "optimal"
+  },
+  "seed": null,
+  "split": "control"
+}
