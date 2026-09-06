@@ -19,6 +19,43 @@ In particular,
 Gecode comes with
 [extensive tutorial and reference documentation](https://gecode.github.io/documentation.html).
 
+## Optional optimization API
+
+The [adaptive size-boundary study](docs/solver-parity/ADAPTIVE-BOUNDARIES.md)
+searches each native version separately under ten-second limits, stopping
+expansion after a failed size and confirming sampled boundaries. It checks
+original witnesses; it does not independently recompute reference optima.
+
+The [seven-category native scaling study](docs/solver-parity/CATEGORY-SCALING.md)
+records 132 fixed ten-second comparisons with independent original-model checks.
+It reports tested sizes and unfinished cases; it is not a general solver-capacity
+or commercial-parity claim.
+
+`Gecode::Optimize` adds a sparse owning model API, numerical HiGHS LP/MILP
+solving, checked solution starts, bounded logical constraints, ordered
+objectives, persistent sessions, numerical conflict diagnostics and strict
+LP/MPS exchange. Owning LP observations, basis starts, numerical rays/Farkas
+evidence and selected-basis sensitivity retain original-model coordinates.
+Scenario batches and bounded continuous convex/concave quadratic models have
+explicit separate contracts. A bounded exact-integer bridge compiles sparse
+models and typed globals to native Gecode; explicit checked LP/frontier search
+and one bounded incumbent neighborhood are also available.
+The numerical component builds independently; both routes build
+through `-DGECODE_ENABLE_OPTIMIZE=ON`. Existing native interfaces remain available.
+See the [build and API guide](docs/solver-parity/README.md),
+[validation record](docs/solver-parity/VALIDATION.md), and
+[implementation roadmap](docs/solver-parity/IMPLEMENTATION.md) for supported
+scope and the native-solver work that remains.
+The native reference documentation includes an Optimize task group and guide
+from [doxygen/optimize.hh](doxygen/optimize.hh). The
+[current integrated checkpoint](docs/solver-parity/NINTH-CHECKPOINT.md) records
+the completed scope; the [benchmark report](docs/solver-parity/BENCHMARKS.md)
+separates correctness, common-workload timing and remaining limitations.
+The [fast regression gate](docs/solver-parity/FAST-REGRESSION.md) checks 35
+required cases within a 28-second whole-command budget using prebuilt binaries.
+These additions do not establish commercial-solver parity. Further feature
+implementation is on hold after the current checkpoint.
+
 ## CMake Build Options
 
 CMake exposes options aligned with the Autoconf build switches.
@@ -44,6 +81,7 @@ Version metadata shared by autoconf and CMake lives in `gecode-version.m4`.
 | `--enable-set-vars` | `GECODE_ENABLE_SET_VARS` | Supported directly | Default `ON` |
 | `--enable-float-vars` | `GECODE_ENABLE_FLOAT_VARS` | Supported directly | Default `ON` |
 | `--enable-minimodel` | `GECODE_ENABLE_MINIMODEL` | Supported directly | Default `ON` |
+| None | `GECODE_ENABLE_OPTIMIZE` | CMake-only | Optional numerical optimization component; default `OFF`; standalone build also available |
 | `--enable-driver` | `GECODE_ENABLE_DRIVER` | Supported directly | Default `ON` |
 | `--enable-flatzinc` | `GECODE_ENABLE_FLATZINC` | Supported directly | Default `ON` |
 | `--enable-mpfr` | `GECODE_ENABLE_MPFR` | Supported directly | Default `ON`; uses `find_package(MPFR)` |

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "purpose": "Explicit benchmark presets for the accepted current native solver",
+  "selected_from_pilot": {
+    "report": "build/configured-bench/pilot/report.json",
+    "sha256": "ab5ad4b31502a48511ec18ae7c6165d63cbb7331e5f8419c0157544f8c83feb8",
+    "runs": 42
+  },
+  "selection_rule": "Choose effective settings from the structural audit and exploratory pilot; prefer simpler configurations when optional work adds overhead. Frozen before adaptive measurement. No per-instance fastest-route selection.",
+  "families": {
+    "knapsack": {
+      "route": "native",
+      "outside_dp_route": "lp-reliability",
+      "label": "Exact capacity DP; LP + reliability above its cap",
+      "rationale": "Preserve the fast DP on admitted models. Larger tables use updated checked LP bounds, verified covers and bounded reliability branching."
+    },
+    "assignment": {
+      "route": "lp-root",
+      "label": "Checked LP bounds at the root",
+      "rationale": "One root LP solved the pilot; extra LP updates, cuts and probes added work."
+    },
+    "facility_location": {
+      "route": "lp-updated",
+      "label": "Checked LP bounds updated during search",
+      "rationale": "Updates every four bound changes improved the pilot. The bounded cover check emits cuts only when found; its unit rows yielded none."
+    },
+    "bin_packing": {
+      "route": "lp-root",
+      "label": "Checked LP bounds at the root",
+      "rationale": "Root bounds solved the pilot quickly. Extra cover rounds and probes increased solve time on the selection case."
+    },
+    "production": {
+      "route": "lp-reliability",
+      "label": "Updated LP bounds, covers and reliability branching",
+      "rationale": "Updated bounds and bounded probes reduced the pilot from a timeout to about 43 ms. Covers are checked against original rows."
+    },
+    "native_tsp": {
+      "route": "native",
+      "label": "Native circuit and table constraints",
+      "rationale": "Binary probes and Hamming neighborhoods do not apply to these integer variables; LP omits the global constraints."
+    },
+    "weighted_queens": {
+      "route": "native",
+      "label": "Native distinct and table constraints",
+      "rationale": "Preserve global propagation. The available new branching and neighborhood rules target binary variables."
+    }
+  },
+  "excluded": {
+    "neighborhoods": "The bounded radius-four candidate was measured, but did not improve total pilot solve time; every attempt and result remains in the pilot.",
+    "presolve": "The existing original-model postsolve API does not transfer optimal status or global bound, so proof-preserving composition is not claimed.",
+    "learning": "No production learning runtime has been implemented.",
+    "numerical_backend": "This comparison remains native Gecode; it does not substitute the numerical HiGHS MILP route."
+  }
+}

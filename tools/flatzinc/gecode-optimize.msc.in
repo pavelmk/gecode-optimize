@@ -1,0 +1,15 @@
+{
+  "id": "org.gecode.optimize.experimental",
+  "name": "Gecode Optimize (experimental)",
+  "version": "@GECODE_VERSION@",
+  "mznlib": "@GECODE_OPTIMIZE_MSC_MZNLIB@",
+  "executable": ["@GECODE_OPTIMIZE_MSC_EXECUTABLE@", "--minizinc"],
+  "tags": ["cp", "int", "experimental"],
+  "stdFlags": ["-t"],
+  "extraFlags": [],
+  "inputType": "FZN",
+  "needsSolns2Out": true,
+  "needsMznExecutable": false,
+  "needsStdlibDir": false,
+  "isGUIApplication": false
+}

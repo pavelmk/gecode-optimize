@@ -1,0 +1,49 @@
+name: Pending Windows FAST containment
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'experiments/optimize/*containment*.py'
+      - 'experiments/optimize/*fast_regression.py'
+      - '.github/workflows/fast-windows-containment.yml'
+  push:
+    branches: [main, 'release/**']
+    paths:
+      - 'experiments/optimize/*containment*.py'
+      - 'experiments/optimize/*fast_regression.py'
+      - '.github/workflows/fast-windows-containment.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: cmd
+
+jobs:
+  containment:
+    name: Real Job Objects / Python ${{ matrix.architecture }}
+    runs-on: windows-2022
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [x64, x86]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: ${{ matrix.architecture }}
+      - name: Record runtime and verify architecture
+        run: >-
+          python -c "import os,platform,struct; print(platform.platform(),platform.python_version(),struct.calcsize('P')*8); assert os.name=='nt'; assert struct.calcsize('P')=={'x64':8,'x86':4}['${{ matrix.architecture }}']"
+      - name: Require actual Job Object and failure-path coverage
+        run: python experiments/optimize/test_process_containment.py --require-windows -v
+      - name: Exercise Windows runner limits and the production Unsupported gate
+        run: python experiments/optimize/test_fast_regression.py -v
+      # This workflow supplies containment evidence only. It deliberately cannot
+      # enable the production runner, and does not assert a 21-case timing result.

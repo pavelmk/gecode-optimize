@@ -1957,6 +1957,20 @@ DOXYGEN_MIN_VERSION = 1.17.0
 .PHONY: doc
 
 DOCSRC_NOTGENERATED = \
+	doxygen/optimize.hh \
+	docs/solver-parity/BENCHMARKS.md \
+	docs/solver-parity/ALGORITHMIC-CHECKPOINT.md \
+	docs/solver-parity/CAPACITY-SCALING.md \
+	docs/solver-parity/CATEGORY-SCALING.md \
+	docs/solver-parity/ADAPTIVE-BOUNDARIES.md \
+	docs/solver-parity/CONFIGURED-BENCHMARK.md \
+	docs/solver-parity/checkpoints/benchmark-page.json \
+	docs/solver-parity/checkpoints/native-algorithms.json \
+	docs/solver-parity/checkpoints/capacity-scaling.json \
+	docs/solver-parity/checkpoints/category-scaling.json \
+	docs/solver-parity/checkpoints/boundaries.json \
+	docs/solver-parity/checkpoints/configured.json \
+	docs/solver-parity/checkpoints/ninth.json \
 	misc/doxygen/back.png misc/doxygen/footer.html \
 	misc/doxygen/gecode-logo-100.png \
 	misc/doxygen/stylesheet.css \
@@ -2016,6 +2030,13 @@ doc: mkcompiledirs $(ALLGECODEHDR:%=$(top_srcdir)/%) $(VARIMPHDR) \
 	cp -f $(top_srcdir)/misc/doxygen/back.png \
 	$(top_srcdir)/misc/doxygen/gecode-logo-100.png doc/html
 	doxygen doxygen.conf.use
+	mkdir -p doc/html/checkpoints
+	cp -f "$(top_srcdir)/docs/solver-parity/checkpoints/benchmark-page.json" \
+	  "$(top_srcdir)/docs/solver-parity/checkpoints/native-algorithms.json" \
+	  "$(top_srcdir)/docs/solver-parity/checkpoints/capacity-scaling.json" \
+	  "$(top_srcdir)/docs/solver-parity/checkpoints/category-scaling.json" \
+	  "$(top_srcdir)/docs/solver-parity/checkpoints/boundaries.json" \
+	  "$(top_srcdir)/docs/solver-parity/checkpoints/ninth.json" doc/html/checkpoints
 
 ifeq "@ENABLEDOCSEARCH@" "yes"
 	# Work around a doxygen bug (a missing div screws up the layout)

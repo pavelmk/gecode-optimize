@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "purpose": "W10 standalone external-propagation interface experiment",
+  "name": "CaDiCaL",
+  "version": "3.0.1",
+  "repository": "https://github.com/arminbiere/cadical.git",
+  "tag": "rel-3.0.1",
+  "commit": "c60730422e758ef1cebe7aeddf2dda31c996bf04",
+  "license": "MIT",
+  "automatic_download": false,
+  "linked_into_gecode": false,
+  "included_in_wheels": false,
+  "note": "The VERSION/build header identify 3.0.1; the upstream public header version macros still identify 3.0.0. Pin the commit rather than trusting those macros."
+}

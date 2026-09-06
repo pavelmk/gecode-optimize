@@ -18,6 +18,7 @@
 #include <limits>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -30,8 +31,11 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
     std::int64_t lower_bound = 0;
     /// Diagnostic only: never rounded or used to prune the CP search.
     double lp_objective = std::numeric_limits<double>::quiet_NaN();
-    /// Optional exact residual data for conditional binary bounds.
+    /// Optional exact residual data for binary or explicit integer interval bounds.
     std::shared_ptr<const LpCertificate::Certificate> certificate;
+    /// Copied numerical selection hint only; never an integer feasible witness.
+    /// Absent unless explicitly requested and HiGHS supplies finite valid values.
+    std::optional<std::vector<double>> primal_suggestion;
   };
 
   struct Stats {
@@ -44,6 +48,8 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
     std::uint64_t certificate_evaluations = 0;
     std::uint64_t conditional_checks = 0;
     std::uint64_t variable_fixings = 0;
+    /// Integer variables whose interval was tightened, including assignments.
+    std::uint64_t variable_bound_tightenings = 0;
   };
 
   /**
@@ -54,9 +60,12 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
    * a hot start, and is never treated as a certificate for another node.
    * This object is deliberately not copied with Gecode spaces.
    */
-  class Backend {
-  public:
-    const LinearModel model;
+  namespace Detail {
+  class LpWorkspace {
+    // Borrowed from the owning, nonmovable backend. Never shared independently.
+    const SparseLinearModel& model;
+    const std::vector<std::int64_t> original_lower_,original_upper_;
+    const bool binary_;
 
   private:
     mutable std::mutex mutex_;
@@ -74,9 +83,9 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
       const std::size_t limit =
         static_cast<std::size_t>(std::numeric_limits<HighsInt>::max());
       if ((n > limit) || (m > limit) ||
-          ((m != 0) && (n > std::numeric_limits<std::size_t>::max()/m)) ||
-          (model.a.size() != m*n) || (model.a.size() > limit))
-        throw std::invalid_argument("LP backend: invalid dense dimensions");
+          (model.a.size() > limit) ||
+          !LpCertificate::valid_sparse(model.matrix(),m,n))
+        throw std::invalid_argument("LP backend: invalid canonical CSR dimensions/indices");
       // These integers are represented exactly as doubles in the LP.
       // Restrict the prototype's numerical range; the certificate still
       // checks every arithmetic operation independently.
@@ -87,8 +96,17 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
     }
 
   public:
-    explicit Backend(LinearModel input) : model(std::move(input)) {
+    LpWorkspace(const SparseLinearModel& input,
+                std::vector<std::int64_t> lower,std::vector<std::int64_t> upper,bool binary)
+      : model(input),original_lower_(std::move(lower)),original_upper_(std::move(upper)),binary_(binary) {
       validate_model();
+      if (original_lower_.size()!=model.c.size() || original_upper_.size()!=model.c.size())
+        throw std::invalid_argument("LP backend: initial bound dimensions");
+      for (std::size_t j=0;j<model.c.size();++j)
+        if (original_lower_[j]>original_upper_[j] ||
+            original_lower_[j]<Int::Limits::min || original_upper_[j]>Int::Limits::max ||
+            (binary_ && (original_lower_[j]<0 || original_upper_[j]>1)))
+          throw std::invalid_argument("LP backend: unsupported initial integer bounds");
       require_ok(highs_.setOptionValue("output_flag", false), "output option");
       require_ok(highs_.setOptionValue("threads", 1), "threads option");
       require_ok(highs_.setOptionValue("parallel", "off"), "parallel option");
@@ -99,10 +117,10 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
                  "iteration limit");
 
       const std::size_t n = model.c.size(), m = model.b.size();
-      lower_.assign(n, 0.0);
-      upper_.assign(n, 1.0);
-      if ((n == 0) || (m == 0))
-        return; // Empty boxes/row sets are certified without an LP call.
+      lower_.assign(original_lower_.begin(),original_lower_.end());
+      upper_.assign(original_upper_.begin(),original_upper_.end());
+      if ((n == 0) || (m == 0) || model.a.empty())
+        return; // Zero matrices use the checked box bound; native rows enforce feasibility.
 
       HighsLp lp;
       lp.num_col_ = static_cast<HighsInt>(n);
@@ -116,31 +134,21 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
       lp.a_matrix_.format_ = MatrixFormat::kRowwise;
       lp.a_matrix_.num_col_ = lp.num_col_;
       lp.a_matrix_.num_row_ = lp.num_row_;
-      lp.a_matrix_.start_.reserve(m+1);
-      // HiGHS already initializes start_ with a zero; replace it rather
-      // than appending another empty first row.
-      lp.a_matrix_.start_.assign(1, 0);
-      for (std::size_t i=0; i<m; ++i) {
-        for (std::size_t j=0; j<n; ++j) {
-          const std::int64_t value = model.a[i*n+j];
-          if (value != 0) {
-            lp.a_matrix_.index_.push_back(static_cast<HighsInt>(j));
-            lp.a_matrix_.value_.push_back(static_cast<double>(value));
-          }
-        }
-        lp.a_matrix_.start_.push_back(
-          static_cast<HighsInt>(lp.a_matrix_.value_.size()));
-      }
+      // Copy CSR directly: O(rows+nnz), never a rows*columns scan.
+      // Replace HiGHS' initial zero offset instead of appending another one.
+      lp.a_matrix_.start_.assign(model.row_start.begin(),model.row_start.end());
+      lp.a_matrix_.index_.assign(model.column.begin(),model.column.end());
+      lp.a_matrix_.value_.assign(model.a.begin(),model.a.end());
       // integrality_ remains empty: HiGHS only solves continuous LPs.
       require_ok(highs_.passModel(std::move(lp)), "model construction");
     }
 
-    Backend(const Backend&) = delete;
-    Backend& operator=(const Backend&) = delete;
+    LpWorkspace(const LpWorkspace&) = delete;
+    LpWorkspace& operator=(const LpWorkspace&) = delete;
 
     BoundResult bound(const std::vector<std::int64_t>& lower,
                       const std::vector<std::int64_t>& upper,
-                      bool retain_certificate=false) {
+                      bool retain_certificate=false,bool retain_primal=false) {
       std::lock_guard<std::mutex> lock(mutex_);
       BoundResult result;
       const std::size_t n = model.c.size(), m = model.b.size();
@@ -149,7 +157,7 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
         return result;
       }
       for (std::size_t j=0; j<n; ++j) {
-        if ((lower[j] < 0) || (upper[j] > 1) || (lower[j] > upper[j])) {
+        if (lower[j]<original_lower_[j] || upper[j]>original_upper_[j] || lower[j]>upper[j]) {
           ++stats_.rejected;
           return result;
         }
@@ -158,7 +166,7 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
       }
 
       std::vector<double> duals(m, 0.0);
-      if ((n != 0) && (m != 0)) {
+      if ((n != 0) && (m != 0) && !model.a.empty()) {
         using Clock = std::chrono::steady_clock;
         const auto start = Clock::now();
         // HiGHS accumulates run time across reoptimizations. Add this
@@ -179,6 +187,11 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
         if (ran && (highs_.getModelStatus() == HighsModelStatus::kInfeasible))
           ++stats_.infeasible_status;
         const HighsSolution& solution = highs_.getSolution();
+        if (retain_primal && ran && status != HighsStatus::kError &&
+            solution.value_valid && solution.col_value.size()==n &&
+            std::all_of(solution.col_value.begin(),solution.col_value.end(),
+                        [](double value){return std::isfinite(value);}))
+          result.primal_suggestion=solution.col_value;
         if (!ran || (status == HighsStatus::kError) || !solution.dual_valid ||
             (solution.row_dual.size() != m)) {
           ++stats_.rejected;
@@ -197,14 +210,17 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
 
       if (retain_certificate) {
         auto certificate=std::make_shared<LpCertificate::Certificate>();
-        result.valid=LpCertificate::prepare(model.a,model.b,model.c,duals,*certificate) &&
-          certificate->lower_bound(lower,upper,result.lower_bound);
+        result.valid=LpCertificate::prepare(model.matrix(),model.b,model.c,duals,*certificate) &&
+          (binary_ ? certificate->lower_bound(lower,upper,result.lower_bound)
+                   : certificate->lower_bound_integer(lower,upper,result.lower_bound));
         if (result.valid)
           result.certificate=std::move(certificate);
       } else {
         // Preserve the original bound-only path unless explicitly requested.
-        result.valid = LpCertificate::lower_bound(
-          model.a, model.b, model.c, lower, upper, duals, result.lower_bound);
+        result.valid = binary_ ? LpCertificate::lower_bound(
+          model.matrix(), model.b, model.c, lower, upper, duals, result.lower_bound)
+          : LpCertificate::integer_lower_bound(
+          model.matrix(), model.b, model.c, lower, upper, duals, result.lower_bound);
       }
       if (result.valid)
         ++stats_.valid_bounds;
@@ -221,10 +237,90 @@ namespace Gecode { namespace Experimental { namespace LpRelaxation {
       stats_.variable_fixings+=variable_fixings;
     }
 
+    void record_integer_filtering(std::uint64_t checks,std::uint64_t tightened,std::uint64_t fixed) {
+      std::lock_guard<std::mutex> lock(mutex_);
+      ++stats_.certificate_evaluations;
+      stats_.conditional_checks+=checks;
+      stats_.variable_bound_tightenings+=tightened;
+      stats_.variable_fixings+=fixed;
+    }
+
     Stats statistics() const {
       std::lock_guard<std::mutex> lock(mutex_);
       return stats_;
     }
+  };
+
+  } // namespace Detail
+
+  /// Existing strict binary workspace; public sparse model remains immutable.
+  class SparseBackend {
+  public:
+    const SparseLinearModel model;
+  private:
+    Detail::LpWorkspace workspace_;
+  public:
+    explicit SparseBackend(SparseLinearModel input)
+      : model(std::move(input)),workspace_(model,
+          std::vector<std::int64_t>(model.c.size(),0),std::vector<std::int64_t>(model.c.size(),1),true) {}
+    virtual ~SparseBackend() = default;
+    SparseBackend(const SparseBackend&) = delete;
+    SparseBackend& operator=(const SparseBackend&) = delete;
+    BoundResult bound(const std::vector<std::int64_t>& lower,const std::vector<std::int64_t>& upper,
+                      bool retain_certificate=false) {
+      return workspace_.bound(lower,upper,retain_certificate);
+    }
+    BoundResult bound(const std::vector<std::int64_t>& lower,const std::vector<std::int64_t>& upper,
+                      bool retain_certificate,bool retain_primal) {
+      return workspace_.bound(lower,upper,retain_certificate,retain_primal);
+    }
+    void record_filtering(std::uint64_t checks,std::uint64_t fixings) {workspace_.record_filtering(checks,fixings);}
+    Stats statistics() const {return workspace_.statistics();}
+  };
+
+  /** Explicit integer backend, deliberately unrelated to SparseBackend so an
+   * integer model cannot accidentally enter binary posting through an upcast.
+   * Each bound call must stay within the immutable original integer domains.
+   */
+  class BoundedIntegerBackend {
+  public:
+    const BoundedIntegerModel model;
+  private:
+    static const SparseLinearModel& checked(const BoundedIntegerModel& input) {
+      validate_integer_model(input);return input.linear;
+    }
+    Detail::LpWorkspace workspace_;
+  public:
+    explicit BoundedIntegerBackend(BoundedIntegerModel input)
+      : model(std::move(input)),workspace_(checked(model),model.lower,model.upper,false) {}
+    BoundedIntegerBackend(const BoundedIntegerBackend&) = delete;
+    BoundedIntegerBackend& operator=(const BoundedIntegerBackend&) = delete;
+    BoundResult bound(const std::vector<std::int64_t>& lower,const std::vector<std::int64_t>& upper,
+                      bool retain_certificate=false) {
+      return workspace_.bound(lower,upper,retain_certificate);
+    }
+    BoundResult bound(const std::vector<std::int64_t>& lower,const std::vector<std::int64_t>& upper,
+                      bool retain_certificate,bool retain_primal) {
+      return workspace_.bound(lower,upper,retain_certificate,retain_primal);
+    }
+    void record_filtering(std::uint64_t checks,std::uint64_t tightened,std::uint64_t fixings) {
+      workspace_.record_integer_filtering(checks,tightened,fixings);
+    }
+    Stats statistics() const {return workspace_.statistics();}
+  };
+
+  /** Dense-compatible adapter. The public immutable dense model is preserved.
+   * Its current constructor input is copied into CSR once; repeated bounds and
+   * propagation use the base's immutable sparse model. Use SparseBackend to
+   * avoid retaining dense storage altogether.
+   */
+  class Backend : public SparseBackend {
+  public:
+    const LinearModel model;
+    explicit Backend(LinearModel input)
+      : SparseBackend(sparse_model(input)), model(std::move(input)) {}
+    Backend(const Backend&) = delete;
+    Backend& operator=(const Backend&) = delete;
   };
 
 }}}

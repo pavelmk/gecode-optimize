@@ -119,6 +119,7 @@ option(GECODE_ENABLE_SET_VARS "Build set variables module" ON)
 option(GECODE_ENABLE_FLOAT_VARS "Build float variables module" ON)
 option(GECODE_ENABLE_MINIMODEL "Build minimodel module" ON)
 option(GECODE_ENABLE_LP_RELAXATION "Enable certified LP relaxation module (requires HiGHS)" OFF)
+option(GECODE_ENABLE_OPTIMIZE "Build additive numerical optimization API" OFF)
 option(GECODE_ENABLE_DRIVER "Build driver module" ON)
 option(GECODE_ENABLE_FLATZINC "Build FlatZinc module" ON)
 
@@ -1073,11 +1074,36 @@ if(DOXYGEN_FOUND AND GECODE_UV_EXECUTABLE)
             ${CMAKE_CURRENT_SOURCE_DIR}/misc/doxygen/gecode-logo-100.png
             ${CMAKE_CURRENT_BINARY_DIR}/doc/html
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doxygen.conf.use
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+            ${CMAKE_CURRENT_BINARY_DIR}/doc/html/checkpoints
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/benchmark-page.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/native-algorithms.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/capacity-scaling.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/category-scaling.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/boundaries.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/configured.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/ninth.json
+            ${CMAKE_CURRENT_BINARY_DIR}/doc/html/checkpoints
     COMMAND ${CMAKE_COMMAND}
             "-DGECODE_DOXYGEN_HTML_DIR=${CMAKE_CURRENT_BINARY_DIR}/doc/html"
             -P ${GECODE_DOXYGEN_COMPAT_ALIASES}
     DEPENDS gecode-varimp-gen
             ${CMAKE_CURRENT_BINARY_DIR}/doxygen.hh
+            ${CMAKE_CURRENT_SOURCE_DIR}/doxygen/optimize.hh
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/BENCHMARKS.md
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/ALGORITHMIC-CHECKPOINT.md
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/CAPACITY-SCALING.md
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/CATEGORY-SCALING.md
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/ADAPTIVE-BOUNDARIES.md
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/CONFIGURED-BENCHMARK.md
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/benchmark-page.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/native-algorithms.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/capacity-scaling.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/category-scaling.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/boundaries.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/configured.json
+            ${CMAKE_CURRENT_SOURCE_DIR}/docs/solver-parity/checkpoints/ninth.json
             ${CMAKE_CURRENT_BINARY_DIR}/doxygen.conf.use
             ${CMAKE_CURRENT_BINARY_DIR}/header.html
             ${CMAKE_CURRENT_SOURCE_DIR}/misc/doxygen/footer.html
@@ -1347,9 +1373,16 @@ if(GECODE_ENABLE_LP_RELAXATION)
   list(APPEND GECODE_EXPORT_TARGETS gecodelp)
 endif()
 
+if(GECODE_ENABLE_OPTIMIZE)
+  add_subdirectory(gecode/optimize)
+  list(APPEND GECODE_LIBRARY_COMPONENTS optimize)
+  list(APPEND GECODE_INSTALL_TARGETS gecodeoptimize gecodeoptimize_c)
+  list(APPEND GECODE_EXPORT_TARGETS gecodeoptimize gecodeoptimize_c)
+endif()
+
 # Compatibility aggregate target for downstream projects expecting Gecode::gecode.
 add_library(gecode INTERFACE)
-foreach(component IN ITEMS support kernel search int set float minimodel driver flatzinc gist lp)
+foreach(component IN ITEMS support kernel search int set float minimodel driver flatzinc gist lp optimize)
   if(TARGET gecode${component})
     target_link_libraries(gecode INTERFACE gecode${component})
   endif()
@@ -1372,6 +1405,60 @@ if(GECODE_ENABLE_FLATZINC)
       INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
   endif()
   list(APPEND GECODE_INSTALL_TARGETS fzn-gecode)
+  if(TARGET gecodeoptimize)
+    # Separate executable; experimental registration is explicitly opt-in below.
+    add_executable(fzn-gecode-optimize tools/flatzinc/fzn-gecode-optimize.cpp)
+    target_link_libraries(fzn-gecode-optimize PRIVATE gecodeflatzinc gecodeoptimize)
+    if(APPLE)
+      set_target_properties(fzn-gecode-optimize PROPERTIES
+        INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}")
+    elseif(UNIX)
+      set_target_properties(fzn-gecode-optimize PROPERTIES
+        INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
+    endif()
+    list(APPEND GECODE_INSTALL_TARGETS fzn-gecode-optimize)
+  endif()
+endif()
+
+option(GECODE_OPTIMIZE_MINIZINC_REGISTRATION "Build/install the explicit experimental MiniZinc solver registration" OFF)
+set(GECODE_OPTIMIZE_MINIZINC_EXECUTABLE "" CACHE FILEPATH "Optional pinned MiniZinc compiler for experimental registration tests (no download)")
+if(GECODE_OPTIMIZE_MINIZINC_REGISTRATION)
+  if(NOT TARGET fzn-gecode-optimize OR NOT GECODE_OPTIMIZE_WITH_NATIVE)
+    message(FATAL_ERROR "Experimental MiniZinc registration requires the optimization FlatZinc driver and native backend")
+  endif()
+  if(IS_ABSOLUTE "${CMAKE_INSTALL_BINDIR}" OR IS_ABSOLUTE "${CMAKE_INSTALL_DATADIR}")
+    message(FATAL_ERROR "Relocatable experimental MiniZinc registration requires relative CMAKE_INSTALL_BINDIR and CMAKE_INSTALL_DATADIR")
+  endif()
+  set(_gecode_optimize_msc_template "${PROJECT_SOURCE_DIR}/tools/flatzinc/gecode-optimize.msc.in")
+  set(_gecode_optimize_msc_encoder "${PROJECT_SOURCE_DIR}/tools/flatzinc/configure-optimize-msc.cmake")
+  set(_gecode_optimize_build_msc "${PROJECT_BINARY_DIR}/minizinc/$<CONFIG>/gecode-optimize.msc")
+  # Target paths are expanded before the encoder escapes them as JSON. This
+  # also supports multi-configuration builds and source/build paths with quotes.
+  add_custom_target(gecode-optimize-minizinc-config ALL
+    COMMAND "${CMAKE_COMMAND}"
+      "-DTEMPLATE=${_gecode_optimize_msc_template}" "-DVERSION=${GECODE_VERSION}"
+      "-DDRIVER=$<TARGET_FILE:fzn-gecode-optimize>"
+      "-DMZNLIB=${PROJECT_SOURCE_DIR}/tools/flatzinc/mznlib-optimize"
+      "-DOUTPUT=${_gecode_optimize_build_msc}" -P "${_gecode_optimize_msc_encoder}"
+    DEPENDS fzn-gecode-optimize "${_gecode_optimize_msc_template}" "${_gecode_optimize_msc_encoder}"
+    VERBATIM)
+  set(_gecode_optimize_msc_destination "${CMAKE_INSTALL_DATADIR}/minizinc/solvers")
+  file(RELATIVE_PATH _gecode_optimize_installed_driver "/${_gecode_optimize_msc_destination}"
+    "/${CMAKE_INSTALL_BINDIR}/fzn-gecode-optimize${CMAKE_EXECUTABLE_SUFFIX}")
+  file(RELATIVE_PATH _gecode_optimize_installed_library "/${_gecode_optimize_msc_destination}"
+    "/${CMAKE_INSTALL_DATADIR}/minizinc/gecode-optimize-experimental")
+  set(_gecode_optimize_install_msc "${PROJECT_BINARY_DIR}/minizinc/install/gecode-optimize.msc")
+  execute_process(COMMAND "${CMAKE_COMMAND}"
+    "-DTEMPLATE=${_gecode_optimize_msc_template}" "-DVERSION=${GECODE_VERSION}"
+    "-DDRIVER=${_gecode_optimize_installed_driver}" "-DMZNLIB=${_gecode_optimize_installed_library}"
+    "-DOUTPUT=${_gecode_optimize_install_msc}" -P "${_gecode_optimize_msc_encoder}"
+    COMMAND_ERROR_IS_FATAL ANY)
+  if(GECODE_INSTALL)
+    install(FILES "${_gecode_optimize_install_msc}" DESTINATION "${_gecode_optimize_msc_destination}")
+    install(DIRECTORY tools/flatzinc/mznlib-optimize/
+      DESTINATION "${CMAKE_INSTALL_DATADIR}/minizinc/gecode-optimize-experimental"
+      FILES_MATCHING PATTERN "*.mzn")
+  endif()
 endif()
 
 if(BUILD_TESTING)
@@ -1393,6 +1480,61 @@ if(BUILD_TESTING)
   endif()
 
   if(GECODE_ENABLE_FLATZINC)
+    if(NOT TARGET Threads::Threads)
+      find_package(Threads REQUIRED)
+    endif()
+    add_executable(gecode-flatzinc-capture-test test/flatzinc-capture/capture.cpp)
+    target_compile_features(gecode-flatzinc-capture-test PRIVATE cxx_std_17)
+    target_link_libraries(gecode-flatzinc-capture-test PRIVATE gecodeflatzinc Threads::Threads)
+    if(MSVC)
+      target_compile_options(gecode-flatzinc-capture-test PRIVATE /UNDEBUG)
+    else()
+      target_compile_options(gecode-flatzinc-capture-test PRIVATE -UNDEBUG)
+    endif()
+    add_test(NAME gecode-flatzinc-capture COMMAND gecode-flatzinc-capture-test)
+    set_tests_properties(gecode-flatzinc-capture PROPERTIES TIMEOUT 120)
+    if(TARGET gecodeoptimize AND GECODE_OPTIMIZE_BUILD_TESTS)
+      add_executable(optimize-flatzinc-driver-test test/optimize/flatzinc_driver.cpp)
+      target_link_libraries(optimize-flatzinc-driver-test PRIVATE gecodeflatzinc gecodeoptimize)
+      if(GECODE_OPTIMIZE_WITH_NATIVE OR GECODE_OPTIMIZE_WITH_HIGHS)
+        target_compile_definitions(optimize-flatzinc-driver-test PRIVATE GECODE_FLATZINC_DRIVER_EXPECT_BACKEND=1)
+      endif()
+      if(MSVC)
+        target_compile_options(optimize-flatzinc-driver-test PRIVATE /UNDEBUG)
+      else()
+        target_compile_options(optimize-flatzinc-driver-test PRIVATE -UNDEBUG)
+      endif()
+      add_test(NAME optimize-flatzinc-driver COMMAND optimize-flatzinc-driver-test)
+      set_tests_properties(optimize-flatzinc-driver PROPERTIES TIMEOUT 120)
+      find_package(Python3 3.9 COMPONENTS Interpreter QUIET)
+      if(Python3_Interpreter_FOUND AND GECODE_OPTIMIZE_WITH_NATIVE)
+        if(GECODE_OPTIMIZE_WITH_HIGHS)
+          set(_gecode_cli_highs available)
+        else()
+          set(_gecode_cli_highs unavailable)
+        endif()
+        add_test(NAME optimize-flatzinc-driver-cli COMMAND "${CMAKE_COMMAND}" -E env
+          "PYTHONDONTWRITEBYTECODE=1" "${Python3_EXECUTABLE}"
+          "${PROJECT_SOURCE_DIR}/test/optimize/flatzinc_driver_cli.py"
+          --binary "$<TARGET_FILE:fzn-gecode-optimize>" --highs "${_gecode_cli_highs}")
+        set_tests_properties(optimize-flatzinc-driver-cli PROPERTIES TIMEOUT 90)
+        add_test(NAME optimize-minizinc-configure COMMAND "${CMAKE_COMMAND}" -E env
+          "PYTHONDONTWRITEBYTECODE=1" "${Python3_EXECUTABLE}" -B
+          "${PROJECT_SOURCE_DIR}/test/optimize/minizinc_configure.py" --cmake "${CMAKE_COMMAND}")
+        set_tests_properties(optimize-minizinc-configure PROPERTIES TIMEOUT 60)
+        if(GECODE_OPTIMIZE_MINIZINC_REGISTRATION AND GECODE_OPTIMIZE_MINIZINC_EXECUTABLE)
+          if(NOT EXISTS "${GECODE_OPTIMIZE_MINIZINC_EXECUTABLE}")
+            message(FATAL_ERROR "The explicitly configured MiniZinc test compiler is missing")
+          endif()
+          add_test(NAME optimize-minizinc-registration COMMAND "${CMAKE_COMMAND}" -E env
+            "PYTHONDONTWRITEBYTECODE=1" "${Python3_EXECUTABLE}" -B
+            "${PROJECT_SOURCE_DIR}/test/optimize/minizinc_registration.py"
+            --minizinc "${GECODE_OPTIMIZE_MINIZINC_EXECUTABLE}"
+            --binary "$<TARGET_FILE:fzn-gecode-optimize>" --registration "${_gecode_optimize_build_msc}")
+          set_tests_properties(optimize-minizinc-registration PROPERTIES TIMEOUT 150)
+        endif()
+      endif()
+    endif()
     add_executable(gecode-test-blackbox-exec
       ${GECODE_TEST_BLACKBOX_EXEC_SOURCE})
     target_compile_features(gecode-test-blackbox-exec PRIVATE cxx_std_17)
@@ -1654,12 +1796,23 @@ if(GECODE_INSTALL)
       PATTERN "flatzinc/blackbox.hh" EXCLUDE
       PATTERN "flatzinc/blackbox-backend.hh" EXCLUDE
       PATTERN "flatzinc/blackbox-process.hh" EXCLUDE
+      PATTERN "optimize/quadratic_bound.hpp" EXCLUDE
+      PATTERN "optimize/lp_observations_detail.hpp" EXCLUDE
+      PATTERN "optimize/lp_basis_detail.hpp" EXCLUDE
+      PATTERN "optimize/learning_reasons_detail.hpp" EXCLUDE
+      PATTERN "optimize/lp_sensitivity_backend.hpp" EXCLUDE
+      PATTERN "optimize/lp_sensitivity_highs_detail.hpp" EXCLUDE
+      PATTERN "optimize/native_regular_limits.hpp" EXCLUDE
       PATTERN "exampleplugin" EXCLUDE
       PATTERN "standalone-example" EXCLUDE
       PATTERN "abi*" EXCLUDE)
 
   install(FILES ${PROJECT_BINARY_DIR}/gecode/support/config.hpp
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gecode/support/)
+  if(GECODE_ENABLE_OPTIMIZE)
+    install(FILES gecode/optimize/c_api.h
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gecode/optimize/)
+  endif()
   if(GECODE_REGENERATE_VARIMP)
     install(FILES ${GECODE_VAR_TYPE_HPP} ${GECODE_VAR_IMP_HPP}
       DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gecode/kernel/)

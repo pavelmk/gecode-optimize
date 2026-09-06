@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "backend": "HiGHS",
+  "version": "1.15.1",
+  "repository": "https://github.com/ERGO-Code/HiGHS.git",
+  "commit": "04024d701f79feb8e2f18bc3df0dffc04ef05088",
+  "minimum_cmake_package_version": "1.15",
+  "tested_source_location_relative_to_checkout": "../deps/HiGHS",
+  "automatic_download": false,
+  "note": "Pinned source is a separate independent copy; no dependency files in the original benchmark workspace are edited. Newer compatible installed versions are allowed but are not covered by these recorded tests."
+}

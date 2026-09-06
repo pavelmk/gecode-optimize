@@ -463,6 +463,8 @@ WARN_LOGFILE           = doxygen.log
 # with spaces.
 
 INPUT                  = doxygen.hh \
+                         "@top_srcdir@/doxygen/optimize.hh" \
+                         "@top_srcdir@/docs/solver-parity" \
                          license.hh \
                          stat.hh \
                          changelog.hh \
@@ -481,7 +483,8 @@ INPUT                  = doxygen.hh \
 FILE_PATTERNS          = *.h \
                          *.hh \
                          *.hpp \
-                         *.cpp
+                         *.cpp \
+                         *.md
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
 # should be searched for input files as well. Possible values are YES and NO.
@@ -520,6 +523,13 @@ EXCLUDE_PATTERNS       = \
 	*moc_* \
 	*gecode/gist/standalone-example/* \
 	*gecode/third-party/* \
+	*gecode/optimize/quadratic_bound.hpp \
+	*gecode/optimize/lp_observations_detail.hpp \
+	*gecode/optimize/lp_basis_detail.hpp \
+	*gecode/optimize/learning_reasons_detail.hpp \
+	*gecode/optimize/lp_sensitivity_backend.hpp \
+	*gecode/optimize/lp_sensitivity_highs_detail.hpp \
+	*gecode/optimize/native_regular_limits.hpp \
 	*gecode/flatzinc/exampleplugin/* \
 	*gecode/flatzinc/parser.tab.* *gecode/flatzinc/lexer.*
 

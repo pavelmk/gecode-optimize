@@ -343,7 +343,7 @@
  *
  * \section SecStart Getting started
  *
- * For your fist steps with %Gecode, including detailed instructions on
+ * For your first steps with %Gecode, including detailed instructions on
  * installing the library and compiling against it, please refer to the
  * document <A HREF="http://www.gecode.dev/doc-latest/MPG.pdf">Modeling and
  * Programming with Gecode</A>.
@@ -351,10 +351,16 @@
  * You may also want to have a look at our \ref PageNotation as well as
  * our \ref Example.
  *
+ * This development branch also provides the optional C++17
+ * \ref PageOptimize "Optimize model and solver API". Its numerical backends
+ * and bounded native bridge have explicit support and guarantee contracts;
+ * existing Space-based CP interfaces remain available independently.
+ *
  * \section SecByTask Programming tasks
  *
  * Documentation is available for the following tasks:
  *  - \ref TaskModel
+ *  - \ref TaskOptimize
  *  - \ref TaskSearch
  *  - \ref TaskActor "Programming propagators and branchers"
  *  - \ref TaskVar

@@ -13,6 +13,10 @@ charset = utf-8
 indent_style = space
 indent_size = 2
 
+# Python sources and tools use the existing four-space convention.
+[*.py]
+indent_size = 4
+
 # Makefiles need to use Tab indentation
 [Makefile*]
 indent_style = tab

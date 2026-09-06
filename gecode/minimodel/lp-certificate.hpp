@@ -1,4 +1,4 @@
-/* Certified lower bounds for binary linear minimization.
+/* Certified lower bounds for integer linear minimization.
  *
  * Experimental, opt-in support for LP-guided Gecode propagation.
  */
@@ -23,6 +23,40 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
 #else
   constexpr bool supported = false;
 #endif
+
+  /** Borrowed CSR view; arrays are only read during a checker call.
+   * Row offsets include the terminal nnz offset. Each row has strictly
+   * increasing column indices and nonzero values (no duplicate ambiguity).
+   */
+  struct SparseMatrixView {
+    const std::vector<std::size_t>& row_start;
+    const std::vector<std::size_t>& column;
+    const std::vector<std::int64_t>& value;
+    std::size_t columns;
+  };
+
+  inline bool valid_sparse(const SparseMatrixView& matrix, std::size_t rows,
+                           std::size_t columns) {
+    if (matrix.columns!=columns || rows==std::numeric_limits<std::size_t>::max() ||
+        matrix.row_start.size()!=rows+1 || matrix.column.size()!=matrix.value.size() ||
+        matrix.row_start.front()!=0 || matrix.row_start.back()!=matrix.value.size())
+      return false;
+    for (std::size_t i=0; i<rows; ++i) {
+      const auto first=matrix.row_start[i], last=matrix.row_start[i+1];
+      if (first>last || last>matrix.value.size()) return false;
+      for (std::size_t k=first; k<last; ++k)
+        if (matrix.column[k]>=columns || matrix.value[k]==0 ||
+            (k!=first && matrix.column[k]<=matrix.column[k-1])) return false;
+    }
+    return true;
+  }
+
+  /// Deterministic work counts; no clocks or backend timings are involved.
+  struct PreparationStats {
+    std::size_t rows_visited=0;
+    std::size_t nonzero_products=0;
+    std::size_t residuals_initialized=0;
+  };
 
   /**
    * Convert finite candidate multipliers to nonnegative rationals q/scale.
@@ -54,8 +88,15 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
     return true;
   }
 
+  /// Exact integer interval cuts, all derived from the same original box.
+  struct IntegerFilterResult {
+    std::int64_t lower_bound=0;
+    std::vector<std::int64_t> lower,upper;
+    bool infeasible=false;
+  };
+
   /**
-   * An exact affine lower bound valid for every binary box of one model.
+   * An exact affine lower bound valid for every integer box of one model.
    *
    * Its constant is q*b and its residual coefficients are scale*c-A^T*q.
    * A prepared certificate is independent of the box used to obtain its
@@ -71,13 +112,13 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
 
     bool numerator(const std::vector<std::int64_t>& lower,
                    const std::vector<std::int64_t>& upper,
-                   Wide& out) const {
+                   Wide& out, bool binary=true) const {
       if (!valid_ || lower.size()!=residual_.size() ||
           upper.size()!=residual_.size())
         return false;
       Wide value=constant_;
       for (std::size_t j=0; j<residual_.size(); ++j) {
-        if (lower[j]<0 || upper[j]>1 || lower[j]>upper[j])
+        if (lower[j]>upper[j] || (binary && (lower[j]<0 || upper[j]>1)))
           return false;
         const std::int64_t endpoint=residual_[j]>=0 ? lower[j] : upper[j];
         Wide term;
@@ -101,13 +142,13 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
       return true;
     }
 #endif
-    friend bool prepare(const std::vector<std::int64_t>&,
+    friend bool prepare(const SparseMatrixView&,
                         const std::vector<std::int64_t>&,
                         const std::vector<std::int64_t>&,
-                        const std::vector<double>&, Certificate&);
+                        const std::vector<double>&, Certificate&, PreparationStats*);
 
   public:
-    /// Evaluate the ordinary integer lower bound; failure leaves out intact.
+    /// Evaluate the legacy binary-box integer bound; failure leaves out intact.
     bool lower_bound(const std::vector<std::int64_t>& lower,
                      const std::vector<std::int64_t>& upper,
                      std::int64_t& out) const {
@@ -116,6 +157,67 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
       return numerator(lower,upper,value) && ceiling(value,out);
 #else
       (void) lower; (void) upper; (void) out;
+      return false;
+#endif
+    }
+
+    /// Explicit bounded-integer evaluation; the legacy lower_bound stays binary.
+    bool lower_bound_integer(const std::vector<std::int64_t>& lower,
+                             const std::vector<std::int64_t>& upper,
+                             std::int64_t& out) const {
+#if defined(__SIZEOF_INT128__) && (defined(__GNUC__) || defined(__clang__))
+      Wide value;
+      return numerator(lower,upper,value,false) && ceiling(value,out);
+#else
+      (void) lower; (void) upper; (void) out;
+      return false;
+#endif
+    }
+
+    /** Intersect a finite integer box with exact residual interval cuts.
+     * For each j, remove its original box-minimum contribution, then solve
+     * residual[j]*x[j] <= scale*objective_upper - remainder with directed
+     * integer division. Every cut uses the unchanged original box. All
+     * arithmetic and quotient narrowing are checked; false leaves out intact.
+     * An infeasible result has no meaningful tightened-domain interpretation.
+     */
+    bool filter_integer(const std::vector<std::int64_t>& lower,
+                        const std::vector<std::int64_t>& upper,
+                        std::int64_t objective_upper, IntegerFilterResult& out) const {
+#if defined(__SIZEOF_INT128__) && (defined(__GNUC__) || defined(__clang__))
+      Wide base,threshold;
+      IntegerFilterResult candidate;
+      if (!numerator(lower,upper,base,false) || !ceiling(base,candidate.lower_bound) ||
+          __builtin_mul_overflow(static_cast<Wide>(scale),
+                                 static_cast<Wide>(objective_upper),&threshold)) return false;
+      candidate.lower=lower; candidate.upper=upper;
+      candidate.infeasible=base>threshold;
+      for (std::size_t j=0; !candidate.infeasible && j<residual_.size(); ++j) {
+        const Wide residual=residual_[j];
+        if (!residual || lower[j]==upper[j]) continue;
+        Wide minimum,remainder,right;
+        const auto endpoint=residual>0 ? lower[j] : upper[j];
+        if (__builtin_mul_overflow(residual,static_cast<Wide>(endpoint),&minimum) ||
+            __builtin_sub_overflow(base,minimum,&remainder) ||
+            __builtin_sub_overflow(threshold,remainder,&right)) return false;
+        // Signed minimum / -1 is the only nonzero-divisor division overflow.
+        if (right==std::numeric_limits<Wide>::min() && residual==-1) return false;
+        Wide quotient=right/residual;
+        const Wide fraction=right%residual;
+        if (residual>0) {
+          if (fraction<0 && __builtin_sub_overflow(quotient,static_cast<Wide>(1),&quotient)) return false;
+          if (quotient<static_cast<Wide>(lower[j])) candidate.infeasible=true;
+          else if (quotient<static_cast<Wide>(upper[j])) candidate.upper[j]=static_cast<std::int64_t>(quotient);
+        } else {
+          if (fraction<0 && __builtin_add_overflow(quotient,static_cast<Wide>(1),&quotient)) return false;
+          if (quotient>static_cast<Wide>(upper[j])) candidate.infeasible=true;
+          else if (quotient>static_cast<Wide>(lower[j])) candidate.lower[j]=static_cast<std::int64_t>(quotient);
+        }
+      }
+      out=std::move(candidate);
+      return true;
+#else
+      (void) lower; (void) upper; (void) objective_upper; (void) out;
       return false;
 #endif
     }
@@ -168,69 +270,102 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
     }
   };
 
-  /// Prepare immutable residual data. Failure leaves out unchanged.
+  /** Prepare an immutable affine bound from canonical sparse rows.
+   * Validation is O(rows+nnz), arithmetic is O(rows+columns+active-dual nnz).
+   * No rows*columns allocation or scan occurs. Failure preserves both outputs.
+   */
+  inline bool
+  prepare(const SparseMatrixView& A,
+          const std::vector<std::int64_t>& b,
+          const std::vector<std::int64_t>& c,
+          const std::vector<double>& duals, Certificate& out,
+          PreparationStats* work=nullptr) {
+#if defined(__SIZEOF_INT128__) && (defined(__GNUC__) || defined(__clang__))
+    using Wide = __int128;
+    const std::size_t rows=b.size(),columns=c.size();
+    if (duals.size()!=rows || !valid_sparse(A,rows,columns)) return false;
+    std::vector<std::int64_t> q;
+    if (!quantize(duals,q)) return false;
+    Certificate candidate;
+    PreparationStats measured;
+    candidate.residual_.resize(columns);
+    for (std::size_t j=0; j<columns; ++j) {
+      ++measured.residuals_initialized;
+      if (__builtin_mul_overflow(static_cast<Wide>(scale),static_cast<Wide>(c[j]),
+                                 &candidate.residual_[j])) return false;
+    }
+    for (std::size_t i=0; i<rows; ++i) {
+      ++measured.rows_visited;
+      if (!q[i]) continue;
+      Wide product;
+      if (__builtin_mul_overflow(static_cast<Wide>(q[i]),static_cast<Wide>(b[i]),&product) ||
+          __builtin_add_overflow(candidate.constant_,product,&candidate.constant_)) return false;
+      for (std::size_t k=A.row_start[i]; k<A.row_start[i+1]; ++k) {
+        ++measured.nonzero_products;
+        const auto j=A.column[k];
+        if (__builtin_mul_overflow(static_cast<Wide>(q[i]),static_cast<Wide>(A.value[k]),&product) ||
+            __builtin_sub_overflow(candidate.residual_[j],product,&candidate.residual_[j])) return false;
+      }
+    }
+    candidate.valid_=true;
+    out=std::move(candidate);
+    if (work) *work=measured;
+    return true;
+#else
+    (void) A; (void) b; (void) c; (void) duals; (void) out; (void) work;
+    return false;
+#endif
+  }
+
+  /** Legacy dense row-major adapter; existing source calls remain valid.
+   * Dense input is scanned once to create canonical sparse rows. Callers that
+   * retain sparse storage should use the sparse overload directly.
+   */
   inline bool
   prepare(const std::vector<std::int64_t>& A,
           const std::vector<std::int64_t>& b,
           const std::vector<std::int64_t>& c,
           const std::vector<double>& duals, Certificate& out) {
-#if defined(__SIZEOF_INT128__) && (defined(__GNUC__) || defined(__clang__))
-    using Wide = __int128;
-    const std::size_t rows=b.size(),columns=c.size();
-    if (duals.size()!=rows ||
+    if (!supported) return false;
+    const auto rows=b.size(),columns=c.size();
+    if (rows==std::numeric_limits<std::size_t>::max() || duals.size()!=rows ||
         (rows && columns>std::numeric_limits<std::size_t>::max()/rows) ||
-        A.size()!=rows*columns)
-      return false;
-    std::vector<std::int64_t> q;
-    if (!quantize(duals,q))
-      return false;
-    Certificate candidate;
-    candidate.residual_.resize(columns);
-    for (std::size_t j=0; j<columns; ++j)
-      if (__builtin_mul_overflow(static_cast<Wide>(scale),static_cast<Wide>(c[j]),
-                                 &candidate.residual_[j]))
-        return false;
+        A.size()!=rows*columns) return false;
+    std::vector<std::size_t> start,indices;
+    std::vector<std::int64_t> values;
+    start.reserve(rows+1); start.push_back(0);
     for (std::size_t i=0; i<rows; ++i) {
-      if (!q[i])
-        continue;
-      Wide product;
-      if (__builtin_mul_overflow(static_cast<Wide>(q[i]),static_cast<Wide>(b[i]),&product) ||
-          __builtin_add_overflow(candidate.constant_,product,&candidate.constant_))
-        return false;
       for (std::size_t j=0; j<columns; ++j)
-        if (__builtin_mul_overflow(static_cast<Wide>(q[i]),
-                                   static_cast<Wide>(A[i*columns+j]),&product) ||
-            __builtin_sub_overflow(candidate.residual_[j],product,&candidate.residual_[j]))
-          return false;
+        if (A[i*columns+j]) { indices.push_back(j); values.push_back(A[i*columns+j]); }
+      start.push_back(values.size());
     }
-    candidate.valid_=true;
-    out=std::move(candidate);
-    return true;
-#else
-    (void) A; (void) b; (void) c; (void) duals; (void) out;
-    return false;
-#endif
+    return prepare(SparseMatrixView{start,indices,values,columns},b,c,duals,out);
   }
 
   /**
-   * Certify an integer lower bound for min c*x, Ax>=b, lower<=x<=upper.
+   * Certify min c*x, Ax>=b, over a nonempty binary box using weak duality:
    *
-   * A is row-major with b.size() rows and c.size() columns. Bounds must
-   * describe a nonempty binary box: 0<=lower[j]<=upper[j]<=1.
-   * Rows and objective have exact integer coefficients.
+   * c*x >= (q*b + sum_j min((scale*c-A^T*q)[j]*lower[j],
+   *                         (scale*c-A^T*q)[j]*upper[j])) / scale.
    *
-   * For any nonnegative rational y=q/scale, feasibility implies
-   *
-   *   c*x >= y*b + sum_j min((c-A^T*y)[j]*lower[j],
-   *                          (c-A^T*y)[j]*upper[j]).
-   *
-   * We compute this expression with checked signed 128-bit integer
-   * arithmetic and round its value upward, since c*x is integral.
-   * No floating-point objective or numerical feasibility tolerance enters
-   * the certificate. A true return does not assert that the model itself
-   * is feasible. False means no bound was produced, and leaves out intact.
-   * Compilers without the required checked arithmetic safely return false.
+   * Any nonnegative quantized q is valid. Checked signed 128-bit arithmetic
+   * and mathematical ceiling are the only source of pruning bounds. Floating
+   * LP objectives and infeasibility claims never certify a bound. False means
+   * no bound was produced and leaves out intact; it does not mean infeasible.
    */
+  inline bool
+  lower_bound(const SparseMatrixView& A,
+              const std::vector<std::int64_t>& b,
+              const std::vector<std::int64_t>& c,
+              const std::vector<std::int64_t>& lower,
+              const std::vector<std::int64_t>& upper,
+              const std::vector<double>& duals,
+              std::int64_t& out) {
+    Certificate certificate;
+    return prepare(A,b,c,duals,certificate) && certificate.lower_bound(lower,upper,out);
+  }
+
+  /// Legacy dense adapter; identical binary box and failure semantics.
   inline bool
   lower_bound(const std::vector<std::int64_t>& A,
               const std::vector<std::int64_t>& b,
@@ -239,75 +374,30 @@ namespace Gecode { namespace Experimental { namespace LpCertificate {
               const std::vector<std::int64_t>& upper,
               const std::vector<double>& duals,
               std::int64_t& out) {
-#if defined(__SIZEOF_INT128__) && (defined(__GNUC__) || defined(__clang__))
-    using Wide = __int128;
-    const std::size_t rows = b.size();
-    const std::size_t columns = c.size();
-    if ((lower.size() != columns) || (upper.size() != columns) ||
-        (duals.size() != rows))
-      return false;
-    if ((rows != 0) &&
-        (columns > std::numeric_limits<std::size_t>::max()/rows))
-      return false;
-    if (A.size() != rows*columns)
-      return false;
-    for (std::size_t j=0; j<columns; ++j)
-      if ((lower[j] < 0) || (upper[j] > 1) ||
-          (lower[j] > upper[j]))
-        return false;
+    Certificate certificate;
+    return prepare(A,b,c,duals,certificate) && certificate.lower_bound(lower,upper,out);
+  }
 
-    std::vector<std::int64_t> q;
-    if (!quantize(duals,q))
-      return false;
-    std::vector<Wide> reduced(columns);
-    for (std::size_t j=0; j<columns; ++j)
-      if (__builtin_mul_overflow(static_cast<Wide>(scale),
-                                 static_cast<Wide>(c[j]), &reduced[j]))
-        return false;
-
-    Wide numerator = 0;
-    for (std::size_t i=0; i<rows; ++i) {
-      if (q[i] == 0)
-        continue;
-      Wide product;
-      if (__builtin_mul_overflow(static_cast<Wide>(q[i]),
-                                 static_cast<Wide>(b[i]), &product) ||
-          __builtin_add_overflow(numerator,product,&numerator))
-        return false;
-      for (std::size_t j=0; j<columns; ++j) {
-        if (__builtin_mul_overflow(static_cast<Wide>(q[i]),
-                                   static_cast<Wide>(A[i*columns+j]),
-                                   &product) ||
-            __builtin_sub_overflow(reduced[j],product,&reduced[j]))
-          return false;
-      }
-    }
-    for (std::size_t j=0; j<columns; ++j) {
-      Wide term;
-      const std::int64_t endpoint =
-        reduced[j] >= 0 ? lower[j] : upper[j];
-      if (__builtin_mul_overflow(reduced[j],static_cast<Wide>(endpoint),
-                                 &term) ||
-          __builtin_add_overflow(numerator,term,&numerator))
-        return false;
-    }
-
-    // C++ division truncates toward zero. Only a positive remainder needs
-    // an increment to obtain the mathematical ceiling, including for N<0.
-    Wide rounded = numerator/static_cast<Wide>(scale);
-    if (numerator % static_cast<Wide>(scale) > 0)
-      if (__builtin_add_overflow(rounded,static_cast<Wide>(1),&rounded))
-        return false;
-    if ((rounded < static_cast<Wide>(std::numeric_limits<std::int64_t>::min())) ||
-        (rounded > static_cast<Wide>(std::numeric_limits<std::int64_t>::max())))
-      return false;
-    out = static_cast<std::int64_t>(rounded);
-    return true;
-#else
-    (void) A; (void) b; (void) c; (void) lower; (void) upper;
-    (void) duals; (void) out;
-    return false;
-#endif
+  /// Finite integer boxes with integer objective coefficients; never continuous.
+  inline bool
+  integer_lower_bound(const SparseMatrixView& A,
+                      const std::vector<std::int64_t>& b,
+                      const std::vector<std::int64_t>& c,
+                      const std::vector<std::int64_t>& lower,
+                      const std::vector<std::int64_t>& upper,
+                      const std::vector<double>& duals, std::int64_t& out) {
+    Certificate certificate;
+    return prepare(A,b,c,duals,certificate) && certificate.lower_bound_integer(lower,upper,out);
+  }
+  inline bool
+  integer_lower_bound(const std::vector<std::int64_t>& A,
+                      const std::vector<std::int64_t>& b,
+                      const std::vector<std::int64_t>& c,
+                      const std::vector<std::int64_t>& lower,
+                      const std::vector<std::int64_t>& upper,
+                      const std::vector<double>& duals, std::int64_t& out) {
+    Certificate certificate;
+    return prepare(A,b,c,duals,certificate) && certificate.lower_bound_integer(lower,upper,out);
   }
 
 }}}

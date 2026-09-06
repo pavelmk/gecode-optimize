@@ -1,0 +1,10 @@
+{
+  "version": "2.10.1",
+  "release": "https://github.com/MiniZinc/libminizinc/releases/tag/2.10.1",
+  "platform": "aarch64-apple-darwin",
+  "archive": "MiniZinc-2.10.1-aarch64-apple-darwin.tar.gz",
+  "url": "https://github.com/MiniZinc/libminizinc/releases/download/2.10.1/MiniZinc-2.10.1-aarch64-apple-darwin.tar.gz",
+  "sha256": "8b2b54fb4f9889bf582340c0397ea622deccb64f11274f497ec5de28ad408a1b",
+  "digest_source": "https://api.github.com/repos/MiniZinc/libminizinc/releases/tags/2.10.1",
+  "compiler_sha256_observed": "a8489069d77793862102ca5bab5b2e24822d4445226e4262b8d35287a9af702f"
+}

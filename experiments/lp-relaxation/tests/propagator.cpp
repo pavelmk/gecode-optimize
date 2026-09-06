@@ -23,11 +23,12 @@ static void require(bool condition, const char* message) {
     throw std::runtime_error(message);
 }
 
-enum class Mode { Native, Root, EveryNode };
+enum class Mode { Native, Root, EveryNode, RootFix, EveryFix, ThrottledFix };
 
 struct Instance {
   LP::LinearModel model;
   V lower, upper;
+  bool sparse=false;
 };
 
 static I objective(const Instance& instance, unsigned int mask) {
@@ -74,18 +75,24 @@ public:
   Gecode::IntVar z;
 
   Problem(const Instance& instance, Mode mode,
-          const std::shared_ptr<LP::Backend>& backend)
+          const std::shared_ptr<LP::SparseBackend>& backend)
     : x(*this,static_cast<int>(instance.model.c.size()),0,1),
       z(*this,objective_endpoint(instance.model,false),
               objective_endpoint(instance.model,true)) {
     for (int j=0; j<x.size(); ++j)
       Gecode::dom(*this,x[j],static_cast<int>(instance.lower[j]),
                              static_cast<int>(instance.upper[j]));
-    if (mode==Mode::Native)
-      LP::post_native(*this,x,z,instance.model);
-    else
-      LP::binary_linear_minimize(*this,x,z,backend,
-        mode==Mode::Root ? LP::Frequency::Root : LP::Frequency::EveryNode);
+    if (mode==Mode::Native) {
+      if (instance.sparse) LP::post_native(*this,x,z,backend->model);
+      else LP::post_native(*this,x,z,instance.model);
+    } else {
+      LP::Options policy;
+      policy.frequency=(mode==Mode::Root || mode==Mode::RootFix)
+        ? LP::Frequency::Root : LP::Frequency::EveryNode;
+      policy.reduced_cost_fixing=mode==Mode::RootFix || mode==Mode::EveryFix || mode==Mode::ThrottledFix;
+      policy.assignment_interval=mode==Mode::ThrottledFix ? 4 : 1;
+      LP::binary_linear_minimize(*this,x,z,backend,policy);
+    }
     Gecode::branch(*this,x,Gecode::INT_VAR_NONE(),Gecode::INT_VAL_MIN());
   }
   Problem(Problem& other) : Gecode::Space(other) {
@@ -108,7 +115,7 @@ public:
 };
 
 static void check_dfs(const Instance& instance, Mode mode,
-                      const std::shared_ptr<LP::Backend>& backend,
+                      const std::shared_ptr<LP::SparseBackend>& backend,
                       const Gecode::Search::Options& options,
                       const std::set<unsigned int>& expected) {
   {
@@ -132,7 +139,7 @@ static void check_dfs(const Instance& instance, Mode mode,
 }
 
 static void check_bab(const Instance& instance, Mode mode,
-                      const std::shared_ptr<LP::Backend>& backend,
+                      const std::shared_ptr<LP::SparseBackend>& backend,
                       const Gecode::Search::Options& options,
                       const std::set<unsigned int>& expected) {
   I optimum=std::numeric_limits<I>::max();
@@ -216,8 +223,8 @@ static std::vector<Instance> instances(void) {
 
 static void check_lifecycle_and_root_bounds(const std::vector<Instance>& cases) {
   for (std::size_t id : {std::size_t(0),std::size_t(1)}) {
-    auto backend=std::make_shared<LP::Backend>(cases[id].model);
-    std::weak_ptr<LP::Backend> weak=backend;
+    std::shared_ptr<LP::SparseBackend> backend=std::make_shared<LP::Backend>(cases[id].model);
+    std::weak_ptr<LP::SparseBackend> weak=backend;
     const int expected=id==0 ? 2 : -1;
     for (Mode mode : {Mode::Root,Mode::EveryNode}) {
       {
@@ -259,15 +266,19 @@ int main(void) {
     check_lifecycle_and_root_bounds(cases);
     unsigned int runs=0, feasible=0, infeasible=0;
     std::uint64_t lp_calls=0, certified=0;
-    for (const Instance& instance : cases) {
+    for (const Instance& original : cases) for (bool sparse : {false,true}) {
+      Instance instance=original; instance.sparse=sparse;
       const auto expected=enumerate(instance);
       if (expected.empty()) ++infeasible; else ++feasible;
-      auto backend=std::make_shared<LP::Backend>(instance.model);
-      std::weak_ptr<LP::Backend> weak=backend;
+      std::shared_ptr<LP::SparseBackend> backend;
+      if (sparse) backend=std::make_shared<LP::SparseBackend>(LP::sparse_model(instance.model));
+      else backend=std::make_shared<LP::Backend>(instance.model);
+      std::weak_ptr<LP::SparseBackend> weak=backend;
       // Reuse one backend across independent searches, after traversing
       // siblings with opposite bound fixings and different recomputation.
       for (unsigned int distance : {1U,8U,32U})
-        for (Mode mode : {Mode::Native,Mode::Root,Mode::EveryNode}) {
+        for (Mode mode : {Mode::Native,Mode::Root,Mode::EveryNode,
+                          Mode::RootFix,Mode::EveryFix,Mode::ThrottledFix}) {
           Gecode::Search::Options options;
           options.threads=1;
           options.c_d=distance;
@@ -283,9 +294,9 @@ int main(void) {
     }
     require(feasible>0 && infeasible>0,"both feasibility outcomes must be tested");
     require(lp_calls>0 && certified>0,"LP integration was not exercised");
-    std::cout << "PASS " << cases.size() << " models (" << feasible
-              << " feasible, " << infeasible << " infeasible), " << runs
-              << " exhaustive native/Root/EveryNode DFS/BAB configurations; "
+    std::cout << "PASS " << cases.size() << " models in two storage forms (" << feasible
+              << " feasible representations, " << infeasible << " infeasible representations), " << runs
+              << " exhaustive dense/sparse native/bounds/fixing/throttled DFS/BAB configurations; "
               << lp_calls << " LP calls, " << certified
               << " certified bounds; backend lifecycle and root tightening\n";
     return EXIT_SUCCESS;

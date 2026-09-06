@@ -1,0 +1,28 @@
+Add optional optimization APIs and automatic native strategies
+
+Introduce Gecode::Optimize owning sparse models, explicit result guarantees,
+starts, exchange, sessions and reusable optimization workflows. Supply numerical
+LP/MILP and bounded weighted-square continuous QP through HiGHS, plus an exact
+native integer bridge retaining supported globals and documented C/Python APIs.
+
+Select compatible checked LP, cover cuts and branching automatically. Compose
+bounded exact presolve, independent components and identical-column symmetry.
+Restore original witnesses, offsets and proofs under one shared solve budget.
+Use rolling knapsack value rows and packed traceback with work/memory/time caps.
+
+Add opt-in sequential strategy racing in C++, with configurable exploration.
+Probe automatic and ordinary native search, select from checked incumbents and
+bounds, and restart under the remaining shared time/node/cancellation budget.
+Preserve the best probe result. Explicitly document increased CPU/solve-time
+costs and the possibility of discovering a much better strategy for longer solves.
+Do not expose the new racing option through MiniZinc yet; add no conflict learning.
+
+Validation: complete isolated Release build and 75/75 CTest entries pass;
+focused racing checks pass without checked LP and without native backends.
+Exhaustive original-oracle, shared-budget and larger-generator checks pass.
+Preserve historical observations and add the final three-cohort comparison:
+original pre-algorithm native runtime, current automatic racing and frozen
+family presets. Expand to observed failed upper inputs without study ceilings,
+then refine and confirm sampled brackets. Charge exploration to the same ten
+seconds and retain all witnesses, outcomes, settings and provenance. State
+nonmonotonicity, backend-reported optimality and combined-policy attribution.

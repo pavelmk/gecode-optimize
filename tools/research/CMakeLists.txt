@@ -1,0 +1,37 @@
+cmake_minimum_required(VERSION 3.21)
+project(GecodeLcgProtocolExperiment LANGUAGES CXX)
+include(CTest)
+find_package(Git REQUIRED)
+set(GECODE_LCG_CADICAL_SOURCE "" CACHE PATH "Explicit pinned CaDiCaL source; never downloaded")
+set(GECODE_LCG_CADICAL_LIBRARY "" CACHE FILEPATH "Matching prebuilt static CaDiCaL library")
+if(NOT EXISTS "${GECODE_LCG_CADICAL_SOURCE}/src/cadical.hpp" OR
+   NOT EXISTS "${GECODE_LCG_CADICAL_LIBRARY}")
+  message(FATAL_ERROR "Supply both GECODE_LCG_CADICAL_SOURCE and GECODE_LCG_CADICAL_LIBRARY")
+endif()
+execute_process(COMMAND "${GIT_EXECUTABLE}" -C "${GECODE_LCG_CADICAL_SOURCE}" rev-parse HEAD
+  RESULT_VARIABLE _pin_result OUTPUT_VARIABLE _pin OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT _pin_result EQUAL 0 OR NOT _pin STREQUAL "c60730422e758ef1cebe7aeddf2dda31c996bf04")
+  message(FATAL_ERROR "Protocol experiment requires the audited CaDiCaL 3.0.1 commit")
+endif()
+execute_process(COMMAND "${GIT_EXECUTABLE}" -C "${GECODE_LCG_CADICAL_SOURCE}"
+  status --porcelain --untracked-files=no
+  RESULT_VARIABLE _clean_result OUTPUT_VARIABLE _dirty OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT _clean_result EQUAL 0 OR NOT _dirty STREQUAL "")
+  message(FATAL_ERROR "Tracked CaDiCaL source must match the recorded commit")
+endif()
+file(SHA256 "${GECODE_LCG_CADICAL_SOURCE}/src/cadical.hpp" _header_sha)
+file(SHA256 "${GECODE_LCG_CADICAL_LIBRARY}" _library_sha)
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/dependency-provenance.txt"
+  "commit=${_pin}\nheader_sha256=${_header_sha}\nlibrary_sha256=${_library_sha}\n")
+add_executable(cadical-protocol cadical_protocol.cpp)
+target_compile_features(cadical-protocol PRIVATE cxx_std_17)
+target_include_directories(cadical-protocol PRIVATE "${GECODE_LCG_CADICAL_SOURCE}/src")
+target_link_libraries(cadical-protocol PRIVATE "${GECODE_LCG_CADICAL_LIBRARY}")
+if(MSVC)
+  target_compile_options(cadical-protocol PRIVATE /UNDEBUG)
+else()
+  target_compile_options(cadical-protocol PRIVATE -UNDEBUG -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME cadical-ipasir-up-protocol COMMAND cadical-protocol)
+set_tests_properties(cadical-ipasir-up-protocol PROPERTIES TIMEOUT 60)
+# Deliberately no install rule, default Gecode target, or network operation.

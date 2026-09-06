@@ -1,0 +1,680 @@
+{
+  "schema": 1,
+  "checkpoint": "ninth",
+  "date": "2026-09-05",
+  "branch": "codex/solver-parity",
+  "compiled_product_commit": "c2fabb78f1fc3bcfd7432eb71cfdb22656cd3f60",
+  "measured_runner_commit": "db7eb0b85b2970e20e8a3d965559fd31a94c73b4",
+  "completion_scope": "Integrate existing sensitivity/neighborhood work; bounded correctness and prior-checkpoint performance validation. Further roadmap implementation on hold.",
+  "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+  "highs_version": "1.15.1",
+  "minizinc_version": "2.10.1",
+  "correctness_gate_counts": {
+    "combined_ctest": 67,
+    "numerical_release_ctest": 54,
+    "backend_disabled_debug_ctest": 52,
+    "full_native_highs_facade_sanitizer_ctest": 66,
+    "python_sanitizer": 83,
+    "installed_c_cpp_consumers_each_of_three_configurations": 8,
+    "installed_python_each_of_three_configurations": 83,
+    "native_only_consumer": 1,
+    "cli_normal_and_sanitizer_each": 106,
+    "minizinc_normal_and_sanitizer_each": 72,
+    "minizinc_installed": 72,
+    "legacy_fixture_instances": 140,
+    "legacy_distinct_display_names": 139,
+    "legacy_repetitions": 5,
+    "harness_passed": 24,
+    "harness_windows_skipped": 9,
+    "expanded_fast_passed": 35
+  },
+  "expanded_fast_external_seconds": 5.785179916769266,
+  "expanded_fast_budget_seconds": 28,
+  "original_isolation": {
+    "checked_utc": "2026-09-05T19:27:04.024369+00:00",
+    "source": "preserved pre-project checkout (local path omitted)",
+    "files_checked": 2963,
+    "mismatches": [],
+    "head": "3e0e8ee76fb4ba01c53616dce02c0bb1a53f159e",
+    "expected_head": "3e0e8ee76fb4ba01c53616dce02c0bb1a53f159e",
+    "branch": "experiment/llm-search",
+    "expected_branch": "experiment/llm-search",
+    "passed": true
+  },
+  "comparison": {
+    "baseline_compiled_commit": "bda86186dc187b7707b73de2b52fdd3b54bf74eb",
+    "baseline_source_commit": "158dc0b66f02929c9be957cdcad651581dd7be3f",
+    "method": "Same preserved executables and frozen common workloads; alternating cohort order; only explicitly verified runtime libraries change.",
+    "common_fast_pairs_completed": 5,
+    "common_fast_pairs_planned": 6,
+    "common_fast_case_executions_completed": 330,
+    "mip_pairs_completed": 3,
+    "mip_solve_executions_completed": 30,
+    "all_completed_pairs_correct": true,
+    "all_attempted_fast_panels_passed": false,
+    "extra_attempt_failure": {
+      "cohort": "new",
+      "pair": 6,
+      "path": "build/comparison-eighth/results-final/pair-06-new.json",
+      "case": "cp_distinct",
+      "reason": "4-second per-case wall deadline",
+      "retry": false
+    },
+    "regression_rule": "Median slowdown >20% and >1ms, with both conditions together in at least half of paired observations; diagnostic, not significance test.",
+    "fast_summary": {
+      "all_correct": true,
+      "paired_whole_command_ratio_median": 1.0195048481083444,
+      "whole_command": {
+        "old": {
+          "median": 5.630275375209749,
+          "min": 5.573532083071768,
+          "max": 5.7275683749467134
+        },
+        "new": {
+          "median": 5.740093041211367,
+          "min": 5.5079776253551245,
+          "max": 6.000177041627467
+        }
+      },
+      "common_case_geometric_mean_of_paired_median_ratios": 1.0024424726795773,
+      "cases": [
+        {
+          "case": "cp_distinct",
+          "checks": [
+            1
+          ],
+          "old_external_median": 3.3467737920582294,
+          "new_external_median": 3.3790649585425854,
+          "paired_ratio_median": 1.0066976642859764,
+          "external_delta_ms": 32.29116648435593,
+          "old_internal_median": null,
+          "new_internal_median": null,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "cp_element",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.5560029158368707,
+          "new_external_median": 0.5525399995967746,
+          "paired_ratio_median": 0.99453847500765,
+          "external_delta_ms": -3.4629162400960922,
+          "old_internal_median": null,
+          "new_internal_median": null,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "cp_cumulative",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.5568039584904909,
+          "new_external_median": 0.5542022073641419,
+          "paired_ratio_median": 0.997668520683074,
+          "external_delta_ms": -2.6017511263489723,
+          "old_internal_median": null,
+          "new_internal_median": null,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "cp_search",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.5453102085739374,
+          "new_external_median": 0.5418287497013807,
+          "paired_ratio_median": 0.9873815634232954,
+          "external_delta_ms": -3.4814588725566864,
+          "old_internal_median": null,
+          "new_internal_median": null,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "lp_evidence",
+          "checks": [
+            66
+          ],
+          "old_external_median": 0.014368083328008652,
+          "new_external_median": 0.014591749757528305,
+          "paired_ratio_median": 1.0253079182436293,
+          "external_delta_ms": 0.22366642951965332,
+          "old_internal_median": 0.001785791,
+          "new_internal_median": 0.0016165,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "scenario_batches",
+          "checks": [
+            38
+          ],
+          "old_external_median": 0.014513583853840828,
+          "new_external_median": 0.014496209099888802,
+          "paired_ratio_median": 1.0044354274125726,
+          "external_delta_ms": -0.017374753952026367,
+          "old_internal_median": 0.001461084,
+          "new_internal_median": 0.001566167,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "native_regular",
+          "checks": [
+            13
+          ],
+          "old_external_median": 0.014125333167612553,
+          "new_external_median": 0.014236541464924812,
+          "paired_ratio_median": 1.0200412309086904,
+          "external_delta_ms": 0.11120829731225967,
+          "old_internal_median": 0.000332459,
+          "new_internal_median": 0.00033825,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "lp_observations",
+          "checks": [
+            44
+          ],
+          "old_external_median": 0.014237083494663239,
+          "new_external_median": 0.01419420912861824,
+          "paired_ratio_median": 0.988829838588361,
+          "external_delta_ms": -0.04287436604499817,
+          "old_internal_median": 0.001064708,
+          "new_internal_median": 0.001044625,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "lp_min_offset",
+          "checks": [
+            8
+          ],
+          "old_external_median": 0.014415125362575054,
+          "new_external_median": 0.014358875341713428,
+          "paired_ratio_median": 0.996138291445287,
+          "external_delta_ms": -0.05625002086162567,
+          "old_internal_median": 0.000419167,
+          "new_internal_median": 0.000460667,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "lp_max_offset",
+          "checks": [
+            8
+          ],
+          "old_external_median": 0.014251667074859142,
+          "new_external_median": 0.014267542399466038,
+          "paired_ratio_median": 1.008098760117859,
+          "external_delta_ms": 0.015875324606895447,
+          "old_internal_median": 0.000448708,
+          "new_internal_median": 0.000470958,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "bounded_integer",
+          "checks": [
+            8
+          ],
+          "old_external_median": 0.03800741583108902,
+          "new_external_median": 0.03568887524306774,
+          "paired_ratio_median": 0.9389976788128601,
+          "external_delta_ms": -2.3185405880212784,
+          "old_internal_median": 0.0190295,
+          "new_internal_median": 0.015944542,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "mixed_recourse",
+          "checks": [
+            27
+          ],
+          "old_external_median": 0.049585165455937386,
+          "new_external_median": 0.03936695959419012,
+          "paired_ratio_median": 0.8518543724343072,
+          "external_delta_ms": -10.218205861747265,
+          "old_internal_median": 0.031041084,
+          "new_internal_median": 0.026588792,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "indicators_boolean",
+          "checks": [
+            9
+          ],
+          "old_external_median": 0.014366417191922665,
+          "new_external_median": 0.0141565827652812,
+          "paired_ratio_median": 0.9979801487561196,
+          "external_delta_ms": -0.20983442664146423,
+          "old_internal_median": 0.000634291,
+          "new_internal_median": 0.000670084,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "semis",
+          "checks": [
+            13
+          ],
+          "old_external_median": 0.014156999997794628,
+          "new_external_median": 0.014180625788867474,
+          "paired_ratio_median": 1.010053902506045,
+          "external_delta_ms": 0.02362579107284546,
+          "old_internal_median": 0.0008965,
+          "new_internal_median": 0.00087575,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "multiobjective",
+          "checks": [
+            9
+          ],
+          "old_external_median": 0.01443904172629118,
+          "new_external_median": 0.014098582789301872,
+          "paired_ratio_median": 1.0125412546552053,
+          "external_delta_ms": -0.3404589369893074,
+          "old_internal_median": 0.001025208,
+          "new_internal_median": 0.001175375,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "infeasible",
+          "checks": [
+            4
+          ],
+          "old_external_median": 0.0141740832477808,
+          "new_external_median": 0.014059416949748993,
+          "paired_ratio_median": 0.9822093070472464,
+          "external_delta_ms": -0.11466629803180695,
+          "old_internal_median": 0.000474584,
+          "new_internal_median": 0.000490875,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "unbounded",
+          "checks": [
+            4
+          ],
+          "old_external_median": 0.013639833778142929,
+          "new_external_median": 0.014187000691890717,
+          "paired_ratio_median": 1.044332868017677,
+          "external_delta_ms": 0.5471669137477875,
+          "old_internal_median": 0.000296333,
+          "new_internal_median": 0.000298542,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "edits_io",
+          "checks": [
+            25
+          ],
+          "old_external_median": 0.014292499981820583,
+          "new_external_median": 0.014269249513745308,
+          "paired_ratio_median": 1.0272550240430118,
+          "external_delta_ms": -0.02325046807527542,
+          "old_internal_median": 0.002394458,
+          "new_internal_median": 0.002395625,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "limit_contracts",
+          "checks": [
+            6
+          ],
+          "old_external_median": 0.013191957958042622,
+          "new_external_median": 0.01441350020468235,
+          "paired_ratio_median": 1.0962045448432332,
+          "external_delta_ms": 1.2215422466397285,
+          "old_internal_median": 0.00021675,
+          "new_internal_median": 0.000278,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "session_reoptimization",
+          "checks": [
+            34
+          ],
+          "old_external_median": 0.0143772903829813,
+          "new_external_median": 0.01425037533044815,
+          "paired_ratio_median": 1.0112910136085524,
+          "external_delta_ms": -0.12691505253314972,
+          "old_internal_median": 0.00164175,
+          "new_internal_median": 0.001403958,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "diagnostics_groups",
+          "checks": [
+            38
+          ],
+          "old_external_median": 0.01404624991118908,
+          "new_external_median": 0.013607708737254143,
+          "paired_ratio_median": 0.9687787717926334,
+          "external_delta_ms": -0.4385411739349365,
+          "old_internal_median": 0.001538209,
+          "new_internal_median": 0.00139475,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "native_exact_reified",
+          "checks": [
+            18
+          ],
+          "old_external_median": 0.013215874321758747,
+          "new_external_median": 0.013827166520059109,
+          "paired_ratio_median": 1.0033235452090166,
+          "external_delta_ms": 0.6112921983003616,
+          "old_internal_median": 0.000368,
+          "new_internal_median": 0.00036225,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "native_globals",
+          "checks": [
+            11
+          ],
+          "old_external_median": 0.013915790244936943,
+          "new_external_median": 0.014151915907859802,
+          "paired_ratio_median": 0.9889569004617828,
+          "external_delta_ms": 0.2361256629228592,
+          "old_internal_median": 0.000415,
+          "new_internal_median": 0.0003975,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "c_api_ownership",
+          "checks": [
+            36
+          ],
+          "old_external_median": 0.026981625705957413,
+          "new_external_median": 0.027037457562983036,
+          "paired_ratio_median": 1.0005643312266552,
+          "external_delta_ms": 0.05583185702562332,
+          "old_internal_median": 0.016988791,
+          "new_internal_median": 0.016578666,
+          "regression_pairs_over_20_percent_and_1ms": 2,
+          "investigate": false
+        },
+        {
+          "case": "feasibility_repair",
+          "checks": [
+            16
+          ],
+          "old_external_median": 0.014160332269966602,
+          "new_external_median": 0.014214374125003815,
+          "paired_ratio_median": 1.003816425632316,
+          "external_delta_ms": 0.05404185503721237,
+          "old_internal_median": 0.001166458,
+          "new_internal_median": 0.0012125,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "native_checked_lp",
+          "checks": [
+            11
+          ],
+          "old_external_median": 0.014293166808784008,
+          "new_external_median": 0.01434966642409563,
+          "paired_ratio_median": 0.9538385660673293,
+          "external_delta_ms": 0.05649961531162262,
+          "old_internal_median": 0.000939917,
+          "new_internal_median": 0.00096275,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "solution_pool",
+          "checks": [
+            24
+          ],
+          "old_external_median": 0.014253792352974415,
+          "new_external_median": 0.014393165707588196,
+          "paired_ratio_median": 1.0138676565723133,
+          "external_delta_ms": 0.13937335461378098,
+          "old_internal_median": 0.001941,
+          "new_internal_median": 0.001963708,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "integer_presolve",
+          "checks": [
+            19
+          ],
+          "old_external_median": 0.014161832630634308,
+          "new_external_median": 0.014329332858324051,
+          "paired_ratio_median": 1.0376748817073023,
+          "external_delta_ms": 0.16750022768974304,
+          "old_internal_median": 0.000143458,
+          "new_internal_median": 0.000149959,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "native_frontier_bounds",
+          "checks": [
+            11
+          ],
+          "old_external_median": 0.014421375468373299,
+          "new_external_median": 0.01423591747879982,
+          "paired_ratio_median": 0.9724790533723724,
+          "external_delta_ms": -0.1854579895734787,
+          "old_internal_median": 0.000188209,
+          "new_internal_median": 0.000164,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "convex_quadratic",
+          "checks": [
+            15
+          ],
+          "old_external_median": 0.0132752088829875,
+          "new_external_median": 0.01460262481123209,
+          "paired_ratio_median": 1.085224004420922,
+          "external_delta_ms": 1.3274159282445908,
+          "old_internal_median": 0.001184792,
+          "new_internal_median": 0.001253416,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "native_root_covers",
+          "checks": [
+            11
+          ],
+          "old_external_median": 0.01407262496650219,
+          "new_external_median": 0.014360874891281128,
+          "paired_ratio_median": 1.0525677487709284,
+          "external_delta_ms": 0.2882499247789383,
+          "old_internal_median": 0.00117875,
+          "new_internal_median": 0.001197791,
+          "regression_pairs_over_20_percent_and_1ms": 1,
+          "investigate": false
+        },
+        {
+          "case": "native_binary_branching",
+          "checks": [
+            11
+          ],
+          "old_external_median": 0.014256124384701252,
+          "new_external_median": 0.014416416175663471,
+          "paired_ratio_median": 1.033544109426312,
+          "external_delta_ms": 0.16029179096221924,
+          "old_internal_median": 0.000142375,
+          "new_internal_median": 0.000138167,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "native_complete_start",
+          "checks": [
+            11
+          ],
+          "old_external_median": 0.014582540839910507,
+          "new_external_median": 0.014481999911367893,
+          "paired_ratio_median": 0.9931053902302508,
+          "external_delta_ms": -0.10054092854261398,
+          "old_internal_median": 0.00021375,
+          "new_internal_median": 0.000203833,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        }
+      ],
+      "flagged_cases": []
+    },
+    "mip_summary": {
+      "all_correct": true,
+      "paired_whole_command_ratio_median": 0.9420820488501805,
+      "whole_command": {
+        "old": {
+          "median": 1.7816142085939646,
+          "min": 1.6914898343384266,
+          "max": 1.9421028345823288
+        },
+        "new": {
+          "median": 1.5935222087427974,
+          "min": 1.563661458902061,
+          "max": 1.7037921249866486
+        }
+      },
+      "common_case_geometric_mean_of_paired_median_ratios": 0.9608144504126682,
+      "cases": [
+        {
+          "case": "p0033",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.03935341723263264,
+          "new_external_median": 0.040212417021393776,
+          "paired_ratio_median": 1.0218278322231402,
+          "external_delta_ms": 0.8589997887611389,
+          "old_internal_median": 0.023658583,
+          "new_internal_median": 0.023815958,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "p0201",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.7035185415297747,
+          "new_external_median": 0.6553949574008584,
+          "paired_ratio_median": 0.9210891441888984,
+          "external_delta_ms": -48.123584128916264,
+          "old_internal_median": 0.69102875,
+          "new_internal_median": 0.643015583,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "p0282",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.17122866678982973,
+          "new_external_median": 0.16235008276998997,
+          "paired_ratio_median": 1.0051363459130735,
+          "external_delta_ms": -8.878584019839764,
+          "old_internal_median": 0.159292375,
+          "new_internal_median": 0.150684917,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "p0548",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.0782424584031105,
+          "new_external_median": 0.0789580000564456,
+          "paired_ratio_median": 0.8954994988823052,
+          "external_delta_ms": 0.7155416533350945,
+          "old_internal_median": 0.064464334,
+          "new_internal_median": 0.062927209,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        },
+        {
+          "case": "lseu",
+          "checks": [
+            1
+          ],
+          "old_external_median": 0.2006832081824541,
+          "new_external_median": 0.20028016529977322,
+          "paired_ratio_median": 0.9665579884244042,
+          "external_delta_ms": -0.40304288268089294,
+          "old_internal_median": 0.191671,
+          "new_internal_median": 0.18943225,
+          "regression_pairs_over_20_percent_and_1ms": 0,
+          "investigate": false
+        }
+      ],
+      "flagged_cases": []
+    },
+    "identical_native_instruction_sections": 9
+  },
+  "limitations": [
+    "Extra sixth FAST current panel timed out under the existing four-second cp_distinct cap; retained and excluded from complete paired medians.",
+    "Short same-machine smoke against preceding integrated checkpoint; no CPLEX/Gurobi comparison, broad benchmark or new-feature speedup claim.",
+    "Original full native test corpus not rerun; bounded CP cases plus legacy FlatZinc fixture panel executed.",
+    "Actual Windows/Linux runtime and oldest macOS not tested; Windows containment gate remains disabled.",
+    "ASan/UBSan error checks enabled; leak detection disabled.",
+    "Ninth installed prefixes tested; existing eighth Python wheel not rebuilt.",
+    "Learning contract remains private/uncompiled; no product learning runtime."
+  ],
+  "evidence_sha256": {
+    "build/native-compat/ninth-ctest.log": "dc89bb685a6537d8fe92e9dd52da4361ec789f8f1e4577c7336d272cf60cdc34",
+    "build/optimize/ninth-ctest.log": "e44cfe37ae796065ec30c024256c2772d8c61f55de3a965bcef3640a20cb2edf",
+    "build/optimize-core/ninth-final-ctest.log": "780e0fca3d29b86bb09066adafa33e0883d0c3d59649d775dd49ce2c854c7183",
+    "build/native-sanitize/ninth-ctest.log": "6223fe02d274e613c882ba8654b0c5131f27854496918b29901a895863f0172f",
+    "build/native-sanitize/ninth-python-preloaded-sanitizer.log": "a2015445c530d90957d137b190941fb6d0f92d4fa24e99b4411bd663f26c704e",
+    "build/optimize/ninth-installed-consumers.json": "c18b146732098b6d1010a314a8aa0caf4e8c758630ea3cd4a424a6b38849be97",
+    "build/native-compat/ninth-native-only-test.log": "c60625a953ab1763534ae6b5b6f7ea9abb507ff8be7dec19c1d01da5f6100a7d",
+    "build/native-compat/ninth-cli.json": "bc2fd9292adb6392c9b4cc33be0b70e062fcea70fa4709602d4ae388b54d314e",
+    "build/native-sanitize/ninth-cli.json": "2f3b52b6b5bd7416f71e8a174883dcdf5a07dab2f5b5698f3e4f453ba844c34e",
+    "build/native-compat/ninth-minizinc.json": "648b6666738d1f5267ba2440bb33be43cfb1be197e24bbc51cfc3af671a511bd",
+    "build/native-sanitize/ninth-minizinc.json": "b3b9731ce7c6e57231f16c1fe9dad62b6e6aa381dba0718328f755c623240e29",
+    "build/native-compat/ninth-installed-minizinc.log": "99625b2f4cb5dbc4840413f829c6648998f3bcda45a5130582036391892df019",
+    "build/native-compat/ninth-legacy-summary.json": "7a37a3bfb59634f60cec6baea00761dcd5f676d4159883dd31f8702937a2d54b",
+    "build/native-compat/ninth-legacy-count-audit.json": "da1d1b1b4d042f4bdcde60cbdb273c590356c2c4f566b49d5fe8e4c6ca383286",
+    "build/native-compat/ninth-legacy-flatzinc.log": "e0ef487c3643d801bcd88de3ec526b988da923a26b7e52f1dd63a5ce681591ef",
+    "build/native-compat/ninth-legacy-blackbox-tests.log": "d7ea7e4029b955f7798a390dd66ed62ad36221f7224a412f40a91672fc312cea",
+    "build/native-compat/ninth-harness-tests.log": "61365b36c9f994f9fc0d4271aaff003dbe064f79f22d8603d9abbbd01c719799",
+    "build/optimize/ninth-fast.json": "40bc92cb0e41d0bde0820065de1aaf16298067bd1e7354e9b444073a8d41a891",
+    "build/optimize/ninth-fast-wall.json": "0f2a2c15986f46927c3159960c195a8ac1d4356d5a696a0645d741fb9576b5fd",
+    "build/optimize/ninth-original-isolation.json": "c2b7ee8a2f92fb8b7f69393710255d4ca76065b53b02f78c576b1453626ae552",
+    "build/optimize/ninth-process-inventory.txt": "15e0c7449e808a4ff2809ce4142705766323dc3ec08e674f8300fc190998f44f",
+    "build/comparison-eighth/baseline-preparation.json": "84a4d56096c813411b674a4423aec9ba6d8e92d4d69b48abcf79deae84cfb845",
+    "build/comparison-eighth/compare.py": "2b521976a3e8c842d0cfb37badd072b594e12254c9315655fc929ba1a7b3b209",
+    "build/comparison-eighth/results-final/comparison.json": "d47bb4e1cb6d442faef87e56069b85df7edeaef50157181f78b7afbd7ea2c87e",
+    "build/comparison-eighth/results-final/interpretation.md": "6acc166ccab7ef5a320b8a0da51b1c9387da657004d6acb788de48c5475e2844",
+    "build/comparison-eighth/results-final/pair-06-new.json": "7263e86bc7350fb38965773c8c7f73640eada98f91841a7a2a4ed84b1b22c2fd",
+    "build/comparison-eighth/results-final/native-text-comparison.json": "61c087855de170ca38c4a320431dc54441bca6045e2cb3f9bf0aac812cc479bf",
+    "build/optimize/ninth-installed-standalone.log": "b1d997dc76a642c25d567aff551917e0babba72fac0821f3a8303d6281addd41",
+    "build/optimize-core/ninth-installed-core.log": "3fb629a2562109c181a0ddd2568b08e3ffce7efdaec3b3e78301d67daa6c8f03",
+    "build/native-compat/ninth-consumer-test.log": "d9521b1017d59f4790d5ea994ecb2e554d5c3e5f49faf418f83a95f6beb7cd9f",
+    "build/native-compat/ninth-installed-python.log": "f6d3edde1ba4fe8cb6fe18136b57174197688f0fdd9c9eba78d6c6119b1b0c1f"
+  }
+}

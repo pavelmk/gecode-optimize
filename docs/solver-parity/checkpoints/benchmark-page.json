@@ -1,0 +1,1109 @@
+{
+  "schema_version": 1,
+  "date": "5 September 2026",
+  "machine": "Apple M1 Pro · macOS 15.7.4 · one solver process at a time",
+  "source_commit": "c2fabb78f1fc3bcfd7432eb71cfdb22656cd3f60",
+  "capability_baseline": "e10562fd9",
+  "measured_source_head": "2da8c21a64dddcce6aed58232238a0a138675509",
+  "timing_scope": "Before is the preserved pre-project experimental build. Now is the ninth integrated version. Three alternating paired runs per problem use a two-second solver limit. External wall time includes startup, import, search and output.",
+  "conclusion": "The current route completed all five binary models in every repetition; the old route completed one. The smallest binary model and all four tiny CP fixtures took more wall time now. These observations support broader practical completion on this small binary panel, not a blanket speedup.",
+  "deadline_note": "An earlier, separate eighth-to-ninth regression comparison also recorded one four-second native-test timeout. It is retained in the historical checkpoint record. The fresh pre-project comparison had twelve solver-limit outcomes in the old binary cohort and no external kills or process errors.",
+  "tracks": [
+    {
+      "id": "mip",
+      "title": "Binary optimization: more instances reach an optimum",
+      "description": "Five existing pure-binary MIPLIB models. Both versions support these problems. Before uses the experimental binary adapter; now uses the numerical HiGHS facade.",
+      "before_label": "Before project · binary adapter",
+      "after_label": "Now · HiGHS facade",
+      "protocol": "3 runs per version · 2 s solve limit",
+      "cases": [
+        {
+          "id": "p0033",
+          "name": "p0033",
+          "before": {
+            "median_ms": 16.42687525600195,
+            "min_ms": 16.21541753411293,
+            "max_ms": 17.25245825946331,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 12.4447
+          },
+          "after": {
+            "median_ms": 30.774000100791454,
+            "min_ms": 29.966709204018116,
+            "max_ms": 30.855958350002766,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 21.65425
+          }
+        },
+        {
+          "id": "p0201",
+          "name": "p0201",
+          "before": {
+            "median_ms": null,
+            "min_ms": null,
+            "max_ms": null,
+            "completed": 0,
+            "attempts": 3,
+            "timeouts": 3,
+            "errors": 0,
+            "internal_median_ms": 2000.07
+          },
+          "after": {
+            "median_ms": 640.6541243195534,
+            "min_ms": 638.4319169446826,
+            "max_ms": 653.9131253957748,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 627.694292
+          }
+        },
+        {
+          "id": "p0282",
+          "name": "p0282",
+          "before": {
+            "median_ms": null,
+            "min_ms": null,
+            "max_ms": null,
+            "completed": 0,
+            "attempts": 3,
+            "timeouts": 3,
+            "errors": 0,
+            "internal_median_ms": 2000.12
+          },
+          "after": {
+            "median_ms": 159.07612536102533,
+            "min_ms": 157.41937514394522,
+            "max_ms": 159.0917082503438,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 147.533625
+          }
+        },
+        {
+          "id": "p0548",
+          "name": "p0548",
+          "before": {
+            "median_ms": null,
+            "min_ms": null,
+            "max_ms": null,
+            "completed": 0,
+            "attempts": 3,
+            "timeouts": 3,
+            "errors": 0,
+            "internal_median_ms": 2000.5000000000002
+          },
+          "after": {
+            "median_ms": 70.5472081899643,
+            "min_ms": 70.48162445425987,
+            "max_ms": 71.84308394789696,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 58.0345
+          }
+        },
+        {
+          "id": "lseu",
+          "name": "lseu",
+          "before": {
+            "median_ms": null,
+            "min_ms": null,
+            "max_ms": null,
+            "completed": 0,
+            "attempts": 3,
+            "timeouts": 3,
+            "errors": 0,
+            "internal_median_ms": 2000.0200000000002
+          },
+          "after": {
+            "median_ms": 190.51629211753607,
+            "min_ms": 189.77966532111168,
+            "max_ms": 192.13274959474802,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 181.129417
+          }
+        }
+      ],
+      "completion": {
+        "before": 1,
+        "after": 5,
+        "total": 5
+      },
+      "note": "Completion requires the solver to report optimal and an independent exact witness check to match the known optimum. Twelve old runs returned feasible points at the limit. p0201 found the known optimum but did not prove it; it remains unfinished. Numerical HiGHS status is not an exact optimality certificate."
+    },
+    {
+      "id": "native_cp",
+      "title": "Native CP: tiny end-to-end checks take longer",
+      "description": "Four unchanged legacy FlatZinc fixtures. These capabilities already existed. Preserved self-contained binaries are compared with the current shared-library build.",
+      "before_label": "Before project · native FlatZinc",
+      "after_label": "Now · native FlatZinc",
+      "protocol": "3 runs per version · 2 s solve limit",
+      "cases": [
+        {
+          "id": "public_fzn_jobshop",
+          "name": "Job-shop scheduling",
+          "before": {
+            "median_ms": 5.044084042310715,
+            "min_ms": 4.4004591181874275,
+            "max_ms": 5.101041868329048,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.061333000000000006
+          },
+          "after": {
+            "median_ms": 10.596957989037037,
+            "min_ms": 9.554874151945114,
+            "max_ms": 11.109583079814911,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.055917
+          }
+        },
+        {
+          "id": "public_fzn_cumulatives",
+          "name": "Cumulative scheduling",
+          "before": {
+            "median_ms": 4.210375249385834,
+            "min_ms": 3.950292244553566,
+            "max_ms": 4.3702078983187675,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.018917
+          },
+          "after": {
+            "median_ms": 9.190459735691547,
+            "min_ms": 8.941750042140484,
+            "max_ms": 9.425750002264977,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.02225
+          }
+        },
+        {
+          "id": "public_fzn_sudoku",
+          "name": "Sudoku",
+          "before": {
+            "median_ms": 4.5649586245417595,
+            "min_ms": 4.501374438405037,
+            "max_ms": 4.720666445791721,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.183208
+          },
+          "after": {
+            "median_ms": 9.875999763607979,
+            "min_ms": 8.919082581996918,
+            "max_ms": 9.936165995895863,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.158666
+          }
+        },
+        {
+          "id": "public_fzn_multidim_knapsack_simple",
+          "name": "Multidimensional knapsack",
+          "before": {
+            "median_ms": 4.442458041012287,
+            "min_ms": 4.166833125054836,
+            "max_ms": 4.4939592480659485,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.056749999999999995
+          },
+          "after": {
+            "median_ms": 9.367084130644798,
+            "min_ms": 9.337584488093853,
+            "max_ms": 11.360875330865383,
+            "completed": 3,
+            "attempts": 3,
+            "timeouts": 0,
+            "errors": 0,
+            "internal_median_ms": 0.047583
+          }
+        }
+      ],
+      "completion": {
+        "before": 4,
+        "after": 4,
+        "total": 4
+      },
+      "note": "Both versions match the original expected output in 12/12 runs. That is an output oracle, not an independent mathematical proof. Median internal search is only about 0.02–0.18 ms; process startup, loading, parsing and output dominate these 4–11 ms wall times. The build-layout change prevents attributing the full difference to solver algorithms."
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "Binary & bounded-integer optimization",
+      "before": "Native CP; experimental binary LP hybrid",
+      "after": "Expanded owning API",
+      "kind": "added",
+      "detail": "Native exact integer route within activity limits; numerical integer models also use HiGHS. Binary problems were already supported."
+    },
+    {
+      "name": "Continuous linear programming (LP)",
+      "before": "No general numerical LP route",
+      "after": "Added: numerical LP",
+      "kind": "added",
+      "detail": "HiGHS backend. Original FloatVar interval constraints remain a separate CP facility, not this LP solver."
+    },
+    {
+      "name": "Mixed integer + continuous linear models",
+      "before": "No general MILP route",
+      "after": "Added: numerical MILP",
+      "kind": "added",
+      "detail": "HiGHS supplies MIP search. Includes integer, binary and continuous variables; numerical bounds and tolerances apply."
+    },
+    {
+      "name": "Semicontinuous & semi-integer domains",
+      "before": "Possible CP encodings; no retained MP type",
+      "after": "Explicit domain types",
+      "kind": "partial",
+      "detail": "Numerical adapter requires a finite positive nonzero lower bound and upper bound ≤100,000. Native route accepts supported finite semi-integer domains."
+    },
+    {
+      "name": "Global constraints & scheduling",
+      "before": "Native all-different, table, circuit, scheduling and more",
+      "after": "Already available + six retained globals",
+      "kind": "retained",
+      "detail": "Original Gecode CP remains available. The new facade retains all-different, element, table, cumulative, circuit and Regular; it does not expose every native global."
+    },
+    {
+      "name": "FlatZinc & MiniZinc",
+      "before": "Native FlatZinc/MiniZinc route",
+      "after": "Existing route + opt-in new route",
+      "kind": "retained",
+      "detail": "Separate Optimize compiler/registration supports a documented integer/Boolean subset. Existing solver defaults and original route remain available."
+    },
+    {
+      "name": "Continuous convex quadratic objectives",
+      "before": "No dedicated numerical QP API",
+      "after": "Added: weighted-square subset",
+      "kind": "partial",
+      "detail": "HiGHS QP via a distinct API: bounded continuous variables, weighted affine squares, convex min/concave max. No arbitrary Hessian, QCP or integer QP."
+    },
+    {
+      "name": "LP duals, bases & sensitivity",
+      "before": "No unified original-model observation API",
+      "after": "Added: checked numerical data",
+      "kind": "partial",
+      "detail": "Owning duals, basis starts, rays/Farkas evidence and selected-basis coefficient/equality-RHS sensitivity. Sensitivity is not an exact certificate or a full vendor-equivalent range API."
+    },
+    {
+      "name": "Repeated solves & application workflows",
+      "before": "Application-managed models and search",
+      "after": "Added: explicit workflows",
+      "kind": "partial",
+      "detail": "Persistent numerical sessions, serial scenarios, ordered objectives, conflict diagnostics, weighted L1 repair and ranked pools; each has documented support and budget limits."
+    },
+    {
+      "name": "Native incumbent improvement",
+      "before": "Native branch-and-bound; application-defined heuristics",
+      "after": "Added: bounded neighborhood API",
+      "kind": "partial",
+      "detail": "One explicit binary Hamming-distance attempt after a valid incumbent. Checked against the original model; C++ only; no full heuristic portfolio."
+    },
+    {
+      "name": "Owning optimization C & Python APIs",
+      "before": "No matching Optimize C/Python package",
+      "after": "Added: versioned owning bindings",
+      "kind": "added",
+      "detail": "C++ core, versioned C handles and Python ctypes, including LP sensitivity. Current installed libraries are tested; the older wheel has not been rebuilt."
+    },
+    {
+      "name": "Mixed-integer QP, QCP & general global nonlinear MP",
+      "before": "No equivalent dedicated MP engine",
+      "after": "Still outside Optimize scope",
+      "kind": "absent",
+      "detail": "Existing finite-domain and FloatVar expression facilities are not equivalent to a general numerical/global MIQP, QCP or nonlinear engine."
+    },
+    {
+      "name": "Parallel optimization & learning",
+      "before": "Native parallel CP; no general learned hybrid",
+      "after": "Native CP retained; new hybrid work pending",
+      "kind": "partial",
+      "detail": "The added Optimize routes use one worker. Production learning, parallel hybrid search and general action callbacks remain unfinished."
+    }
+  ],
+  "new_checks": [
+    {
+      "id": "lp_sensitivity",
+      "name": "LP coefficient & equality sensitivity",
+      "wall_ms": 14.821624383330345,
+      "checks": 63,
+      "detail": "Analytic interval checks for both objective senses, quotas and historical ownership."
+    },
+    {
+      "id": "native_neighborhoods",
+      "name": "Bounded native incumbent improvement",
+      "wall_ms": 27.883917093276978,
+      "checks": 14,
+      "detail": "A real local improvement and an independently enumerated global optimum of −29."
+    }
+  ],
+  "fast": {
+    "passed": 35,
+    "required": 35,
+    "external_ms": 5800.286708399653
+  },
+  "raw_measurements": {
+    "schema_version": 1,
+    "before_label": "Pre-project experimental checkout",
+    "now_label": "Current integrated implementation",
+    "source_head": "2da8c21a64dddcce6aed58232238a0a138675509",
+    "repetitions": 3,
+    "per_solve_seconds": 2,
+    "wall_seconds": 28.87205804232508,
+    "all_records": 54,
+    "tracks": [
+      {
+        "id": "mip",
+        "cases": [
+          {
+            "id": "p0033",
+            "before": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "optimal",
+                "optimal",
+                "optimal"
+              ],
+              "wall_seconds": [
+                0.01725245825946331,
+                0.01642687525600195,
+                0.01621541753411293
+              ],
+              "median_wall_seconds": 0.01642687525600195,
+              "median_internal_seconds": 0.0124447,
+              "objectives": [
+                3089.0,
+                3089.0,
+                3089.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "optimal",
+                "optimal",
+                "optimal"
+              ],
+              "wall_seconds": [
+                0.030855958350002766,
+                0.029966709204018116,
+                0.030774000100791454
+              ],
+              "median_wall_seconds": 0.030774000100791454,
+              "median_internal_seconds": 0.02165425,
+              "objectives": [
+                3089.0,
+                3089.0,
+                3089.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "uncensored_ratio_now_over_before": 1.824248905346077,
+            "censored": false
+          },
+          {
+            "id": "p0201",
+            "before": {
+              "runs": 3,
+              "completed": 0,
+              "statuses": [
+                "feasible",
+                "feasible",
+                "feasible"
+              ],
+              "wall_seconds": [
+                2.005339833907783,
+                2.005091417580843,
+                2.0048357909545302
+              ],
+              "median_wall_seconds": 2.005091417580843,
+              "median_internal_seconds": 2.00007,
+              "objectives": [
+                7615.0,
+                7615.0,
+                7615.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "optimal",
+                "optimal",
+                "optimal"
+              ],
+              "wall_seconds": [
+                0.6539131253957748,
+                0.6384319169446826,
+                0.6406541243195534
+              ],
+              "median_wall_seconds": 0.6406541243195534,
+              "median_internal_seconds": 0.627694292,
+              "objectives": [
+                7615.0,
+                7615.0,
+                7615.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "uncensored_ratio_now_over_before": null,
+            "censored": true
+          },
+          {
+            "id": "p0282",
+            "before": {
+              "runs": 3,
+              "completed": 0,
+              "statuses": [
+                "feasible",
+                "feasible",
+                "feasible"
+              ],
+              "wall_seconds": [
+                2.005312000401318,
+                2.0052555417641997,
+                2.005481792613864
+              ],
+              "median_wall_seconds": 2.005312000401318,
+              "median_internal_seconds": 2.00012,
+              "objectives": [
+                387619.0,
+                386895.0,
+                386895.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "optimal",
+                "optimal",
+                "optimal"
+              ],
+              "wall_seconds": [
+                0.1590917082503438,
+                0.15741937514394522,
+                0.15907612536102533
+              ],
+              "median_wall_seconds": 0.15907612536102533,
+              "median_internal_seconds": 0.147533625,
+              "objectives": [
+                258411.0,
+                258411.0,
+                258411.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "uncensored_ratio_now_over_before": null,
+            "censored": true
+          },
+          {
+            "id": "p0548",
+            "before": {
+              "runs": 3,
+              "completed": 0,
+              "statuses": [
+                "feasible",
+                "feasible",
+                "feasible"
+              ],
+              "wall_seconds": [
+                2.006830083206296,
+                2.006179416552186,
+                2.006000875495374
+              ],
+              "median_wall_seconds": 2.006179416552186,
+              "median_internal_seconds": 2.0005,
+              "objectives": [
+                28554.0,
+                28554.0,
+                28554.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "optimal",
+                "optimal",
+                "optimal"
+              ],
+              "wall_seconds": [
+                0.0705472081899643,
+                0.07184308394789696,
+                0.07048162445425987
+              ],
+              "median_wall_seconds": 0.0705472081899643,
+              "median_internal_seconds": 0.0580345,
+              "objectives": [
+                8691.0,
+                8691.0,
+                8691.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "uncensored_ratio_now_over_before": null,
+            "censored": true
+          },
+          {
+            "id": "lseu",
+            "before": {
+              "runs": 3,
+              "completed": 0,
+              "statuses": [
+                "feasible",
+                "feasible",
+                "feasible"
+              ],
+              "wall_seconds": [
+                2.0048314165323973,
+                2.004163875244558,
+                2.004320750012994
+              ],
+              "median_wall_seconds": 2.004320750012994,
+              "median_internal_seconds": 2.00002,
+              "objectives": [
+                2278.0,
+                2278.0,
+                2278.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "optimal",
+                "optimal",
+                "optimal"
+              ],
+              "wall_seconds": [
+                0.19051629211753607,
+                0.19213274959474802,
+                0.18977966532111168
+              ],
+              "median_wall_seconds": 0.19051629211753607,
+              "median_internal_seconds": 0.181129417,
+              "objectives": [
+                1120.0,
+                1120.0,
+                1120.0
+              ],
+              "validation": [
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains",
+                "independent_exact_original_rows_and_domains"
+              ]
+            },
+            "uncensored_ratio_now_over_before": null,
+            "censored": true
+          }
+        ],
+        "required_runs_per_cohort": 15,
+        "before": {
+          "completed_runs": 3,
+          "all_runs": 15,
+          "all_repetitions_completed_cases": 1
+        },
+        "now": {
+          "completed_runs": 15,
+          "all_runs": 15,
+          "all_repetitions_completed_cases": 5
+        }
+      },
+      {
+        "id": "native_cp",
+        "cases": [
+          {
+            "id": "public_fzn_jobshop",
+            "before": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.005044084042310715,
+                0.005101041868329048,
+                0.0044004591181874275
+              ],
+              "median_wall_seconds": 0.005044084042310715,
+              "median_internal_seconds": 6.1333e-05,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.010596957989037037,
+                0.011109583079814911,
+                0.009554874151945114
+              ],
+              "median_wall_seconds": 0.010596957989037037,
+              "median_internal_seconds": 5.5917e-05,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "uncensored_ratio_now_over_before": 2.17133573914006,
+            "censored": false
+          },
+          {
+            "id": "public_fzn_cumulatives",
+            "before": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.0043702078983187675,
+                0.004210375249385834,
+                0.003950292244553566
+              ],
+              "median_wall_seconds": 0.004210375249385834,
+              "median_internal_seconds": 1.8917e-05,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.008941750042140484,
+                0.009190459735691547,
+                0.009425750002264977
+              ],
+              "median_wall_seconds": 0.009190459735691547,
+              "median_internal_seconds": 2.225e-05,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "uncensored_ratio_now_over_before": 2.182812502764963,
+            "censored": false
+          },
+          {
+            "id": "public_fzn_sudoku",
+            "before": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.0045649586245417595,
+                0.004720666445791721,
+                0.004501374438405037
+              ],
+              "median_wall_seconds": 0.0045649586245417595,
+              "median_internal_seconds": 0.000183208,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.008919082581996918,
+                0.009936165995895863,
+                0.009875999763607979
+              ],
+              "median_wall_seconds": 0.009875999763607979,
+              "median_internal_seconds": 0.000158666,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "uncensored_ratio_now_over_before": 2.104822721536181,
+            "censored": false
+          },
+          {
+            "id": "public_fzn_multidim_knapsack_simple",
+            "before": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.004166833125054836,
+                0.0044939592480659485,
+                0.004442458041012287
+              ],
+              "median_wall_seconds": 0.004442458041012287,
+              "median_internal_seconds": 5.675e-05,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "now": {
+              "runs": 3,
+              "completed": 3,
+              "statuses": [
+                "passed",
+                "passed",
+                "passed"
+              ],
+              "wall_seconds": [
+                0.009367084130644798,
+                0.011360875330865383,
+                0.009337584488093853
+              ],
+              "median_wall_seconds": 0.009367084130644798,
+              "median_internal_seconds": 4.7583e-05,
+              "objectives": [
+                null,
+                null,
+                null
+              ],
+              "validation": [
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output",
+                "exact_unchanged_upstream_output"
+              ]
+            },
+            "uncensored_ratio_now_over_before": 2.248010383310353,
+            "censored": false
+          }
+        ],
+        "required_runs_per_cohort": 12,
+        "before": {
+          "completed_runs": 12,
+          "all_runs": 12,
+          "all_repetitions_completed_cases": 4
+        },
+        "now": {
+          "completed_runs": 12,
+          "all_runs": 12,
+          "all_repetitions_completed_cases": 4
+        }
+      }
+    ],
+    "caveats": [
+      "Five pure-binary MIPLIB3 classics; not a broad MILP performance score.",
+      "Native CP uses the unchanged default FlatZinc path and pre-existing capabilities.",
+      "MIP before is the pre-existing experimental binary auto adapter; now is the numerical HiGHS facade. Different public file formats have exact mathematical equivalence.",
+      "Native CP uses exact upstream expected output, not an independent mathematical checker.",
+      "End-to-end times include startup, import, search and output; tiny cases are startup-sensitive.",
+      "Three alternating paired repetitions; one process at a time. No warm starts or reference assignments.",
+      "No speedup ratio is published for a case with a censored or unsuccessful repetition.",
+      "Before executables statically link native libraries; current executables use shared libraries. End-to-end differences include this build/layout difference, so the tiny native timings are not evidence of slower propagation.",
+      "Before p0201 found a known-optimal assignment in each repetition, but did not prove completion within two seconds; feasibility and proof completion are reported separately.",
+      "Every native Gecode source file recorded by the old build manifests matches the initial project snapshot; remaining metadata differences are experimental benchmark scripts/driver source irrelevant to the old FlatZinc binary."
+    ],
+    "compiled_facade_head": "c2fabb78f1fc3bcfd7432eb71cfdb22656cd3f60",
+    "initial_snapshot_head": "e10562fd9",
+    "upstream_base": "3e0e8ee76fb4ba01c53616dce02c0bb1a53f159e",
+    "current_fast": {
+      "external_seconds": 5.800286708399653,
+      "returncode": 0,
+      "required_cases": 35,
+      "passed": true,
+      "reported_elapsed_seconds": 5.716812875121832
+    }
+  },
+  "raw_provenance": {
+    "schema_version": 1,
+    "source_head": "2da8c21a64dddcce6aed58232238a0a138675509",
+    "compiled_facade_head": "c2fabb78f1fc3bcfd7432eb71cfdb22656cd3f60",
+    "initial_snapshot_head": "e10562fd9",
+    "upstream_base": "3e0e8ee76fb4ba01c53616dce02c0bb1a53f159e",
+    "runner_sha256": "719e921b738ec4780cedc56e031f440c648618b7a6a0e89d05c949b628890abc",
+    "binary_hashes": {
+      "mip": {
+        "before": {
+          "filename": "enhanced-binary",
+          "sha256": "c77953bd11dba0a8bf205e9f5d0941bc94280c9ffcc9cd5d172674e03d88a28b"
+        },
+        "now": {
+          "filename": "optimize-file",
+          "sha256": "97cb18f1ac74721b093808269954ce6e00bb37b414916aacd60ec2a30a36729b"
+        }
+      },
+      "native_cp": {
+        "before": {
+          "filename": "enhanced-fzn",
+          "sha256": "c1121f1490166fd4ca0425a4aa73af319547d64fbef199c0228e35fc54a5cb0b"
+        },
+        "now": {
+          "filename": "fzn-gecode",
+          "sha256": "acf35dcb3705beb22ac43d027c8db463fb58dbd34eb9e1818049dd9e2324e66c"
+        }
+      }
+    },
+    "library_hashes": [
+      {
+        "filename": "libgecodeoptimize.dylib",
+        "sha256": "3fd895b5599cc2f5fd392469e9da3abc3923399c0850c29fb8e4d7f8e646fe8e"
+      },
+      {
+        "filename": "libgecodedriver.6.4.0.dylib",
+        "sha256": "977abee2a234dbeee4db6fdc8a1b4f1ebdd59266509b0eaf7c48a4720989a609"
+      },
+      {
+        "filename": "libgecodeflatzinc.6.4.0.dylib",
+        "sha256": "31eb5241319cdb9e9330df6c3316483f0a0ef056fb53fa458f95b6290601409c"
+      },
+      {
+        "filename": "libgecodefloat.6.4.0.dylib",
+        "sha256": "8a829ff435d7af3a539279dfc36967257863f8790175a932f113f954970aa8d0"
+      },
+      {
+        "filename": "libgecodeint.6.4.0.dylib",
+        "sha256": "a3d780f5fa831a98692d9ca8664ee9681bdbb421851680f59f25ae2a69d4e752"
+      },
+      {
+        "filename": "libgecodekernel.6.4.0.dylib",
+        "sha256": "6eac6266c1730ef314c1c55c93bf5804bc0d6bf48a4d5f49cc162084635ffe82"
+      },
+      {
+        "filename": "libgecodeminimodel.6.4.0.dylib",
+        "sha256": "67237fc86812ad3589eb0721e88d28b9b91df028c8049f0f739a5362189aefcf"
+      },
+      {
+        "filename": "libgecodesearch.6.4.0.dylib",
+        "sha256": "7a5ef2813bcd1d387de9aeaca5c500efe9b9b23b0262deef0c7d0eab7e357e8f"
+      },
+      {
+        "filename": "libgecodeset.6.4.0.dylib",
+        "sha256": "df36089032432c6219707766734c2d003b05444a26cf71a66f96d595c3d5434c"
+      },
+      {
+        "filename": "libgecodesupport.6.4.0.dylib",
+        "sha256": "f646526c2376fea5faf52823d7f16ef129cc862db1c043d693d62d395c6448d7"
+      }
+    ],
+    "inputs": {
+      "p0033": {
+        "mps_sha256": "8ccff819023237c79ef32e238a5da9348725ce9a4425d48888baf3a0b3b42628",
+        "old_txt_sha256": "d07a73e53afd265a31bfbf85f3d8061064760306099a676bf3b6296f19ac9793",
+        "old_json_sha256": "1f8a376be6004627566c3737eb85e3f7f29c8ec3ee175763b1c9b1f3bd893ef1",
+        "exact_equivalent": true,
+        "known_optimum": 3089,
+        "columns": 33,
+        "original_rows": 16
+      },
+      "p0201": {
+        "mps_sha256": "8352d7f121289185f443fdc67080fa9de01e5b9bf11b0bf41087fba4277c07a4",
+        "old_txt_sha256": "f0b1968004719c39aae88efb33c39e68c74c7efc6f077b62f037807fb56d53bf",
+        "old_json_sha256": "d7084ebeddb73a6ee3939ff8cdc2d77a06ce52f88a25324821fb3164e5aaacd8",
+        "exact_equivalent": true,
+        "known_optimum": 7615,
+        "columns": 201,
+        "original_rows": 133
+      },
+      "p0282": {
+        "mps_sha256": "3bf907c6aa3cbf80de7c48ca8e71dc29f5d70f6e5fffb716502bfc5c513196a1",
+        "old_txt_sha256": "408420f2b345c8d282a3983db60712a6db2cff838be4c79e1bad5dc8df7979d1",
+        "old_json_sha256": "a7d7aaeb805399226501d896449609fe0918f50e1becca6152cbc3952749721f",
+        "exact_equivalent": true,
+        "known_optimum": 258411,
+        "columns": 282,
+        "original_rows": 241
+      },
+      "p0548": {
+        "mps_sha256": "81fa3fb1e071cac0b72649c38196c18bca7ff6d7f2f6639776dcb0daf6bcab15",
+        "old_txt_sha256": "42c9a4871e7ad41cf3edbf2c55509667c11fc9826f1a681691f98fcd682e44d4",
+        "old_json_sha256": "dd1e7c090b1c6aa69687bfa38fdda124bd9622ff96760bc5a0bca64542f1782b",
+        "exact_equivalent": true,
+        "known_optimum": 8691,
+        "columns": 548,
+        "original_rows": 176
+      },
+      "lseu": {
+        "mps_sha256": "00416576ed4adac15b62b1982cb7be9d7dcb2d6505067dd8396183ff1eac3dab",
+        "old_txt_sha256": "9fbd0b9d8d97907b88baac78b687e85b4fa046a082b6e3af0fc8a4cadac00d47",
+        "old_json_sha256": "4a5cb033dd9afba96a9149d61cb93cec5a5afbc48ac04d6145694c9e55c57867",
+        "exact_equivalent": true,
+        "known_optimum": 1120,
+        "columns": 89,
+        "original_rows": 28
+      },
+      "public_fzn_cumulatives": {
+        "fzn_sha256": "2982f04cf31062f9c3806e400e9e23543652a28588742c06e44aa7806348867a",
+        "expected_sha256": "45939d382d16d51b6a2cdb164732a49fb72ea8d13da7b7e6ae9cb391b0620107",
+        "family": "scheduling",
+        "method": "satisfy",
+        "all_solutions": false
+      },
+      "public_fzn_jobshop": {
+        "fzn_sha256": "b8cf76fa19b5c167c8234d57eb4687d70429e95841227bda01ee2ca4cc0a05b5",
+        "expected_sha256": "1654ffcba431fbcc189183eed0c8b6138f464261c9c7f18eef8cd0cf550adf84",
+        "family": "scheduling",
+        "method": "minimize",
+        "all_solutions": false
+      },
+      "public_fzn_multidim_knapsack_simple": {
+        "fzn_sha256": "6f6acc59aa0055b0989c0ce99cd16261d4c0222ee0fd9781d9780a7f9cabed48",
+        "expected_sha256": "497377fbc5dbb4cf2ec11fd9d775809003ca1f50a66a92da4b6c62dbebdb90a1",
+        "family": "allocation_production",
+        "method": "maximize",
+        "all_solutions": false
+      },
+      "public_fzn_sudoku": {
+        "fzn_sha256": "ffccdeaebbd461604983a6c80caa9a9741b438b464d21b5a307a346908639bab",
+        "expected_sha256": "37aa1bfb97da394d8e0fc043681b172d10deb4387ba2c67ab2afc3e191fef631",
+        "family": "latin_magic_design",
+        "method": "satisfy",
+        "all_solutions": false
+      }
+    },
+    "runtime_hashes_unchanged": true,
+    "all_recorded_native_source_files_match_initial_snapshot": true
+  },
+  "evidence_sha256": {
+    "summary.json": "7a3fa7a2d1e8fb8c054f27f5bc9694035070ef7050a630adea514fa5e16db09c",
+    "report.json": "1682798e2002e6c4c119641305a6f75838970787b3bde8428f136b0f85b18035",
+    "current-fast.json": "367953adf99670db01a6163ea5474d90d0a1c1beda504154ed7b3f36a0435df1",
+    "current-fast-wall.json": "7d6f415fe7cf0afae79295450372faf937af9d6412a84ad5651e7ab92be0a365"
+  }
+}
