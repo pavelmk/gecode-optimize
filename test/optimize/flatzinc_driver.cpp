@@ -5,8 +5,8 @@
 
 namespace FznOptimizeDriver {
 int fake=0,calls=0;
-O::SolveResult test_solve(const O::ModelSnapshot& m,const O::SolveOptions& options) {
-  ++calls;if(!fake)return O::solve(m,options);
+SolveOutput test_solve(const O::ModelSnapshot& m,const Options& controls,const O::SolveOptions& options) {
+  ++calls;if(!fake)return dispatch(m,controls,options);
   O::SolveResult r;r.model_id=m.model_id;r.revision=m.revision;r.guarantee=options.guarantee;
   r.termination=O::Termination::Optimal;r.values.resize(m.variables.size(),0);
   r.active_variables.resize(m.variables.size(),true);r.solution_validated=true;r.objective=0;
@@ -34,9 +34,10 @@ O::SolveResult test_solve(const O::ModelSnapshot& m,const O::SolveOptions& optio
     case 20:r.absolute_gap=std::numeric_limits<double>::quiet_NaN();break;
     case 21:r.relative_gap=1;break;
     case 22:r.termination=O::Termination::Infeasible;clear();r.objective=std::numeric_limits<double>::quiet_NaN();break;
+    case 23:r.backend="native\r\n=====UNSATISFIABLE=====";r.message="policy\n==========\tmessage";break;
     default:break;
   }
-  return r;
+  return {r,fake==23?"counter\n=====UNKNOWN=====":""};
 }
 }
 using namespace FznOptimizeDriver;
@@ -61,6 +62,63 @@ void rejected_arguments() {
   }
   auto valid=arguments({"-","--backend","highs","--time-limit","1e2","--node-limit","18446744073709551615"});
   assert(valid.solve.time_limit_seconds==100&&valid.solve.node_limit==std::numeric_limits<std::uint64_t>::max());++checks;
+}
+void native_arguments() {
+  const std::vector<std::vector<std::string>> invalid={
+    {"--native-mode","unknown"},{"--native-mode"},
+    {"--native-diagnostics","true"},{"--native-unknown","on"},
+    {"--native-mode","auto","--native-mode","auto"},
+    {"--native-node-limit","1","--node-limit","2"},
+    {"--node-limit","1","--native-node-limit","2"},
+    {"--backend","highs","--native-mode","auto"},
+    {"--backend","highs","--native-diagnostics","off"},
+    {"--native-mode","plain","--native-auto-knapsack","off"},
+    {"--native-auto-presolve","true"},{"--native-race-seconds","2"},
+    {"--native-mode","race","--native-race-seconds","nan"},
+    {"--native-mode","race","--native-race-seconds","-1"},
+    {"--native-mode","race","--native-race-nodes","0"},
+    {"--native-mode","race","--native-race-nodes","18446744073709551616"},
+    {"--native-lp","root"},{"--native-mode","configured","--native-lp","bad"},
+    {"--native-mode","configured","--native-root-cuts","on"},
+    {"--native-mode","configured","--native-bound-tightening","off"},
+    {"--native-mode","configured","--native-lp","root","--native-lp-interval","2"},
+    {"--native-mode","configured","--native-lp","updated","--native-lp-interval","0"},
+    {"--native-mode","configured","--native-lp","updated","--native-lp-interval","4294967296"},
+    {"--native-mode","configured","--native-search","bab","--native-branching","default"},
+    {"--native-mode","configured","--native-search","bab","--native-max-open-nodes","1"},
+    {"--native-mode","configured","--native-search","bab","--native-neighborhood","off"},
+    {"--native-mode","configured","--native-branching-probes","1"},
+    {"--native-mode","configured","--native-neighborhood-radius","1"},
+    {"--native-mode","configured","--native-neighborhood-nodes","1"},
+    {"--native-mode","configured","--native-neighborhood-seconds","1"},
+    {"--native-mode","configured","--native-neighborhood","hamming","--native-neighborhood-seconds","inf"},
+    {"--native-mode","configured","--native-max-open-nodes","18446744073709551616"}
+  };
+  for(auto args:invalid) {
+    args.insert(args.begin(),"m");bool threw=false;
+    try{arguments(args);}catch(const std::invalid_argument&){threw=true;}assert(threw);++checks;
+    // Native-prefixed controls use identical validation in the MiniZinc protocol.
+    args.insert(args.begin(),"--minizinc");threw=false;
+    try{arguments(args);}catch(const std::invalid_argument&){threw=true;}assert(threw);++checks;
+  }
+  auto automatic=arguments({"--minizinc","--native-auto-presolve","off","-t","1000","m",
+    "--native-auto-components","off","--native-auto-symmetry","off","--native-auto-knapsack","off"});
+  assert(!automatic.automatic.presolve&&!automatic.automatic.components&&!automatic.automatic.symmetry&&!automatic.automatic.knapsack);
+  assert(automatic.solve.time_limit_seconds==1&&automatic.filename=="m");++checks;
+  auto race=arguments({"m","--native-mode","race","--native-race-seconds","0","--native-race-nodes","1"});
+  assert(race.race.exploration_seconds==0&&race.race.probe_node_limit==1);++checks;
+  auto configured=arguments({"--minizinc","m","--native-mode","configured","--native-search","best-bound",
+    "--native-lp","updated","--native-lp-interval","7","--native-root-cuts","on","--native-bound-tightening","off",
+    "--native-branching","reliability","--native-branching-probes","19","--native-max-open-nodes","50",
+    "--native-neighborhood","hamming","--native-neighborhood-radius","2","--native-neighborhood-nodes","17",
+    "--native-neighborhood-seconds","0.25","--native-node-limit","99","--native-diagnostics","on"});
+  const auto search=search_options(configured,configured.solve);
+  assert(search.order==O::NativeSearchOrder::BestBound&&search.relaxation&&search.relaxation->root_cover_cuts);
+  assert(!search.relaxation->bound_tightening&&search.relaxation->bound_change_interval==7);
+  assert(search.relaxation->frequency==O::NativeLpFrequency::AfterBoundChanges&&search.branching&&
+    search.branching->max_probe_status_calls==19&&search.max_open_nodes==50);
+  assert(configured.neighborhood_settings.radius==2&&configured.neighborhood_settings.max_status_calls==17&&
+    configured.neighborhood_settings.time_limit_seconds==0.25&&configured.solve.node_limit==99&&configured.diagnostics);++checks;
 }
 void fake_contract() {
   for(fake=1;fake<=22;++fake) {
@@ -92,7 +150,38 @@ void fake_contract() {
   assert(holes.first==0&&calls==1&&holes.second.find("x = 0;")!=std::string::npos);
   calls=0;
   assert(run("var {-1,1}: x :: output_var; solve minimize x;").first==2&&calls==1);
+  fake=23;Options diagnostic;diagnostic.diagnostics=true;
+  auto escaped=run(basic,diagnostic);assert(escaped.first==0);
+  assert(escaped.second.find("\n=====UNSATISFIABLE=====")==std::string::npos&&
+    escaped.second.find("\n=====UNKNOWN=====")==std::string::npos&&
+    escaped.second.find("% native-backend: native  =====UNSATISFIABLE=====\n")!=std::string::npos&&
+    escaped.second.find("% native-policy: policy ========== message\n")!=std::string::npos);
   fake=0;
+}
+void actual_native_controls() {
+  for(const auto& mode:{"auto","plain","race","configured"}) {
+    auto o=arguments({"m","--native-mode",mode,"--native-diagnostics","on"});
+    auto solved=run(basic,o);
+    if(!O::native_capabilities().available) {assert(solved.first==2);continue;}
+    assert(solved.first==0&&solved.second.find(std::string("% native-mode: ")+mode+"\n")!=std::string::npos&&
+      solved.second.find("x = 0;\n----------\n==========\n")!=std::string::npos);
+    if(std::string(mode)=="configured")assert(solved.second.find("native frontier")!=std::string::npos);
+  }
+  for(const auto& order:{"bab","dfs","best-bound"})for(const auto& lp:{"off","root","updated"}) {
+    std::vector<std::string> args={"m","--native-mode","configured","--native-search",order,"--native-lp",lp,"--native-diagnostics","on"};
+    if(std::string(lp)!="off")args.insert(args.end(),{"--native-root-cuts","on"});
+    if(std::string(order)!="bab")args.insert(args.end(),{"--native-branching","reliability","--native-neighborhood","hamming"});
+    auto solved=run(basic,arguments(args));
+    if(!O::native_capabilities().available||(std::string(lp)!="off"&&!O::native_lp_capabilities().available)) {
+      assert(solved.first==2);continue;
+    }
+    assert(solved.first==0&&solved.second.find("x = 0;")!=std::string::npos);
+    if(std::string(lp)!="off")assert(solved.second.find("checked LP")!=std::string::npos&&solved.second.find("lp-calls=")!=std::string::npos);
+    if(std::string(order)!="bab")assert(solved.second.find("branching-probes=")!=std::string::npos&&solved.second.find("neighborhood-attempts=")!=std::string::npos);
+  }
+  auto zero=arguments({"--minizinc","m","--native-mode","race","--native-node-limit","0","--native-diagnostics","on"});
+  auto stopped=run(basic,zero);
+  if(O::native_capabilities().available)assert(stopped.first==0&&stopped.second.find("=====UNKNOWN=====")!=std::string::npos&&stopped.second.find("x =")==std::string::npos);
 }
 void actual_pipeline() {
   int available=0;
@@ -126,4 +215,4 @@ void actual_pipeline() {
 #endif
 }
 }
-int main() {rejected_arguments();fake_contract();actual_pipeline();assert(checks>=50);std::cout<<"FlatZinc complete frontend: "<<checks<<" status/argument/source pipeline checks\n";}
+int main() {rejected_arguments();native_arguments();fake_contract();actual_pipeline();actual_native_controls();assert(checks>=120);std::cout<<"FlatZinc complete frontend: "<<checks<<" status/argument/source pipeline checks\n";}

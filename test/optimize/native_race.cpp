@@ -51,7 +51,10 @@ int main(){
   o.solve.relative_gap=o.solve.absolute_gap=0;o.solve.time_limit_seconds=5;
   o.exploration_seconds=1;o.probe_node_limit=1;
   if(!native_capabilities().available){auto m=fixture(false,0);
-    assert(solve_native_race(m,o).termination==Termination::Unsupported);return 0;}
+    o.automatic={false,false,false,false};
+    assert(solve_native_race(m,o).termination==Termination::Unsupported);
+    o.probe_node_limit=0;
+    assert(solve_native_race(m,o).termination==Termination::InvalidModel);return 0;}
   bool saw_two=false;
   for(bool maximize:{false,true})for(int seed=0;seed<4;++seed){
     auto m=fixture(maximize,seed);auto s=m.snapshot();auto optimum=oracle(s);
@@ -68,6 +71,16 @@ int main(){
     }
     auto disabled=o;disabled.exploration_seconds=0;
     auto d=solve_native_race(s,disabled);check(s,d,optimum);assert(d.termination==Termination::Optimal);
+    // Configured automatic candidates retain the same original semantics and
+    // obey the global cap across both probes and the selected restart.
+    auto configured=o;configured.automatic={false,false,false,false};
+    auto configured_result=solve_native_race(s,configured);check(s,configured_result,optimum);
+    assert(configured_result.termination==Termination::Optimal);
+    configured.solve.node_limit=2;
+    configured_result=solve_native_race(s,configured);check(s,configured_result,optimum);
+    assert(configured_result.termination==Termination::Optimal || configured_result.termination==Termination::NodeLimit);
+    const auto nodes=configured_result.message.find("cumulative nodes=");assert(nodes!=std::string::npos);
+    assert(std::stoull(configured_result.message.substr(nodes+17))<=2);
     auto start=o;for(auto v:s.variables)start.solve.primal_start.push_back({v.variable,result.values[v.variable.id]});
     auto started=solve_native_race(s,start);check(s,started,optimum);
     assert(started.message.find("Native race skipped")==0);
@@ -77,6 +90,18 @@ int main(){
     assert(solve_native_race(s,stopped).termination==Termination::Cancelled);
   }
   assert(saw_two);
+  // Disabled exploration still forwards settings, rather than falling back to
+  // an unconfigured automatic solve. Isolate symmetry to observe its effect.
+  Model symmetric;std::vector<Term> terms;
+  for(int i=0;i<6;++i)terms.push_back({symmetric.add_binary(),1});
+  symmetric.add_row(terms,2,4);symmetric.minimize(terms,-3);
+  for(bool enabled:{false,true}){
+    auto configured=o;configured.exploration_seconds=0;
+    configured.automatic={false,false,enabled,false};
+    auto result=solve_native_race(symmetric,configured);check(symmetric.snapshot(),result,-1);
+    assert(result.termination==Termination::Optimal && result.message.find("Native race skipped")==0);
+    assert((result.message.find("duplicate-column symmetry")!=std::string::npos)==enabled);
+  }
   auto m=fixture(false,0);auto invalid=o;invalid.exploration_seconds=-1;
   assert(solve_native_race(m,invalid).termination==Termination::InvalidModel);
   invalid=o;invalid.probe_node_limit=0;

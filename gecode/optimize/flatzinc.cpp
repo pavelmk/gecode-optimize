@@ -302,7 +302,11 @@ struct FlatZincCompiler {
       auto& d=domains[i];const auto& v=source.raw_variables[i];d.finish(meter);
       if(!d.lower||!d.upper)unsupported("FlatZinc integer variable has no finite explicit domain");
       const auto lo=d.empty?0:*d.lower,hi=d.empty?0:*d.upper;
-      handles[i]=model.add_variable(v.reference.type==F::Type::Boolean?VariableType::Binary:VariableType::Integer,number(lo),number(hi),v.name);
+      // MiniZinc commonly emits binary decisions as integer 0..1 declarations.
+      // Retain their source integer type in the owning records/output mapping,
+      // while exposing the equivalent binary domain to native heuristics.
+      const bool binary=v.reference.type==F::Type::Boolean || (!d.empty && lo>=0 && hi<=1);
+      handles[i]=model.add_variable(binary?VariableType::Binary:VariableType::Integer,number(lo),number(hi),v.name);
       ++variables;
       if(d.empty)post({},1,1);
       else if(d.members) {

@@ -1063,7 +1063,8 @@ namespace {
 SolveResult solve_native_impl(const ModelSnapshot& model, const SolveOptions& options,
                               const NativeLpOptions* lp_options,
                               NativeLpStatistics* lp_statistics,
-                              const SolveBudget* inherited_budget = nullptr) {
+                              const SolveBudget* inherited_budget = nullptr,
+                              [[maybe_unused]] bool root_knapsack = true) {
   const auto started = std::chrono::steady_clock::now();
   SolveResult result;
   result.model_id = model.model_id; result.revision = model.revision;
@@ -1125,7 +1126,8 @@ SolveResult solve_native_impl(const ModelSnapshot& model, const SolveOptions& op
     Search::Options search_options;
     search_options.threads = 1; search_options.clone = true; search_options.stop = &stop;
     if (start_cost) start_checkpoint(budget, "start_root_alloc");
-    auto root = std::make_unique<NativeSpace>(compiled, budget, nullptr, !lp_options);
+    auto root = std::make_unique<NativeSpace>(compiled, budget, nullptr,
+                                             root_knapsack && !lp_options);
     if (start_cost) start_cutoff(*root, *start_cost, budget);
     checkpoint(budget);
     BAB<NativeSpace> search(root.get(), search_options);
@@ -2141,13 +2143,14 @@ struct AutomaticNativeSelection {
 };
 
 AutomaticNativeSelection select_native_route(const ModelSnapshot& model,
-    const SolveOptions& options, const SolveBudget& budget) {
+    const SolveOptions& options, const SolveBudget& budget,
+    const NativeAutoSettings& settings) {
   // Optional routes must never change acceptance of an explicit native option.
   if ((options.backend != Backend::Auto && options.backend != Backend::Native) ||
       options.guarantee == Guarantee::Certified || options.threads != 1 || options.random_seed != 0)
     return {AutomaticNativeRoute::Native,"native option compatibility"};
-#ifndef GECODE_OPTIMIZE_NATIVE_LP_ENABLED
-  (void)model; (void)budget;
+#ifndef GECODE_OPTIMIZE_WITH_NATIVE
+  (void)model; (void)budget; (void)settings;
   return {AutomaticNativeRoute::Native,"checked LP unavailable"};
 #else
   // Bound selection's extra work before calling the full native validator or
@@ -2179,8 +2182,11 @@ AutomaticNativeSelection select_native_route(const ModelSnapshot& model,
   const auto compiled = compile(model,budget);
   if (!compiled.binary_domains || compiled.rows.empty())
     return {AutomaticNativeRoute::Native,"binary domain or row structure"};
-  if (prepare_knapsack(compiled,budget))
+  if (settings.knapsack && prepare_knapsack(compiled,budget))
     return {AutomaticNativeRoute::Native,"eligible exact knapsack DP"};
+#ifndef GECODE_OPTIMIZE_NATIVE_LP_ENABLED
+  return {AutomaticNativeRoute::Native,"checked LP unavailable"};
+#else
   // Use the same checked-LP numeric admission as the explicit LP API, without
   // constructing an LP backend or solving a relaxation during selection.
   try { (void)relaxation_model(compiled,budget); }
@@ -2201,18 +2207,19 @@ AutomaticNativeSelection select_native_route(const ModelSnapshot& model,
     return {AutomaticNativeRoute::UpdatedLp,"updated checked LP with covers; gap-compatible BAB",true};
   return {AutomaticNativeRoute::ReliabilityLp,"updated checked LP, covers and binary reliability",true};
 #endif
+#endif
 }
 
 SolveResult native_auto_impl(const ModelSnapshot& model, const SolveOptions& options,
-                             SolveBudget& budget) {
+                             SolveBudget& budget, const NativeAutoSettings& settings) {
   SolveResult result;
   result.model_id=model.model_id; result.revision=model.revision;
   result.backend="Gecode native"; result.guarantee=options.guarantee;
   AutomaticNativeSelection selected;
   try {
-    selected=select_native_route(model,options,budget);
+    selected=select_native_route(model,options,budget,settings);
     if (selected.route == AutomaticNativeRoute::Native) {
-      result=solve_native_impl(model,options,nullptr,nullptr,&budget);
+      result=solve_native_impl(model,options,nullptr,nullptr,&budget,settings.knapsack);
     } else {
       NativeLpOptions lp; lp.solve=options;
       if (selected.route != AutomaticNativeRoute::RootLp) {
@@ -2238,7 +2245,7 @@ SolveResult native_auto_impl(const ModelSnapshot& model, const SolveOptions& opt
     // observes a stop before reaching validate_structure. No search can start
     // because the same exhausted/cancelled budget reaches the native bridge.
     (void)error;
-    result=solve_native_impl(model,options,nullptr,nullptr,&budget);
+    result=solve_native_impl(model,options,nullptr,nullptr,&budget,settings.knapsack);
   } catch (const Unsupported& error) {
     result.termination=Termination::Unsupported; result.message=error.what();
   } catch (const ModelError& error) {
@@ -2260,12 +2267,13 @@ SolveResult native_auto_impl(const ModelSnapshot& model, const SolveOptions& opt
 // Transformations are internal and single-pass. Explicit native APIs retain
 // their original behavior; all callbacks keep the same global budget.
 SolveResult native_auto_pipeline(const ModelSnapshot& model, const SolveOptions& options,
-                                 SolveBudget& budget) {
+                                 SolveBudget& budget, const NativeAutoSettings& settings) {
 #ifndef GECODE_OPTIMIZE_WITH_NATIVE
-  return native_auto_impl(model,options,budget);
+  return native_auto_impl(model,options,budget,settings);
 #else
-  const auto fallback=[&]{return native_auto_impl(model,options,budget);};
-  if (!options.primal_start.empty() || options.guarantee==Guarantee::Certified ||
+  const auto fallback=[&]{return native_auto_impl(model,options,budget,settings);};
+  if ((!settings.presolve && !settings.components && !settings.symmetry) ||
+      !options.primal_start.empty() || options.guarantee==Guarantee::Certified ||
       (options.backend!=Backend::Auto && options.backend!=Backend::Native) ||
       options.threads!=1 || options.random_seed!=0 ||
       !model.globals.empty() || !model.indicators.empty() ||
@@ -2283,14 +2291,15 @@ SolveResult native_auto_pipeline(const ModelSnapshot& model, const SolveOptions&
     // could erase an unsupported term or contradiction.
     validate_structure(model);checkpoint(budget);
     const auto compiled=compile(model,budget);
-    if(prepare_knapsack(compiled,budget))return fallback();
-    const Detail::NativeSolveContinuation leaf=[](const ModelSnapshot& m,
-        const SolveOptions& o,SolveBudget& b){return native_auto_impl(m,o,b);};
+    if(settings.knapsack && prepare_knapsack(compiled,budget))return fallback();
+    const Detail::NativeSolveContinuation leaf=[&](const ModelSnapshot& m,
+        const SolveOptions& o,SolveBudget& b){return native_auto_impl(m,o,b,settings);};
     const Detail::NativeSolveContinuation symmetric=[&](const ModelSnapshot& m,
         const SolveOptions& o,SolveBudget& b){
+      if(!settings.symmetry)return leaf(m,o,b);
       // A reduced/component model can itself become a DP candidate.
       try {
-        if(prepare_knapsack(compile(m,b),b))return leaf(m,o,b);
+        if(settings.knapsack && prepare_knapsack(compile(m,b),b))return leaf(m,o,b);
       } catch(const Unsupported&) {
         // Let the ordinary leaf report admission rather than throwing through
         // the presolve coordinator, which can then retain the original model.
@@ -2301,11 +2310,19 @@ SolveResult native_auto_pipeline(const ModelSnapshot& model, const SolveOptions&
     };
     const Detail::NativeSolveContinuation components=[&](const ModelSnapshot& m,
         const SolveOptions& o,SolveBudget& b){
-      if(auto result=Detail::native_components(m,o,b,symmetric))return *result;
+      if(settings.components)
+        if(auto result=Detail::native_components(m,o,b,symmetric))return *result;
       return symmetric(m,o,b);
     };
-    auto result=Detail::native_presolve(model,options,budget,components);
-    auto solved=result ? std::move(*result):components(model,options,budget);
+    const Detail::NativeSolveContinuation presolved=[&](const ModelSnapshot& m,
+        const SolveOptions& o,SolveBudget& b){
+      if(settings.presolve)
+        if(auto result=Detail::native_presolve(m,o,b,components))return *result;
+      return components(m,o,b);
+    };
+    auto normalized=settings.presolve ? Detail::native_objective_auxiliary(model,options,budget,presolved):
+      std::optional<SolveResult>{};
+    auto solved=normalized ? std::move(*normalized):presolved(model,options,budget);
     solved.message="Automatic native policy: preprocessing; "+solved.message;
     solved.elapsed_seconds=budget.elapsed_seconds();
     return solved;
@@ -2324,15 +2341,15 @@ SolveResult native_auto_pipeline(const ModelSnapshot& model, const SolveOptions&
 
 template<class Source>
 SolveResult native_auto_entry(const Source& source, const SolveOptions& options,
-                              ModelId id, Revision revision) {
+                              const NativeAutoSettings& settings, ModelId id, Revision revision) {
   const auto started=std::chrono::steady_clock::now();
   SolveResult result; result.model_id=id; result.revision=revision;
   result.backend="Gecode native"; result.guarantee=options.guarantee;
   try {
     SolveBudget budget(options);
     if constexpr (std::is_same_v<Source,Model>)
-      result=native_auto_pipeline(source.snapshot(),options,budget);
-    else result=native_auto_pipeline(source,options,budget);
+      result=native_auto_pipeline(source.snapshot(),options,budget,settings);
+    else result=native_auto_pipeline(source,options,budget,settings);
     // Include transformation/artifact cleanup in the publication deadline.
     // Ordinary timed incumbents and the explicit-start path retain their existing
     // capture semantics; a newly completed preprocessing proof must be timely.
@@ -2357,10 +2374,17 @@ SolveResult native_auto_entry(const Source& source, const SolveOptions& options,
 }
 
 SolveResult solve_native_auto(const ModelSnapshot& model, const SolveOptions& options) {
-  return native_auto_entry(model,options,model.model_id,model.revision);
+  return native_auto_entry(model,options,{},model.model_id,model.revision);
 }
 SolveResult solve_native_auto(const Model& model, const SolveOptions& options) {
-  return native_auto_entry(model,options,model.id(),model.revision());
+  return native_auto_entry(model,options,{},model.id(),model.revision());
+}
+
+SolveResult solve_native_auto_configured(const ModelSnapshot& model, const NativeAutoOptions& options) {
+  return native_auto_entry(model,options.solve,options.settings,model.model_id,model.revision);
+}
+SolveResult solve_native_auto_configured(const Model& model, const NativeAutoOptions& options) {
+  return native_auto_entry(model,options.solve,options.settings,model.id(),model.revision());
 }
 
 void NativeRaceOptions::validate() const {
@@ -2381,7 +2405,7 @@ SolveResult native_race_impl(const ModelSnapshot& model,const NativeRaceOptions&
       solve.guarantee==Guarantee::Certified || solve.threads!=1 || solve.random_seed!=0 ||
       (solve.backend!=Backend::Auto && solve.backend!=Backend::Native) ||
       !native_capabilities().available) {
-    auto result=native_auto_pipeline(model,solve,budget);
+    auto result=native_auto_pipeline(model,solve,budget,options.automatic);
     result.message="Native race skipped (disabled or direct-path compatibility); "+result.message;
     return result;
   }
@@ -2400,7 +2424,7 @@ SolveResult native_race_impl(const ModelSnapshot& model,const NativeRaceOptions&
         (!bound || better_bound(*result.best_bound,*bound)))bound=result.best_bound;
   };
   const auto run=[&](bool automatic,SolveBudget& allowance){
-    auto result=automatic ? native_auto_pipeline(model,solve,allowance):
+    auto result=automatic ? native_auto_pipeline(model,solve,allowance,options.automatic):
       solve_native_impl(model,solve,nullptr,nullptr,&allowance);
     // A completed proof is only published after destruction of candidate-local
     // artifacts. Reaching a node cap on the final admitted node is permitted.

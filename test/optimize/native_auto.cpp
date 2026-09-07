@@ -35,6 +35,9 @@ std::pair<double,std::vector<double>> oracle(const ModelSnapshot& m) {
     std::vector<double> point(m.variables.size());
     for(unsigned i=0;i<point.size();++i)point[i]=(mask>>i)&1U;
     bool valid=true;
+    for(const auto& variable:m.variables)
+      valid=valid && point[variable.variable.id]>=variable.lower &&
+        point[variable.variable.id]<=variable.upper;
     for(const auto& row:m.rows)if(row.active){
       double value=0;for(auto t:row.terms)value+=t.coefficient*point[t.variable.id];
       valid=valid && value>=row.lower && value<=row.upper;
@@ -57,8 +60,84 @@ void check(const ModelSnapshot& s,const SolveResult& r,double optimum){
   double value=s.objective.offset;
   for(auto t:s.objective.terms)value+=t.coefficient*r.values[t.variable.id];
   assert(value==optimum);
-  for(const auto& v:s.variables)assert(r.values[v.variable.id]==0 || r.values[v.variable.id]==1);
+  for(const auto& v:s.variables){
+    assert(r.values[v.variable.id]==0 || r.values[v.variable.id]==1);
+    assert(r.values[v.variable.id]>=v.lower && r.values[v.variable.id]<=v.upper);
+  }
   for(const auto& row:s.rows){double a=0;for(auto t:row.terms)a+=t.coefficient*r.values[t.variable.id];assert(a>=row.lower && a<=row.upper);}
+}
+
+void configuration(const SolveOptions& solve,bool lp) {
+  NativeAutoOptions options;options.solve=solve;
+  // Isolate the transformations so a disabled feature cannot be masked by a
+  // different coordinator solving the fixture first.
+  for(int feature=0;feature<3;++feature){
+    Model m;std::vector<Variable> x;std::vector<Term> sum,cost;
+    for(int i=0;i<6;++i){
+      x.push_back(feature==0 && i==0 ? m.add_variable(VariableType::Binary,1,1):m.add_binary());
+      sum.push_back({x.back(),1});cost.push_back({x.back(),feature==2?1.0:double(i+1)});
+    }
+    if(feature==1){
+      m.add_row({{x[0],1},{x[1],1},{x[2],1}},1,2);
+      m.add_row({{x[3],1},{x[4],1},{x[5],1}},1,2);
+    } else m.add_row(sum,2,4);
+    m.minimize(cost,-9);
+    const auto source=m.snapshot();const auto expected=oracle(source).first;
+    const char* markers[]={"Exact integer presolve (","independent components","duplicate-column symmetry"};
+    for(bool enabled:{false,true}){
+      options.settings={false,false,false,false};
+      if(feature==0)options.settings.presolve=enabled;
+      if(feature==1)options.settings.components=enabled;
+      if(feature==2)options.settings.symmetry=enabled;
+      const auto result=solve_native_auto_configured(source,options);
+      check(source,result,expected);
+      assert((result.message.find(markers[feature])!=std::string::npos)==enabled);
+    }
+  }
+  auto knapsack=fixture(3);const auto source=knapsack.snapshot();
+  const auto expected=oracle(source).first;
+  options.settings={false,false,false,true};
+  const auto enabled=solve_native_auto_configured(knapsack,options);check(source,enabled,expected);
+  options.settings.knapsack=false;
+  const auto disabled=solve_native_auto_configured(source,options);check(source,disabled,expected);
+  // Turning off DP must also remove its selection priority: checked LP and
+  // reliability become available for this eligible weighted binary knapsack.
+  if(lp){
+    assert(enabled.backend=="Gecode native");
+    assert(enabled.message.find("eligible exact knapsack DP")!=std::string::npos);
+    assert(disabled.backend.find("checked LP")!=std::string::npos);
+    assert(disabled.message.find("eligible exact knapsack DP")==std::string::npos);
+  }
+  // A fixed column makes presolve produce a DP-eligible reduced model. Keep
+  // components disabled so the selected reduced leaf remains observable.
+  auto reduced=fixture(3);const auto fixed=reduced.add_variable(VariableType::Binary,1,1);
+  auto cost=reduced.snapshot().objective.terms;cost.push_back({fixed,13});reduced.maximize(cost,-7);
+  const auto reduced_source=reduced.snapshot();
+  options.settings={true,false,true,false};
+  const auto reduced_result=solve_native_auto_configured(reduced,options);
+  check(reduced_source,reduced_result,oracle(reduced_source).first);
+  assert(reduced_result.message.find("Exact integer presolve (")!=std::string::npos);
+  if(lp)assert(reduced_result.backend.find("checked LP")!=std::string::npos);
+
+  // All combinations keep the same original feasible set/objective, including
+  // a disconnected model whose component leaves are eligible for knapsack DP.
+  Model split;std::vector<Term> split_cost;
+  for(int group=0;group<2;++group){std::vector<Term> row;
+    for(int i=0;i<5;++i){const auto x=split.add_binary();row.push_back({x,double(i+1)});
+      split_cost.push_back({x,double(i*3+group+1)});}
+    split.add_row(row,-inf,7);
+  }
+  split.maximize(split_cost,11);const auto split_source=split.snapshot();
+  const auto split_expected=oracle(split_source).first;
+  for(unsigned mask=0;mask<16;++mask){
+    options.settings={bool(mask&1),bool(mask&2),bool(mask&4),bool(mask&8)};
+    check(split_source,solve_native_auto_configured(split,options),split_expected);
+    auto stopped=options;stopped.solve.time_limit_seconds=0;
+    assert(solve_native_auto_configured(split_source,stopped).termination==Termination::TimeLimit);
+    stopped=options;stopped.solve.cancellation=std::make_shared<CancellationToken>();
+    stopped.solve.cancellation->cancel();
+    assert(solve_native_auto_configured(split_source,stopped).termination==Termination::Cancelled);
+  }
 }
 }
 int main(){
@@ -67,10 +146,16 @@ int main(){
   if(!native_capabilities().available){
     auto m=fixture(0);
     assert(solve_native_auto(m,o).termination==Termination::Unsupported);
+    NativeAutoOptions configured;configured.solve=o;configured.settings={false,false,false,false};
+    assert(solve_native_auto_configured(m,configured).termination==Termination::Unsupported);
+    assert(solve_native_auto_configured(m.snapshot(),configured).termination==Termination::Unsupported);
+    configured.solve.threads=0;
+    assert(solve_native_auto_configured(m,configured).termination==Termination::InvalidModel);
     assert(solve(m,o).termination==Termination::Unsupported);
     std::cout<<"Automatic native disabled-backend checks passed\n";return 0;
   }
   const bool lp=native_lp_capabilities().available;
+  configuration(o,lp);
   for(int kind=0;kind<5;++kind){
     auto m=fixture(kind);auto s=m.snapshot();auto expected=oracle(s);
     for(bool snapshot:{false,true}){

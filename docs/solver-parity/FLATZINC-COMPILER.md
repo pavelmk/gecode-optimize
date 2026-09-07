@@ -34,6 +34,11 @@ lost through an incomplete registry observer. Each source namespace/index maps
 to a stable model variable; repeated declaration aliases retain separate source
 mapping entries and output positions. Bool and int slot zero are different.
 
+An integer domain contained in `0..1` uses an equivalent internal Binary variable
+so native binary algorithms can recognize MiniZinc's integer decision encoding.
+This is based only on original declarations, assignments and domain restrictions;
+source type, aliases, integer output and all original domain checks are retained.
+
 An immutable owning artifact is published only after every source predicate,
 objective, control annotation and output entry is admitted. Unknown predicates,
 equality reification, other globals, float/set variables and unhandled

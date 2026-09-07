@@ -1431,6 +1431,10 @@ if(GECODE_OPTIMIZE_MINIZINC_REGISTRATION)
   endif()
   set(_gecode_optimize_msc_template "${PROJECT_SOURCE_DIR}/tools/flatzinc/gecode-optimize.msc.in")
   set(_gecode_optimize_msc_encoder "${PROJECT_SOURCE_DIR}/tools/flatzinc/configure-optimize-msc.cmake")
+  # execute_process below generates the install registration at configure time.
+  # Keep it in sync when solver flags or JSON encoding change between builds.
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${_gecode_optimize_msc_template}" "${_gecode_optimize_msc_encoder}")
   set(_gecode_optimize_build_msc "${PROJECT_BINARY_DIR}/minizinc/$<CONFIG>/gecode-optimize.msc")
   # Target paths are expanded before the encoder escapes them as JSON. This
   # also supports multi-configuration builds and source/build paths with quotes.

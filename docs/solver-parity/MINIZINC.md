@@ -30,14 +30,117 @@ minizinc --solver /path/to/gecode-optimize.msc model.mzn data.dzn
 minizinc --solver /path/to/gecode-optimize.msc --solver-time-limit 1000 model.mzn
 ```
 
+## Native algorithm controls
+
+The experimental registration now exposes native algorithm controls through
+MiniZinc's solver `extraFlags`. No model annotations are needed. The default
+`--native-mode auto` uses bounded structural selection, exact preprocessing and
+eligible knapsack DP; it does not run a race unless requested.
+
+```sh
+# Default automatic selection, with an explanation of the actual route.
+minizinc --solver /path/to/gecode-optimize.msc \
+  --native-diagnostics on model.mzn
+
+# Compare automatic selection with ordinary search within one solve budget.
+minizinc --solver /path/to/gecode-optimize.msc \
+  --native-mode race --native-race-seconds 8 --native-race-nodes 50000 \
+  --solver-time-limit 120000 --native-diagnostics on model.mzn
+
+# Explicit checked LP, cuts, reliability branching and a bounded neighborhood.
+minizinc --solver /path/to/gecode-optimize.msc \
+  --native-mode configured --native-search dfs --native-lp updated \
+  --native-root-cuts on --native-branching reliability \
+  --native-neighborhood hamming --native-diagnostics on model.mzn
+```
+
+| Mode | Behavior |
+|---|---|
+| `auto` (default) | Conservative structural selection; enabled mechanisms still require eligible model structure. |
+| `race` | Up to two bounded sequential probes, automatic versus ordinary BAB; restart the selected route if unresolved. |
+| `plain` | Direct native BAB, including its existing eligible exact knapsack DP. |
+| `configured` | Explicit LP/frontier/branching/neighborhood settings; default is DFS without LP, reliability or neighborhoods. Automatic transformations are omitted. |
+
+**Racing may increase total CPU work or solve time.** Exploration and restarting
+repeat work, and early progress can favor a strategy that eventually loses.
+Several seconds or longer may nevertheless identify a much more effective route
+for a long solve. Probes run sequentially, with one worker. The nominal exploration
+allowance is capped at 25% of the remaining finite solve time; all probes and the
+restart share the global deadline and cumulative node allowance. Zero exploration
+skips the race and runs the automatic policy. Globals/indicators also skip racing.
+This is a heuristic, not a performance guarantee.
+
+All controls take an explicit value. The following table gives defaults when
+omitted; MiniZinc does not forward the advertised defaults as explicit arguments.
+
+| Flag | Values / default | Scope |
+|---|---|---|
+| `--native-mode` | `auto`, `race`, `plain`, `configured`; `auto` | All native solves |
+| `--native-diagnostics` | `on`, `off`; `off` | All native solves |
+| `--native-node-limit` | Unsigned count; unlimited | All native solves; zero permits no search node admissions |
+| `--native-auto-presolve` | `on`, `off`; `on` | `auto` / automatic candidate in `race` |
+| `--native-auto-components` | `on`, `off`; `on` | `auto` / automatic candidate in `race` |
+| `--native-auto-symmetry` | `on`, `off`; `on` | `auto` / automatic candidate in `race` |
+| `--native-auto-knapsack` | `on`, `off`; `on` | `auto` / automatic candidate in `race` |
+| `--native-race-seconds` | Finite nonnegative seconds; `2` | `race` |
+| `--native-race-nodes` | Positive count per probe; `4096` | `race` |
+| `--native-search` | `bab`, `dfs`, `best-bound`; `dfs` | `configured` |
+| `--native-lp` | `off`, `root`, `updated`; `off` | `configured`; requires checked LP capability when enabled |
+| `--native-root-cuts` | `on`, `off`; `off` | `configured` with LP |
+| `--native-bound-tightening` | `on`, `off`; `on` | `configured` with LP |
+| `--native-lp-interval` | Positive observed bound-change count; `1` | `configured` with updated LP |
+| `--native-branching` | `default`, `reliability`; `default` | `configured` frontier search |
+| `--native-branching-probes` | Nonnegative status-call count; `128` | Reliability branching |
+| `--native-max-open-nodes` | Nonnegative stored-space count; `100000` | `configured` frontier search; not a byte limit |
+| `--native-neighborhood` | `off`, `hamming`; `off` | `configured` frontier search |
+| `--native-neighborhood-radius` | Nonnegative binary Hamming distance; `1` | Hamming neighborhood |
+| `--native-neighborhood-nodes` | Nonnegative local status-call count; `128` | Hamming neighborhood |
+| `--native-neighborhood-seconds` | Finite nonnegative local seconds; `0.05` | Hamming neighborhood |
+
+Automatic switches permit a mechanism; they do not force it onto unsuitable
+models. A disabled switch skips that mechanism throughout automatic reduced and
+component solves. In racing, `--native-auto-*` affects the automatic candidate;
+the ordinary comparator keeps its existing behavior, including eligible DP.
+Configured reliability considers eligible binary variables. Hamming search makes
+at most one bounded attempt after an incumbent and may skip if there is no
+incumbent, no eligible binary decision, or proof finishes first. Hamming distance
+counts flattened binary slots: a Boolean and its `bool2int` integer alias count
+separately. Such an aliased decision can require radius `2` to change its value.
+LP deductions
+and cover cuts retain their checked integer contracts. Explicit LP without its
+required HiGHS/checked arithmetic support is an error, not a silent fallback.
+
+Diagnostics are FlatZinc `%` comments reporting the requested mode/settings,
+actual backend/policy and available work counters. A request is not evidence that
+optional work ran; counters and skip explanations make that distinction visible.
+Diagnostics do not enable enumeration or intermediate solutions. The default
+solution protocol remains unchanged. Conflicting, irrelevant, duplicated,
+malformed and overflowing options are rejected before solving, including
+configured-only settings in automatic mode and frontier-only settings with BAB.
+
+Integer source domains contained in `0..1` are represented as binary decisions
+internally while retaining integer output and original domain checks. The
+automatic presolve path can remove a narrowly eligible linear objective auxiliary
+introduced by MiniZinc, restore its value, and check the original model before
+publishing a result. Its domain restrictions are preserved. More complicated
+flattened models may still choose ordinary native search; diagnostics explain
+the selected route.
+
+This change exposes **native integer solver controls**. It does not add numerical
+LP/MILP or quadratic MiniZinc model support, multiobjective/session/repair/pool
+workflows, conflict learning, parallel racing or general search annotations.
+Those broader APIs remain separate from this experimental registration.
+
+## Build and installation
+
 Enable `GECODE_OPTIMIZE_MINIZINC_REGISTRATION=ON` in a top-level build with the
 optimization FlatZinc driver and native backend enabled. The option defaults to
 OFF. Optionally set `GECODE_OPTIMIZE_MINIZINC_EXECUTABLE` to an existing pinned
 compiler to enable the real compiler CTest; configuration never downloads one.
 
 ```sh
-cmake -S . -B build/native-compat \\
-  -DGECODE_OPTIMIZE_MINIZINC_REGISTRATION=ON \\
+cmake -S . -B build/native-compat \
+  -DGECODE_OPTIMIZE_MINIZINC_REGISTRATION=ON \
   -DGECODE_OPTIMIZE_MINIZINC_EXECUTABLE=/path/to/minizinc
 cmake --build build/native-compat --target gecode-optimize-minizinc-config
 ctest --test-dir build/native-compat --output-on-failure -R '^optimize-minizinc-'
@@ -86,13 +189,14 @@ process. Neither the driver nor the registration writes `Preferences.json` or
 The explicit mode accepts:
 
 ```text
-fzn-gecode-optimize --minizinc [-t MILLISECONDS] MODEL.fzn|-
+fzn-gecode-optimize --minizinc [-t MILLISECONDS] [--native-mode MODE ...] MODEL.fzn|-
 ```
 
 `-t` can precede or follow the filename. `--` ends option parsing, allowing a
 filename beginning with a hyphen. Exactly one filename and at most one `-t` are
-required; unsupported flags, missing values, fractions, negative values, duplicate
-options, and unsigned-count overflow are errors. This mode always uses Native
+required; unsupported flags, missing values, fractional/negative counts, duplicate
+options, and unsigned-count overflow are errors. Native time settings allow
+finite nonnegative fractional seconds. This mode always uses Native
 with the exact guarantee and zero requested gaps. No backend override is accepted.
 
 `-t` is an unsigned decimal count of milliseconds. Zero means unlimited, matching
@@ -112,6 +216,9 @@ child exit as `ERROR`, including when the child printed `UNKNOWN`.
 The direct driver interface remains separate: `MODEL.fzn --time-limit SECONDS`
 retains its existing filename-first syntax, immediate zero deadline, optional
 explicit HiGHS route, and exit **1** for an ordinary incomplete solve.
+It also accepts the native controls above; supplying them with `--backend highs`
+is an error. `--node-limit` and `--native-node-limit` are aliases and cannot both
+be supplied.
 
 The `.msc` does not advertise enumeration, intermediate incumbents, parallel
 search, randomness, or solver statistics. The driver rejects such flags if

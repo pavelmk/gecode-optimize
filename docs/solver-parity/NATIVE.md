@@ -73,7 +73,8 @@ policy implies broad gains on unseen models.
 ## Optional automatic strategy racing
 
 `solve_native_race` is an opt-in C++ entry point for native Gecode, accepting a
-`Model` or `ModelSnapshot`. It is not yet surfaced as a MiniZinc/FlatZinc option.
+`Model` or `ModelSnapshot`. The experimental [MiniZinc/FlatZinc frontend](MINIZINC.md)
+also exposes it with `--native-mode race` and explicit exploration controls.
 It integrates the automatic presolve, independent components, identical-column
 symmetry, compact knapsack DP and suitable checked-LP/branching choices above.
 It compares that automatic route against ordinary native BAB (which also keeps
@@ -134,6 +135,14 @@ The original measured benchmark library remains byte-identical. These are
 correctness/resource checks, not a new performance comparison.
 
 ## Exact automatic preprocessing
+
+`NativeAutoOptions` combines `SolveOptions` with `NativeAutoSettings`. Call
+`solve_native_auto_configured(model, options)` to independently disable presolve,
+components, symmetry or knapsack DP. All four settings default to true and permit
+eligible work rather than forcing it. The existing `solve_native_auto` overloads
+retain their defaults. `NativeRaceOptions::automatic` applies these switches to
+the automatic candidate; its ordinary comparator retains eligible knapsack DP.
+MiniZinc exposes the same controls as `--native-auto-*` flags.
 
 Within the automatic native route, bounded ordinary Integer/Binary linear models
 can use three additional transformations. The original model first passes native

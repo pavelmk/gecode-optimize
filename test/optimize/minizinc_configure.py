@@ -32,6 +32,12 @@ def main():
             assert value["version"] == version
             assert value["executable"] == [driver,"--minizinc"]
             assert value["mznlib"] == library
+            # Generated build/install registrations retain the public controls;
+            # configuring paths must not erase their types, defaults or help.
+            expected_flags = json.loads(template.read_text())["extraFlags"]
+            assert value["extraFlags"] == expected_flags
+            assert len({flag[0] for flag in value["extraFlags"]}) == len(expected_flags) == 21
+            assert value["stdFlags"] == ["-t"]
             assert not list(output.parent.glob(output.name+".*.tmp"))
         prior = output.read_bytes()
         for omitted in ("VERSION","DRIVER","MZNLIB","OUTPUT","TEMPLATE"):

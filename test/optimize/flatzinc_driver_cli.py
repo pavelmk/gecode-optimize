@@ -152,6 +152,83 @@ class Suite:
                 f"{name}: rejection must emit only stderr, got code={code}, stdout={stdout!r}, stderr={stderr!r}")
         require(contains.casefold() in stderr.casefold(), f"{name}: unexpected error: {stderr!r}")
 
+    def native_controls(self, highs: str) -> None:
+        # Original source oracle: two binary items of weight 2 cannot both fit
+        # capacity 3; z counts chosen items. No reference result is used.
+        source = ("var 0..1: x; var 0..1: y; var 0..2: z :: output_var; "
+                  "constraint int_lin_le([2,2],[x,y],3); "
+                  "constraint int_lin_eq([1,1,-1],[x,y,z],0); solve maximize z;")
+        routes = [
+            ("auto", []), ("plain", []),
+            ("race", ["--native-race-seconds", "0.02", "--native-race-nodes", "2"]),
+            ("auto", ["--native-auto-presolve", "off", "--native-auto-components", "off",
+                      "--native-auto-symmetry", "off", "--native-auto-knapsack", "off"]),
+            ("configured", ["--native-search", "bab"]),
+            ("configured", ["--native-search", "dfs", "--native-branching", "reliability",
+                            "--native-branching-probes", "8", "--native-neighborhood", "hamming",
+                            "--native-neighborhood-radius", "1", "--native-neighborhood-nodes", "8",
+                            "--native-neighborhood-seconds", "0.02", "--native-max-open-nodes", "100"]),
+            ("configured", ["--native-search", "best-bound"]),
+        ]
+        for order in ("bab", "dfs", "best-bound"):
+            for lp in ("root", "updated"):
+                extra = ["--native-search", order, "--native-lp", lp, "--native-root-cuts", "on",
+                         "--native-bound-tightening", "off"]
+                if lp == "updated":
+                    extra += ["--native-lp-interval", "2"]
+                routes.append(("configured", extra))
+        for index, (mode, extra) in enumerate(routes):
+            args = ["--minizinc", "--native-mode", mode, "-", "--native-diagnostics", "on", *extra]
+            code, stdout, stderr = self.invoke(f"native-controls-{index}", args, source.encode())
+            lp_requested = "--native-lp" in extra
+            if lp_requested and highs == "unavailable":
+                require(code == 2 and not stdout and "unsupported" in stderr.lower(),
+                        "Requested unavailable checked LP must fail explicitly")
+                continue
+            parsed = parse_output(stdout)
+            require(code == 0 and not stderr and parsed.assignments == {"z": 1} and
+                    parsed.markers == ["----------", "=========="],
+                    f"Native route {index} failed its independent source oracle: {code}, {stdout!r}, {stderr!r}")
+            require(f"% native-mode: {mode}" in parsed.comments, "Requested native route missing from diagnostics")
+            backend = next((line for line in parsed.comments if line.startswith("% native-backend: ")), "")
+            require("Gecode native" in backend, "Actual native backend attribution missing")
+            if mode == "configured" and "bab" not in extra:
+                require("native frontier" in backend and "frontier-admitted=" in stdout,
+                        "Configured frontier controls did not reach the frontier solver")
+            if lp_requested:
+                require("checked LP" in backend and re.search(r"lp-calls=[1-9]\d*", stdout),
+                        "Checked LP controls did not perform an LP attempt")
+            if "--native-neighborhood" in extra:
+                require("neighborhood-attempts=" in stdout and "branching-probes=" in stdout,
+                        "Requested branching/neighborhood work counters missing")
+            if "--native-auto-presolve" in extra:
+                require(all(f"auto-{feature}=off" in stdout for feature in ("presolve", "components", "symmetry", "knapsack")),
+                        "Automatic transformation flags were not forwarded")
+        for mode in ("auto", "plain", "race", "configured"):
+            code, stdout, stderr = self.invoke(f"native-controls-zero-{mode}",
+                ["--minizinc", "-", "--native-mode", mode, "--native-node-limit", "0"], source.encode())
+            parsed = parse_output(stdout)
+            require(code == 0 and not parsed.assignments and parsed.markers == ["=====UNKNOWN====="],
+                    f"Native mode {mode} ignored the shared zero node budget")
+        invalid = [
+            ["--native-mode", "race", "--native-race-nodes", "0"],
+            ["--native-mode", "race", "--native-race-seconds", "nan"],
+            ["--native-mode", "plain", "--native-auto-presolve", "off"],
+            ["--native-mode", "configured", "--native-root-cuts", "on"],
+            ["--native-mode", "configured", "--native-neighborhood-nodes", "1"],
+            ["--native-mode", "configured", "--native-search", "bab", "--native-branching", "reliability"],
+            ["--native-mode", "configured", "--native-lp", "updated", "--native-lp-interval", "4294967296"],
+            ["--native-node-limit", "18446744073709551616"],
+            ["--native-mode", "auto", "--native-mode", "auto"],
+            ["--native-diagnostics", "yes"],
+        ]
+        for index, flags in enumerate(invalid):
+            self.error(f"native-controls-reject-{index}", ["--minizinc", "-", *flags], source)
+        self.error("native-controls-highs-rejected", ["-", "--backend", "highs", "--native-mode", "auto"], source,
+                   "require the native backend")
+        self.error("native-controls-node-alias-duplicate", ["-", "--node-limit", "2", "--native-node-limit", "3"], source,
+                   "repeated")
+
     def cases(self, highs: str) -> None:
         # Analytic source oracles, independent of any solver result.
         alias = {"a": Array(((-1, 0), (2, 3)), (1, 1, 2, 3)), "y": 1}
@@ -346,6 +423,7 @@ class Suite:
             spaced.write_bytes(default.read_bytes())
             code, stdout, stderr = self.invoke("filename-with-spaces", [str(spaced)])
             require(code == 0 and not stderr and parse_output(stdout).assignments == channel, "Spaced filename failed")
+        self.native_controls(highs)
 
 
 def main() -> int:
@@ -361,7 +439,7 @@ def main() -> int:
         digest = hashlib.sha256(args.binary.read_bytes()).hexdigest()
         suite = Suite(args.binary.resolve(), args.fixtures.resolve(), args.timeout)
         suite.cases(args.highs)
-        require(len(suite.results) == (106 if args.highs == "available" else 97), "Required CLI cases were skipped")
+        require(len(suite.results) == (135 if args.highs == "available" else 126), "Required CLI cases were skipped")
         print(json.dumps({"status": "passed", "binary_sha256": digest, "cases": len(suite.results),
                           "fixture_sha256": suite.sources, "checks": suite.results}, sort_keys=True))
         return 0

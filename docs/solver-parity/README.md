@@ -23,7 +23,9 @@ symmetry and compact knapsack DP now extend this policy. The separate C++
 `solve_native_race` option tries this policy and ordinary BAB under one shared
 budget, then selects a route. Exploration/restarting may increase CPU work or
 solve time; longer trials can pay off if they discover a better search strategy.
-MiniZinc exposure and parallel racing remain future work. The final three-cohort
+The experimental [MiniZinc registration](MINIZINC.md) now exposes automatic,
+racing and explicitly configured native strategies. Parallel racing remains
+future work. The final three-cohort
 benchmark compares the original pre-algorithm runtime, automatic racing and
 frozen family presets; the earlier studies below keep their own observations.
 

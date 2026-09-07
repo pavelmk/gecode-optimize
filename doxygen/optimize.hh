@@ -44,7 +44,7 @@
  * | Existing Space, IntVar, BoolVar, SetVar, FloatVar and native search APIs | The original CP modeling, global constraints, propagators, search customization and configured parallel search | Optimize restrictions below do not remove these existing capabilities. See \ref TaskModel and \ref TaskModelSearch. |
  * | Optimize with Backend::Highs | Numerical continuous LP and mixed-integer linear models, including supported binary and semi domains | One worker per solve; numerical tolerances and adapter scaling limits apply. Exact and Certified requests are rejected. |
  * | Optimize with Backend::Native | Finite Integer, Binary and SemiInteger models with exact integral linear data, retained indicators and six typed global families | Conservative native coefficient/activity limits; one deterministic worker; no arbitrary continuous or fractional model conversion. |
- * | Explicit native LP/frontier/neighborhood APIs | Checked integer LP deductions, optional original-row root covers, frontier bounds, binary reliability probes and one bounded incumbent neighborhood | Explicit entry points allow direct control; the common Native policy can select LP, covers and reliability structurally. No automatic portfolio is implemented. |
+ * | Explicit native LP/frontier/neighborhood APIs | Checked integer LP deductions, optional original-row root covers, frontier bounds, binary reliability probes and one bounded incumbent neighborhood | Explicit entry points allow direct control; the common Native policy selects suitable LP, covers and reliability. An optional sequential race compares automatic and ordinary search. |
  * | QuadraticModel and solve_quadratic | Bounded continuous convex minimization or concave maximization expressed as weighted squares plus linear terms | Numerical checking; separate model type. No integer QP, quadratic constraints or general nonconvex optimization. |
  *
  * Gecode::Optimize::solve selects native %Gecode for active typed globals under
@@ -60,7 +60,8 @@
  * compares automatic and ordinary routes with sequential probes, then restarts
  * the selected route under the same time/node budget. Exploration can increase
  * CPU work and solve time, but can reveal a better strategy for a longer solve.
- * Exploration time is configurable; MiniZinc exposure is future work.
+ * Exploration time is configurable. The experimental MiniZinc registration
+ * exposes automatic, racing and explicitly configured native strategies.
  * No conflict learning is added. Inspect
  * Gecode::Optimize::capabilities, Gecode::Optimize::native_capabilities,
  * Gecode::Optimize::native_lp_capabilities and
@@ -365,6 +366,17 @@
  * limit, whereas the direct --time-limit 0 option requests an immediate limit.
  * Ordinary incomplete MiniZinc output uses protocol status and exit zero;
  * malformed/unsupported inputs remain errors.
+ * Namespaced --native-* extra flags expose automatic feature switches,
+ * sequential racing, checked LP/cover cuts, frontier order, reliability
+ * branching and bounded Hamming neighborhoods. --native-diagnostics on reports
+ * requested settings, actual route and available work counters as comments.
+ * NativeAutoOptions and solve_native_auto_configured expose the same automatic
+ * switches to C++; NativeRaceOptions::automatic controls its automatic candidate.
+ * Integer 0..1 source domains retain integer output while becoming internal
+ * binary decisions. Bounded automatic presolve can eliminate a singly defined
+ * affine objective auxiliary, preserving its bounds and restoring/checking
+ * its original value before publication. Numerical MiniZinc model support and
+ * general solve annotations remain outside this registration's scope.
  *
  * \section OptimizeBindings C and Python
  *

@@ -92,6 +92,20 @@ void booleans(){
   oracle(channel,{{0,1},{-1,2}},[](const Point& p){return 2*p[0]-1==p[1];});
 }
 void aliases_domains(){
+  // Domain-based binary recognition must not change source typing, aliases,
+  // singleton restrictions, or acceptance of assignments outside the domain.
+  F::Records binary;binary.raw_variables={variable(0,0,1),variable(1,-2,3),variable(2,1,1),variable(3,0,2)};
+  binary.raw_variables[1].alias=true;binary.raw_variables[1].target={F::Type::Integer,0};
+  binary.output={{"integer_decision",ref(0)}};
+  const auto classified=compiled(binary);
+  assert(classified.model().variables[0].type==O::VariableType::Binary);
+  assert(classified.variables()[0].variable==classified.variables()[1].variable);
+  assert(classified.model().variables[1].type==O::VariableType::Binary);
+  assert(classified.model().variables[2].type==O::VariableType::Integer);
+  assert(O::format_flatzinc_solution(classified,witness(classified,{1,1,1,2}))=="integer_decision = 1;\n----------\n");
+  oracle(binary,{{-1,2},{-1,2},{0,2},{-1,3}},[](const Point& p){
+    return p[0]>=0&&p[0]<=1&&p[0]==p[1]&&p[2]==1&&p[3]>=0&&p[3]<=2;
+  });
   F::Records r;r.raw_variables={variable(0,-2,3),variable(1,-9,9),variable(2,-9,9)};
   r.raw_variables[1].alias=true;r.raw_variables[1].target={F::Type::Integer,0};r.raw_variables[2].alias=true;r.raw_variables[2].target={F::Type::Integer,1};
   r.raw_domains={row("int_in",{ref(1),domain(0,2)})};

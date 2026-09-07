@@ -42,12 +42,40 @@ SolveResult solve_native_auto(const ModelSnapshot& model,
 SolveResult solve_native_auto(const Model& model,
                              const SolveOptions& options = {});
 
+/** Optional automatic transformations. Disabling a feature skips its work;
+ * enabling it permits the conservative structural policy to use it when safe.
+ * These controls apply throughout reduced models and independent components.
+ * They do not change the behavior of explicit solve_native/LP/search APIs.
+ */
+struct NativeAutoSettings {
+  /** Exact reductions, including one safely reconstructable affine objective
+   * auxiliary (for example a MiniZinc compiler-generated objective variable).
+   */
+  bool presolve = true;
+  bool components = true;
+  bool symmetry = true;
+  bool knapsack = true;
+};
+
+struct NativeAutoOptions {
+  SolveOptions solve;
+  NativeAutoSettings settings;
+};
+
+/** Run the automatic policy with explicit transformation controls. A separate
+ * name preserves unambiguous existing calls such as solve_native_auto(model,{}).
+ */
+SolveResult solve_native_auto_configured(const ModelSnapshot& model,
+                                        const NativeAutoOptions& options = {});
+SolveResult solve_native_auto_configured(const Model& model,
+                                        const NativeAutoOptions& options = {});
+
 /** Opt-in sequential probe-and-select policy for native Gecode optimization.
  * Racing can INCREASE total CPU work and solve time: probes and restarting the
  * selected strategy repeat work. Several seconds (or longer when configured)
  * can nevertheless discover a substantially better search route. Early progress
  * is a heuristic, not a prediction or a guarantee of eventual speedup.
- * No MiniZinc/FlatZinc option is exposed by this C++ entry point yet.
+ * The optional Optimize MiniZinc/FlatZinc frontend exposes this policy separately.
  */
 struct NativeRaceOptions {
   SolveOptions solve;
@@ -59,11 +87,16 @@ struct NativeRaceOptions {
   double exploration_seconds = 2.0;
   /** Per-probe node allowance; all probe/restart nodes also count globally. */
   std::uint64_t probe_node_limit = 4096;
+  /** Controls only the automatic candidate, including a selected restart or
+   * direct-path fallback. The ordinary native comparator retains its existing
+   * eligible exact knapsack DP, independently of these settings.
+   */
+  NativeAutoSettings automatic;
   void validate() const;
 };
 
 /** Compare automatic preprocessing/LP policy with ordinary native BAB, preserving
- * eligible exact knapsack DP in both. Return immediately on a complete proof;
+ * eligible exact knapsack DP by default in both. Return immediately on a complete proof;
  * otherwise restart the candidate with the best original validated incumbent,
  * then strongest valid bound, preferring automatic policy on ties. Validated
  * incumbents and original-model bounds from probes are retained. Search trees

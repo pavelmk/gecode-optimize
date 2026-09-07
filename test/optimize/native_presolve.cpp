@@ -65,6 +65,96 @@ Model reduced_fixture(bool maximum=false) {
   return model;
 }
 
+Model auxiliary_fixture(bool maximize,bool bounded,int sign=1) {
+  Model model;std::vector<Term> capacity,equality;
+  for(int i=0;i<6;++i){const auto x=model.add_binary();capacity.push_back({x,double(i+1)});
+    equality.push_back({x,double((maximize?-1:1)*sign*(i*3+1))});}
+  model.add_row(capacity,-inf,10);
+  const auto auxiliary=model.add_integer(maximize?3:(bounded?-22:-48),maximize?(bounded?28:54):3);
+  equality.push_back({auxiliary,double(sign)});model.add_row(equality,3*sign,3*sign);
+  model.set_objective({{auxiliary,1}},maximize?ObjectiveSense::Maximize:ObjectiveSense::Minimize,-11);
+  return model;
+}
+
+void objective_auxiliaries() {
+  SolveOptions options;options.backend=Backend::Native;options.guarantee=Guarantee::Exact;
+  options.relative_gap=options.absolute_gap=0;options.time_limit_seconds=5;
+  for(bool maximize:{false,true})for(bool bounded:{false,true})for(int sign:{-1,1}) {
+    const auto model=auxiliary_fixture(maximize,bounded,sign);const auto source=model.snapshot();
+    const auto expected=oracle(source);
+    for(bool interrupted:{false,true}) {
+      auto limited=options;limited.node_limit=2;SolveBudget budget(limited);bool called=false;
+      const auto actual=Detail::native_objective_auxiliary(source,limited,budget,
+        [&](const ModelSnapshot& reduced,const SolveOptions& exact,SolveBudget& shared) {
+          called=true;assert(&shared==&budget && exact.guarantee==Guarantee::Exact);
+          assert(!reduced.variables.back().active && reduced.objective.terms.size()==6);
+          assert(reduced.rows[1].active==bounded); // Preserve nonredundant auxiliary domain bounds.
+          auto result=oracle(reduced);shared.add_nodes(2);
+          if(interrupted){result.termination=Termination::NodeLimit;
+            result.best_bound=*result.objective+(maximize?3:-3);}
+          return result;
+        });
+      assert(called && actual && actual->model_id==source.model_id && actual->revision==source.revision);
+      assert(actual->has_solution() && actual->objective==expected.objective && budget.nodes()==2);
+      assert(actual->active_variables.back() && actual->values.back()==*actual->objective+11);
+      assert(validate(source,actual->values,0,0).valid);
+      assert(actual->termination==(interrupted?Termination::NodeLimit:Termination::Optimal));
+      assert(actual->best_bound==*expected.objective+(interrupted?(maximize?3:-3):0));
+    }
+    if(native_capabilities().available)for(bool enabled:{false,true}) {
+      NativeAutoOptions configured;configured.solve=options;configured.settings={enabled,false,false,true};
+      auto actual=solve_native_auto_configured(source,configured);
+      if(actual.termination!=Termination::Optimal)std::cerr<<actual.message<<'\n';
+      assert(actual.termination==Termination::Optimal && actual.objective==expected.objective);
+      assert(actual.model_id==source.model_id && actual.revision==source.revision && validate(source,actual.values,0,0).valid);
+      assert((actual.message.find("Exact objective auxiliary substitution")!=std::string::npos)==enabled);
+      if(enabled && !bounded)assert(actual.message.find("eligible exact knapsack DP")!=std::string::npos);
+      if(enabled && !bounded){configured.settings.knapsack=false;
+        const auto no_dp=solve_native_auto_configured(source,configured);
+        assert(no_dp.termination==Termination::Optimal && no_dp.objective==expected.objective);
+        assert(no_dp.message.find("eligible exact knapsack DP")==std::string::npos);
+        if(native_lp_capabilities().available)assert(no_dp.backend.find("checked LP")!=std::string::npos);
+      }
+    }
+  }
+  auto model=auxiliary_fixture(true,false);const auto original=model.snapshot();
+  const auto never=[](const ModelSnapshot&,const SolveOptions&,SolveBudget&) -> SolveResult {assert(false);return {};};
+  // A second use of the auxiliary or a non-unit equality coefficient must keep
+  // the original model. No unsupported affine substitution is approximated.
+  model.add_row({{original.variables.back().variable,1}},3,54);
+  SolveBudget repeated(options);assert(!Detail::native_objective_auxiliary(model.snapshot(),options,repeated,never));
+  auto nonunit=original;for(auto& term:nonunit.rows[1].terms)term.coefficient*=2;
+  nonunit.rows[1].lower*=2;nonunit.rows[1].upper*=2;
+  SolveBudget nonunit_budget(options);assert(!Detail::native_objective_auxiliary(nonunit,options,nonunit_budget,never));
+  auto started=options;const auto witness=oracle(original);
+  for(const auto& v:original.variables)started.primal_start.push_back({v.variable,witness.values[v.variable.id]});
+  SolveBudget start_budget(started);assert(!Detail::native_objective_auxiliary(original,started,start_budget,never));
+  auto cancelled=options;cancelled.cancellation=std::make_shared<CancellationToken>();
+  SolveBudget cancel_budget(cancelled);
+  const auto stopped=Detail::native_objective_auxiliary(original,cancelled,cancel_budget,
+    [&](const ModelSnapshot& reduced,const SolveOptions&,SolveBudget&){
+      auto result=oracle(reduced);cancelled.cancellation->cancel();return result;
+    });
+  assert(stopped && stopped->termination==Termination::Cancelled && !stopped->has_solution() && !stopped->best_bound);
+  SolveBudget foreign_budget(options);
+  const auto foreign=Detail::native_objective_auxiliary(original,options,foreign_budget,
+    [&](const ModelSnapshot& reduced,const SolveOptions&,SolveBudget&){auto result=oracle(reduced);++result.model_id;return result;});
+  assert(foreign && foreign->termination==Termination::BackendError && !foreign->has_solution());
+  SolveBudget mask_budget(options);
+  const auto mask=Detail::native_objective_auxiliary(original,options,mask_budget,
+    [&](const ModelSnapshot& reduced,const SolveOptions&,SolveBudget&){
+      auto result=oracle(reduced);result.active_variables[0]=false;return result;
+    });
+  assert(mask && mask->termination==Termination::BackendError && !mask->has_solution());
+  SolveBudget unsupported_budget(options);
+  const auto unsupported=Detail::native_objective_auxiliary(original,options,unsupported_budget,
+    [&](const ModelSnapshot& reduced,const SolveOptions&,SolveBudget&){
+      SolveResult result;result.model_id=reduced.model_id;result.revision=reduced.revision;
+      result.guarantee=Guarantee::Exact;result.termination=Termination::Unsupported;return result;
+    });
+  assert(!unsupported); // The caller retains the originally admitted native route.
+}
+
 void fixed_offsets_and_bounds() {
   for (bool maximum:{false,true}) for (auto guarantee:{Guarantee::Exact,Guarantee::Numerical}) {
     const auto model=reduced_fixture(maximum); const auto source=model.snapshot();
@@ -171,6 +261,6 @@ void starts_and_stops() {
 }
 
 int main() {
-  fixed_offsets_and_bounds(); infeasibility_and_fixpoint(); incomplete_artifact(); starts_and_stops();
+  objective_auxiliaries(); fixed_offsets_and_bounds(); infeasibility_and_fixpoint(); incomplete_artifact(); starts_and_stops();
   std::cout<<"Exact native presolve composition: offsets, proof transfer, partial reductions, starts and stops pass\n";
 }

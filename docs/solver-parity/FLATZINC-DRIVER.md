@@ -18,6 +18,14 @@ in a FlatZinc comment. Exact feasible-point checking does not certify a numerica
 optimal bound or infeasibility claim. An unavailable selected backend fails
 explicitly. There is no automatic backend or legacy-parser fallback.
 
+The native route defaults to structural automatic selection. Namespaced
+`--native-*` controls expose automatic feature switches, opt-in racing and
+configured LP/search/branching/neighborhood settings; see the complete
+[MiniZinc control reference](MINIZINC.md#native-algorithm-controls). The same
+flags work in this filename-first direct interface. `--native-diagnostics on`
+adds sanitized comment lines describing requested controls and actual work.
+Native controls cannot be mixed with `--backend highs`.
+
 See [the compiler](FLATZINC-COMPILER.md) for the admitted signatures and
 [the capture layer](FLATZINC-CAPTURE.md) for grammar and lifecycle boundaries.
 Unknown predicates, search annotations, unsupported domains and output types
